@@ -33,6 +33,15 @@
             position: relative;
         }
 
+        /* 헤더의 a 태그 스타일 */
+        .OLD,
+        .OLD:visited,
+        .OLD:hover,
+        .OLD:active {
+            color: #ffffff; /* 흰색으로 설정 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
+
         /* 로그인 링크 스타일 */
         .login-link {
             position: absolute;
@@ -285,7 +294,7 @@
         // 아이디 중복 확인 함수
         function fn_idOverlap() {
             $.ajax({
-                url: "/join/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
+                url: "/PHG_join/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
                 type: "POST",
                 dataType: "json",
                 data: { "user_id": $("#user_id").val() },  // 파라미터 이름 확인
@@ -351,15 +360,15 @@
 <body>
     <!-- 헤더 -->
     <header>
-        OLD
-        <a href="/login" class="login-link">로그인</a>
+        <a href="/PHG_index" class="OLD">OLD</a>
+        <a href="/PHG_login" class="login-link">로그인</a>
     </header>
 
     <!-- 메인 컨텐츠 -->
     <div class="main">
         <div class="signup-container">
             <h2>회원가입</h2>
-            <form class="signup-form" onsubmit="return formCheck()" method="post" action="/join/register">
+            <form class="signup-form" onsubmit="return formCheck()" method="post" action="/PHG_join/register">
                 <!-- 아이디 입력 및 중복 확인 -->
                 <label for="user_id">아이디</label>
                 <div class="input-group">

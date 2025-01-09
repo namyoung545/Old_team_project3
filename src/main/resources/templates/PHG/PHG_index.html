@@ -33,6 +33,15 @@
             position: relative;
         }
 
+        /* 헤더의 a 태그 스타일 */
+        .OLD,
+        .OLD:visited,
+        .OLD:hover,
+        .OLD:active {
+            color: #ffffff; /* 흰색으로 설정 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
+
         /* 로그인 링크 스타일 */
         .login-link {
             position: absolute;
@@ -139,14 +148,14 @@
 <body>
     <!-- 헤더 -->
     <header>
-        OLD
-        <a href="/login" class="login-link">로그인</a>
+        <a href="/PHG_index" class="OLD">OLD</a>
+        <a href="/PHG_login" class="login-link">로그인</a>
     </header>
 
     <!-- 메인 컨텐츠 -->
     <div class="main">
         <div class="content">
-            <a href="monitoring.html" class="box">
+            <a href="/sh_index" class="box">
                 <h2>전기 재해 모니터링</h2>
             </a>
             <a href="as-management.html" class="box">
