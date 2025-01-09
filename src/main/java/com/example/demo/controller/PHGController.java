@@ -9,17 +9,17 @@ public class PHGController {
     
     @GetMapping("/index")
     public String getIndex() {
-        return "/PHG/index";
+        return "/PHG/PHG_index";
     }
 
     @GetMapping("/login")
     public String getLogin() {
-        return "/PHG/login";
+        return "/PHG/PHG_login";
     }
 
-    @GetMapping("/singup")
+    @GetMapping("/join")
     public String getSingUp() {
-        return "/PHG/singup";
+        return "/PHG/PHG_join";
     }
     
 }

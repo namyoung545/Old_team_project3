@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입 페이지</title>
+    <title>로그인 페이지</title>
     <style>
         /* 기본 리셋 및 전역 스타일 */
         * {
@@ -30,27 +30,6 @@
             font-size: 1.5em;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        /* 로그인 링크 스타일 */
-        .login-link {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: #ffffff;
-            color: #001f3f;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .login-link:hover {
-            background-color: #001f3f;
-            color: #ffffff;
         }
 
         /* 메인 컨텐츠 스타일 */
@@ -62,9 +41,9 @@
             padding: 20px;
         }
 
-        .signup-container {
+        .login-container {
             width: 100%;
-            max-width: 500px;
+            max-width: 400px;
             background-color: #ffffff;
             border: 2px solid #cccccc;
             border-radius: 8px;
@@ -73,31 +52,30 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .signup-container:hover {
+        .login-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
-        .signup-container h2 {
+        .login-container h2 {
             font-size: 1.5em;
             color: #001f3f; /* 남색 */
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .signup-form {
+        .login-form {
             display: flex;
             flex-direction: column;
         }
 
-        .signup-form label {
+        .login-form label {
             margin-bottom: 5px;
             font-weight: bold;
         }
 
-        .signup-form input[type="text"],
-        .signup-form input[type="password"],
-        .signup-form input[type="email"] {
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #cccccc;
@@ -105,7 +83,17 @@
             font-size: 1em;
         }
 
-        .signup-form button {
+        .login-form .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .login-form .checkbox-container input {
+            margin-right: 10px;
+        }
+
+        .login-form button {
             padding: 10px;
             background-color: #001f3f; /* 남색 */
             color: #ffffff;
@@ -116,22 +104,22 @@
             transition: background-color 0.3s;
         }
 
-        .signup-form button:hover {
+        .login-form button:hover {
             background-color: #003366; /* 더 어두운 남색 */
         }
 
-        .signup-form .login-link-container {
+        .login-form .signup-link {
             text-align: center;
             margin-top: 15px;
         }
 
-        .signup-form .login-link-container a {
+        .login-form .signup-link a {
             color: #001f3f;
             text-decoration: none;
             font-weight: bold;
         }
 
-        .signup-form .login-link-container a:hover {
+        .login-form .signup-link a:hover {
             text-decoration: underline;
         }
 
@@ -147,20 +135,8 @@
 
         /* 반응형 디자인 */
         @media (max-width: 768px) {
-            .signup-container {
+            .login-container {
                 padding: 20px;
-            }
-
-            .login-link {
-                position: static;
-                transform: none;
-                margin-top: 10px;
-            }
-
-            header {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
             }
         }
     </style>
@@ -169,30 +145,28 @@
     <!-- 헤더 -->
     <header>
         OLD
-        <a href="/login" class="login-link">로그인</a>
     </header>
 
     <!-- 메인 컨텐츠 -->
     <div class="main">
-        <div class="signup-container">
-            <h2>회원가입</h2>
-            <form class="signup-form" action="/signup" method="POST">
+        <div class="login-container">
+            <h2>로그인</h2>
+            <form class="login-form" action="/login" method="POST">
                 <label for="username">아이디</label>
                 <input type="text" id="username" name="username" required placeholder="아이디를 입력하세요">
 
                 <label for="password">패스워드</label>
                 <input type="password" id="password" name="password" required placeholder="패스워드를 입력하세요">
 
-                <label for="confirm-password">패스워드 확인</label>
-                <input type="password" id="confirm-password" name="confirm-password" required placeholder="패스워드를 다시 입력하세요">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">아이디 저장</label>
+                </div>
 
-                <label for="email">이메일</label>
-                <input type="email" id="email" name="email" required placeholder="이메일을 입력하세요">
+                <button type="submit">로그인</button>
 
-                <button type="submit">회원가입</button>
-
-                <div class="login-link-container">
-                    <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+                <div class="signup-link">
+                    <p>아직 계정이 없으신가요? <a href="/join">회원가입</a></p>
                 </div>
             </form>
         </div>
