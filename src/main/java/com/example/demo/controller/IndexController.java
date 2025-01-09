@@ -12,14 +12,14 @@ public class IndexController {
         return "index"; // resources/templates/index.html을 반환
     }
 
-    // @GetMapping("/login")
-    // public String getLogin() {
-    //     return "/PHG/login";
-    // }
+    @GetMapping("/login")
+    public String getLogin() {
+        return "login";
+    }
 
-    // @GetMapping("/singup")
-    // public String getSingUp() {
-    //     return "/PHG/singup";
-    // }
+    @GetMapping("/signup")
+    public String getSingUp() {
+        return "signup";
+    }
     
 }
