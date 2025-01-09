@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 페이지</title>
+    <link rel="stylesheet" href="css/PHG_css/PHG_header.css">
     <style>
         /* 기본 리셋 및 전역 스타일 */
         * {
@@ -19,26 +20,6 @@
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             color: #333333;
-        }
-
-        /* 헤더 스타일 */
-        header {
-            background-color: #001f3f; /* 남색 */
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 헤더의 a 태그 스타일 */
-        .OLD,
-        .OLD:visited,
-        .OLD:hover,
-        .OLD:active {
-            color: #ffffff; /* 흰색으로 설정 */
-            text-decoration: none; /* 밑줄 제거 */
         }
 
         /* 메인 컨텐츠 스타일 */
@@ -152,15 +133,13 @@
 </head>
 <body>
     <!-- 헤더 -->
-    <header>
-        <a href="/PHG_index" class="OLD">OLD</a>
-    </header>
+    <div th:replace="PHG/PHG_header :: header"></div>
 
     <!-- 메인 컨텐츠 -->
     <div class="main">
         <div class="login-container">
             <h2>로그인</h2>
-            <form class="login-form" action="/PHG_login" method="POST">
+            <form class="login-form" action="/PHG_login/processing" method="POST">
                 <label for="user_id">아이디</label>
                 <input type="text" id="user_id" name="user_id" required placeholder="아이디를 입력하세요">
 

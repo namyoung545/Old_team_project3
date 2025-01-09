@@ -1,0 +1,10 @@
+<header th:fragment="header">
+    <div class="row">
+        <div class="col-md-12">
+            <a href="/PHG_index" class="OLD">Old Team</a>
+            
+            <a th:if="${session.user_id == null}" href="/PHG_login" class="login-link">로그인</a>
+            <a th:if="${session.user_id != null}" href="/PHG_logout" class="login-link">로그아웃</a>
+        </div>
+    </div>
+</header>
