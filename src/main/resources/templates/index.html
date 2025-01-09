@@ -4,10 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="css/index.css" />
 </head>
 <body>
-    <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
-    <div th:replace="main.html :: main"></div> <!-- main 삽입 -->
-    <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+    <!-- 헤더 -->
+    <header>
+        <h1>OLD</h1>
+        <a href="/login" class="login-link">로그인</a>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="main">
+        <div class="content">
+            <a href="monitoring.html" class="box">
+                <h2>전기 재해 모니터링</h2>
+            </a>
+            <a href="as-management.html" class="box">
+                <h2>노후 시설 A/S 신고 관리 시스템</h2>
+            </a>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer>
+        &copy; 2025 OLD. All rights reserved.
+    </footer>
 </body>
 </html>

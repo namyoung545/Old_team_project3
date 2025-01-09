@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 페이지</title>
+    <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+    <!-- 헤더 -->
+    <header>
+        OLD
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="main">
+        <div class="login-container">
+            <h2>로그인</h2>
+            <form class="login-form" action="/login" method="POST">
+                <label for="username">아이디</label>
+                <input type="text" id="username" name="username" required placeholder="아이디를 입력하세요">
+
+                <label for="password">패스워드</label>
+                <input type="password" id="password" name="password" required placeholder="패스워드를 입력하세요">
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">아이디 저장</label>
+                </div>
+
+                <button type="submit">로그인</button>
+
+                <div class="signup-link">
+                    <p>아직 계정이 없으신가요? <a href="/singup">회원가입</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer>
+        &copy; 2025 OLD. All rights reserved.
+    </footer>
+</body>
+</html>
