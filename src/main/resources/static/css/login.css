@@ -14,15 +14,24 @@
             color: #333333;
         }
 
-        /* 헤더 스타일 */
-        header {
-            background-color: #001f3f; /* 남색 */
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.5em;
+        /* 로그인 링크 스타일 */
+        .login-link {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ffffff;
+            color: #001f3f;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
             font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .login-link:hover {
+            background-color: #001f3f;
+            color: #ffffff;
         }
 
         /* 메인 컨텐츠 스타일 */
@@ -114,16 +123,6 @@
 
         .login-form .signup-link a:hover {
             text-decoration: underline;
-        }
-
-        /* 푸터 스타일 */
-        footer {
-            background-color: #001f3f; /* 남색 */
-            color: #ffffff;
-            text-align: center;
-            padding: 15px;
-            font-size: 0.9em;
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* 반응형 디자인 */
