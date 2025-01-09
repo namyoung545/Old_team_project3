@@ -17,9 +17,9 @@ public class PHGController {
         return "/PHG/PHG_login";
     }
 
-    @GetMapping("/singup")
+    @GetMapping("/join")
     public String getSingUp() {
-        return "/PHG/PHG_singup";
+        return "/PHG/PHG_join";
     }
     
 }
