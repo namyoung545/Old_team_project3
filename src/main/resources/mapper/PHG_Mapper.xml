@@ -22,7 +22,7 @@
 	<select id="login" resultType="int">
 		SELECT COUNT(*)
 		FROM member
-		WHERE user_id = #{user_id} AND password = #{user_pw}
+		WHERE user_id = #{user_id} AND user_pw = #{user_pw}
 	</select>
 	
 	<!-- 회원 탈퇴 -->
