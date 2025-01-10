@@ -7,7 +7,7 @@ def analyze_statistics(dataname):
     try:
         # 데이터 불러오기
         file_dir = os.path.dirname(__file__)
-        file_path = os.path.join(file_dir, 'processed', 'ed_statistics', f'{dataname}.csv')
+        file_path = os.path.join(file_dir, 'processed', 'fire_statistics', f'{dataname}.csv')
         df = pd.read_csv(file_path, encoding='EUC-KR')
 
         # "전기적 요인" 데이터 필터링
@@ -37,30 +37,23 @@ def analyze_statistics(dataname):
             "year": int(dataname),
             "hourly_analysis": hourly_analysis.to_dict(),
             "province": province.to_dict(),
-            # "district": district.to_dict(),
-            # "fire_type": fire_type.to_dict(),
-            # "heat_source_main": heat_source_main.to_dict(),
-            # "heat_source_sub": heat_source_sub.to_dict(),
-            # "cause_main": cause_main.to_dict(),
-            # "cause_sub": cause_sub.to_dict(),
-            # "ignition_material_main": ignition_material_main.to_dict(),
-            # "ignition_material_sub": ignition_material_sub.to_dict(),
-            # "casualties_total": casualties_total.to_dict(),
-            # "deaths": deaths.to_dict(),
-            # "injuries": injuries.to_dict(),
-            # "total_property_damage": int(total_property_damage),
-            # "location_counts": location_counts.to_dict(),
-            # "location_mid": location_mid.to_dict(),
-            # "location_sub": location_sub.to_dict(),
+            "district": district.to_dict(),
+            "fire_type": fire_type.to_dict(),
+            "heat_source_main": heat_source_main.to_dict(),
+            "heat_source_sub": heat_source_sub.to_dict(),
+            "cause_main": cause_main.to_dict(),
+            "cause_sub": cause_sub.to_dict(),
+            "ignition_material_main": ignition_material_main.to_dict(),
+            "ignition_material_sub": ignition_material_sub.to_dict(),
+            "casualties_total": casualties_total.to_dict(),
+            "deaths": deaths.to_dict(),
+            "injuries": injuries.to_dict(),
+            "total_property_damage": int(total_property_damage),
+            "location_counts": location_counts.to_dict(),
+            "location_mid": location_mid.to_dict(),
+            "location_sub": location_sub.to_dict(),
         }
 
-        try:
-            # JSON 파싱 시도
-            data = json.loads(result)
-            print("Valid JSON:", data)
-        except json.JSONDecodeError as e:
-            print(f"Invalid JSON: {e}")
-            
         # JSON 형식으로 반환
         return json.dumps(result,ensure_ascii=False)
 

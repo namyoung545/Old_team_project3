@@ -20,6 +20,8 @@ public class DemoApplication {
 
 		// setupPython() 호출
 		shApplication.setupPython();
+
+		
 	}
 
 }

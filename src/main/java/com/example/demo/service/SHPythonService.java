@@ -73,8 +73,8 @@ public class SHPythonService {
             if (jsonResult != null) {
                 // ObjectMapper objectMapper = new ObjectMapper();
                 // EDStatisticsJsonData jsonData = objectMapper.readValue(jsonResult, EDStatisticsJsonData.class);
-
-                // saveJsonData(jsonResult);
+                // System.out.println(jsonResult);
+                saveEDStatisticsJsonData(jsonResult);
 
                 // edStatisticsRepository.save(edStatisticsData);
                 System.out.println("새로운 데이터가 입력되었습니다. " + fileNameWithoutExtension);
@@ -86,8 +86,8 @@ public class SHPythonService {
         return true;
     }
 
-    public void saveJsonData(String jsonResult) {
-        System.out.println(jsonResult);
+    public void saveEDStatisticsJsonData(String jsonResult) {
+        // System.out.println(jsonResult);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             EDStatisticsJsonData jsonData = objectMapper.readValue(jsonResult, EDStatisticsJsonData.class);
@@ -95,22 +95,22 @@ public class SHPythonService {
             // DB에 저장하려면 EDStatisticsData로 변환하여 저장
             EDStatisticsData edStatisticsData = new EDStatisticsData();
             edStatisticsData.setYear(jsonData.getYear());
-            // edStatisticsData.setProvince(jsonData.getProvince().toString());  // 필요에 따라 String으로 변환
-            // edStatisticsData.setDistrict(jsonData.getDistrict().toString());
-            // edStatisticsData.setFire_type(jsonData.getFire_type().toString());
-            // edStatisticsData.setHeat_source_main(jsonData.getHeat_source_main().toString());
-            // edStatisticsData.setHeat_source_sub(jsonData.getHeat_source_sub().toString());
-            // edStatisticsData.setCause_main(jsonData.getCause_main().toString());
-            // edStatisticsData.setCause_sub(jsonData.getCause_sub().toString());
-            // edStatisticsData.setIgnition_material_main(jsonData.getIgnition_material_main().toString());
-            // edStatisticsData.setIgnition_material_sub(jsonData.getIgnition_material_sub().toString());
-            // edStatisticsData.setCasualties_total(jsonData.getCasualties_total().toString());
-            // edStatisticsData.setDeaths(jsonData.getDeaths().toString());
-            // edStatisticsData.setInjuries(jsonData.getInjuries().toString());
-            // edStatisticsData.setTotal_property_damage(jsonData.getTotal_property_damage().toString());
-            // edStatisticsData.setLocation_main(jsonData.getLocation_counts().toString());
-            // edStatisticsData.setLocation_mid(jsonData.getLocation_mid().toString());
-            // edStatisticsData.setLocation_sub(jsonData.getLocation_sub().toString());
+            edStatisticsData.setProvince(jsonData.getProvince().toString());  // 필요에 따라 String으로 변환
+            edStatisticsData.setDistrict(jsonData.getDistrict().toString());
+            edStatisticsData.setFire_type(jsonData.getFire_type().toString());
+            edStatisticsData.setHeat_source_main(jsonData.getHeat_source_main().toString());
+            edStatisticsData.setHeat_source_sub(jsonData.getHeat_source_sub().toString());
+            edStatisticsData.setCause_main(jsonData.getCause_main().toString());
+            edStatisticsData.setCause_sub(jsonData.getCause_sub().toString());
+            edStatisticsData.setIgnition_material_main(jsonData.getIgnition_material_main().toString());
+            edStatisticsData.setIgnition_material_sub(jsonData.getIgnition_material_sub().toString());
+            edStatisticsData.setCasualties_total(jsonData.getCasualties_total().toString());
+            edStatisticsData.setDeaths(jsonData.getDeaths().toString());
+            edStatisticsData.setInjuries(jsonData.getInjuries().toString());
+            edStatisticsData.setTotal_property_damage(jsonData.getTotal_property_damage().toString());
+            edStatisticsData.setLocation_main(jsonData.getLocation_counts().toString());
+            edStatisticsData.setLocation_mid(jsonData.getLocation_mid().toString());
+            edStatisticsData.setLocation_sub(jsonData.getLocation_sub().toString());
 
             // 데이터베이스에 저장
             edStatisticsRepository.save(edStatisticsData);
@@ -138,12 +138,15 @@ public class SHPythonService {
         }
 
         try {
+            // System.out.println("commandBuilder : " + commandBuilder.toString());
             Process process = Runtime.getRuntime().exec(commandBuilder.toString());
             String output = getProcessOutput(process);
+            // System.out.println("Output : " + output);
 
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                return "Script executed successfully!\n" + output;
+                System.out.println("Script executed successfully!");
+                return output;
             } else {
                 return "Error: Script execution failed with exit code " + exitCode + ".\n" + output;
             }
