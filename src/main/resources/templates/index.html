@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,23 +10,27 @@
     <link rel="stylesheet" href="css/footer.css" />
     <script src="js/header.js" defer></script>
 </head>
+
 <body>
-    <!-- 헤더 -->
-    <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
+    <div id="index_container">
+        <!-- 헤더 -->
+        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
-    <!-- 메인 컨텐츠 -->
-    <div class="main">
-        <div class="content">
-            <a href="monitoring.html" class="box">
-                <h2>전기 재해 모니터링</h2>
-            </a>
-            <a href="/managementPage" class="box">
-                <h2>노후 시설 A/S 신고 관리 시스템</h2>
-            </a>
+        <!-- 메인 컨텐츠 -->
+        <div class="main">
+            <div class="content">
+                <a href="monitoring.html" class="box">
+                    <h2>전기 재해 모니터링</h2>
+                </a>
+                <a href="/managementPage" class="box">
+                    <h2>노후 시설 AS 신고 관리 시스템</h2>
+                </a>
+            </div>
         </div>
-    </div>
 
-    <!-- 푸터 -->
-    <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+        <!-- 푸터 -->
+        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+    </div>
 </body>
+
 </html>
