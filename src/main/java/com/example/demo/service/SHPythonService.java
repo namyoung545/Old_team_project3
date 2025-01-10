@@ -42,8 +42,11 @@ public class SHPythonService {
         }
     }
 
+    
+
+    // ED Statistic DB 확인
     public boolean checkEDStatistics() {
-        String dataPath = "src/main/python/data/processed/ed_statistics";
+        String dataPath = "src/main/python/data/processed/fire_statistics";
         File folder = new File(dataPath);
         if (!folder.exists() || !folder.isDirectory()) {
             System.out.println("DATA 경로를 확인해주세요.");
@@ -71,12 +74,7 @@ public class SHPythonService {
             String jsonResult = callEDStatistics("analyze_statistics", fileNameWithoutExtension);
 
             if (jsonResult != null) {
-                // ObjectMapper objectMapper = new ObjectMapper();
-                // EDStatisticsJsonData jsonData = objectMapper.readValue(jsonResult, EDStatisticsJsonData.class);
-                // System.out.println(jsonResult);
                 saveEDStatisticsJsonData(jsonResult);
-
-                // edStatisticsRepository.save(edStatisticsData);
                 System.out.println("새로운 데이터가 입력되었습니다. " + fileNameWithoutExtension);
             } else {
                 System.err.println("데이터 처리중 오류 발생 : " + fileNameWithoutExtension);
@@ -86,6 +84,7 @@ public class SHPythonService {
         return true;
     }
 
+    // 통계 데이터 DB 저장 JSON to DB
     public void saveEDStatisticsJsonData(String jsonResult) {
         // System.out.println(jsonResult);
         try {

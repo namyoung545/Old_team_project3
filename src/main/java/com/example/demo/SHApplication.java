@@ -16,11 +16,11 @@ public class SHApplication {
 
     public void setupPython() {
         // Python 가상환경 설정
-        virtualEnvService.setupVirtualEnv();
         System.out.println("Python Service");
+        virtualEnvService.setupVirtualEnv();
+
+        // ED Statistics DATA
         Boolean result = pythonService.checkEDStatistics();
-        System.out.println(result);
-        // String result = pythonService.callEDStatistics("analyze_statistics", "2023");
         // System.out.println(result);
     }
 }

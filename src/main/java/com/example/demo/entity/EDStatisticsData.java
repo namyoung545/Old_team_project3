@@ -43,8 +43,6 @@ public class EDStatisticsData {
     @Lob
     private String injuries;
     @Lob
-    private String property_damage;
-    @Lob
     private String total_property_damage;
     @Lob
     private String location_main;
@@ -136,12 +134,6 @@ public class EDStatisticsData {
     }
     public void setInjuries(String injuries) {
         this.injuries = injuries;
-    }
-    public String getProperty_damage() {
-        return property_damage;
-    }
-    public void setProperty_damage(String property_damage) {
-        this.property_damage = property_damage;
     }
     public String getTotal_property_damage() {
         return total_property_damage;
