@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -150,24 +149,19 @@ public class PHGController {
         return "/PHG/PHG_alertPrint";
     }
 
-    @GetMapping("/registAS")
+    @GetMapping("/schedule/registAS")
     public String scheduleRegistAS() {
         return "/PHG/RequestCode/registAS";
     }
 
     @GetMapping("/registResult")
     public String scheduleRegistResult() {
-        // public String scheduleRegistResult(@ModelAttribute(value = "message") String
-        // message,
-        // @ModelAttribute(value = "reservation") ReservationDTO reservation, Model
-        // model) {
-        // System.out.println(message);
-        // System.out.println(reservation);
-        // // ReservationDTO dto = scheduleMapper.reservationRead(Long.parseLong(rnum));
-
-        // model.addAttribute("data", reservation);
-        // model.addAttribute("message", message);
         return "/PHG/RequestCode/registResult";
+    }
+
+    @GetMapping("/PHG_managementPage")
+    public String getManagement() {
+        return "/PHG/PHG_managementPage";
     }
 
 }
