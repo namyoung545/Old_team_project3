@@ -19,8 +19,11 @@ public class SHApplication {
         System.out.println("Python Service");
         virtualEnvService.setupVirtualEnv();
 
+        // Fire Statistics
+        // pythonService.checkFireStatistics();
+
         // ED Statistics DATA
-        Boolean result = pythonService.checkEDStatistics();
+        // Boolean result = pythonService.checkEDStatistics();
         // System.out.println(result);
     }
 }

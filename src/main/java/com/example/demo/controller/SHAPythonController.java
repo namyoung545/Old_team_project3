@@ -18,6 +18,4 @@ public class SHAPythonController {
         model.addAttribute("result", result);
         return "/sh_html/sh_result"; // templates/result.html 반환
     }
-
-
 }

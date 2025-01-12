@@ -16,11 +16,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class SHPythonService {
 
-    @Autowired
-    private EDStatisticsRepository edStatisticsRepository;
-
     // 가상환경 Python 경로
     private static final String VENV_PATH = "src/main/python/venv";
+
+    // 연간 화재 데이터 경로
+    private static final String FireDataPath = "src/main/python/data/processed/fire_statistics";
+
+    // ED DB Repository
+    @Autowired
+    private EDStatisticsRepository edStatisticsRepository;
 
     // 테스트 파일실행
     public String executePythonScript() {
@@ -42,22 +46,27 @@ public class SHPythonService {
         }
     }
 
-    
+    public boolean checkFireStatistics() {
+        File[] files = checkFiles(FireDataPath);
+
+        for (File file : files) {
+            if (!file.isFile() || !file.getName().endsWith(".csv")){
+                continue;
+            }
+
+            String fileNameWithoutExtension = file.getName().replace(".csv", "");
+
+        }
+
+
+        return true;
+    }
 
     // ED Statistic DB 확인
     public boolean checkEDStatistics() {
         String dataPath = "src/main/python/data/processed/fire_statistics";
-        File folder = new File(dataPath);
-        if (!folder.exists() || !folder.isDirectory()) {
-            System.out.println("DATA 경로를 확인해주세요.");
-            return false;
-        }
 
-        File[] files = folder.listFiles();
-        if (files == null || files.length == 0) {
-            System.out.println("확인할 파일이 존재하지 않습니다.");
-            return false;
-        }
+        File[] files = checkFiles(dataPath);
 
         for (File file : files) {
             if (!file.isFile() || !file.getName().endsWith(".csv")) {
@@ -82,40 +91,6 @@ public class SHPythonService {
         }
 
         return true;
-    }
-
-    // 통계 데이터 DB 저장 JSON to DB
-    public void saveEDStatisticsJsonData(String jsonResult) {
-        // System.out.println(jsonResult);
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            EDStatisticsJsonData jsonData = objectMapper.readValue(jsonResult, EDStatisticsJsonData.class);
-            
-            // DB에 저장하려면 EDStatisticsData로 변환하여 저장
-            EDStatisticsData edStatisticsData = new EDStatisticsData();
-            edStatisticsData.setYear(jsonData.getYear());
-            edStatisticsData.setProvince(jsonData.getProvince().toString());  // 필요에 따라 String으로 변환
-            edStatisticsData.setDistrict(jsonData.getDistrict().toString());
-            edStatisticsData.setFire_type(jsonData.getFire_type().toString());
-            edStatisticsData.setHeat_source_main(jsonData.getHeat_source_main().toString());
-            edStatisticsData.setHeat_source_sub(jsonData.getHeat_source_sub().toString());
-            edStatisticsData.setCause_main(jsonData.getCause_main().toString());
-            edStatisticsData.setCause_sub(jsonData.getCause_sub().toString());
-            edStatisticsData.setIgnition_material_main(jsonData.getIgnition_material_main().toString());
-            edStatisticsData.setIgnition_material_sub(jsonData.getIgnition_material_sub().toString());
-            edStatisticsData.setCasualties_total(jsonData.getCasualties_total().toString());
-            edStatisticsData.setDeaths(jsonData.getDeaths().toString());
-            edStatisticsData.setInjuries(jsonData.getInjuries().toString());
-            edStatisticsData.setTotal_property_damage(jsonData.getTotal_property_damage().toString());
-            edStatisticsData.setLocation_main(jsonData.getLocation_counts().toString());
-            edStatisticsData.setLocation_mid(jsonData.getLocation_mid().toString());
-            edStatisticsData.setLocation_sub(jsonData.getLocation_sub().toString());
-
-            // 데이터베이스에 저장
-            edStatisticsRepository.save(edStatisticsData);
-        } catch (Exception e) {
-            System.err.println("JSON 처리 중 오류 발생: " + e.getMessage());
-        }
     }
 
     // 전기재해 통계 데이터 파이썬 함수 호출
@@ -153,6 +128,58 @@ public class SHPythonService {
             e.printStackTrace();
             return "Error: Exception occurred while executing script.\n" + e.getMessage();
         }
+    }
+
+    // 통계 데이터 DB 저장 JSON to DB
+    public void saveEDStatisticsJsonData(String jsonResult) {
+        // System.out.println(jsonResult);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            EDStatisticsJsonData jsonData = objectMapper.readValue(jsonResult, EDStatisticsJsonData.class);
+
+            // DB에 저장하려면 EDStatisticsData로 변환하여 저장
+            EDStatisticsData edStatisticsData = new EDStatisticsData();
+            edStatisticsData.setYear(jsonData.getYear());
+            edStatisticsData.setProvince(jsonData.getProvince().toString()); // 필요에 따라 String으로 변환
+            edStatisticsData.setDistrict(jsonData.getDistrict().toString());
+            edStatisticsData.setFire_type(jsonData.getFire_type().toString());
+            edStatisticsData.setHeat_source_main(jsonData.getHeat_source_main().toString());
+            edStatisticsData.setHeat_source_sub(jsonData.getHeat_source_sub().toString());
+            edStatisticsData.setCause_main(jsonData.getCause_main().toString());
+            edStatisticsData.setCause_sub(jsonData.getCause_sub().toString());
+            edStatisticsData.setIgnition_material_main(jsonData.getIgnition_material_main().toString());
+            edStatisticsData.setIgnition_material_sub(jsonData.getIgnition_material_sub().toString());
+            edStatisticsData.setCasualties_total(jsonData.getCasualties_total().toString());
+            edStatisticsData.setDeaths(jsonData.getDeaths().toString());
+            edStatisticsData.setInjuries(jsonData.getInjuries().toString());
+            edStatisticsData.setTotal_property_damage(jsonData.getTotal_property_damage().toString());
+            edStatisticsData.setLocation_main(jsonData.getLocation_counts().toString());
+            edStatisticsData.setLocation_mid(jsonData.getLocation_mid().toString());
+            edStatisticsData.setLocation_sub(jsonData.getLocation_sub().toString());
+
+            // 데이터베이스에 저장
+            edStatisticsRepository.save(edStatisticsData);
+        } catch (Exception e) {
+            System.err.println("JSON 처리 중 오류 발생: " + e.getMessage());
+        }
+    }
+
+    // 데이터 파일 확인
+    private File[] checkFiles(String dataPath) {
+        File[] files = new File[0];
+        File folder = new File(dataPath);
+        if (!folder.exists() || !folder.isDirectory()) {
+            System.out.println("DATA 경로를 확인해주세요.");
+            return files;
+        }
+
+        files = folder.listFiles();
+        if (files == null || files.length == 0) {
+            System.out.println("파일이 존재하지 않습니다.");
+            return files;
+        }
+
+        return files;
     }
 
     // 파이썬 경로 설정
