@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-.boardUpdate {
+.boardRegister {
 	width: 100%;
 	max-width: 1000px;
 	text-align: center;
@@ -32,8 +32,13 @@ table thead th {
 	color: #333; /* 어두운 텍스트 */
 	padding: 10px 15px;
 	font-weight: bold;
-		vertical-align: middle; /* 텍스트 정렬 */
-	
+	vertical-align: middle; /* 세로 가운데 정렬 */
+}
+
+table thead th.th_title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 /* 테이블 본문 스타일 */
@@ -44,14 +49,14 @@ table td {
 	vertical-align: top; /* 텍스트 정렬 */
 }
 
-.updateButton {
+.registerButton {
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
 	margin: 1rem;
 }
 
-.updateButton button {
+.registerButton button {
 	background-color: #f68e3e;
 	font-size: 1rem;
 	font-weight: 600;
@@ -63,10 +68,16 @@ table td {
 	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
 }
 
-.updateButton button:hover {
+.registerButton button:hover {
+	color:#f0f0f0;
 	background-color: #e57a31;
-	box-shadow: 0 0 10px rgba(0,0,0,0.1);
-	
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.registerButton button:active {
+	color:#f0f0f0;
+	background-color: #e57a31;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 내용 행 스타일 */
@@ -77,16 +88,6 @@ table td[colspan="6"] {
 	color: #555; /* 약간 밝은 텍스트 색상 */
 	text-align: left;
 	/* 	background-color: #f9f9f9; 연한 배경 */
-}
-
-input[type="text"] {
-    width: 100%;
-    box-sizing: border-box; /* 패딩 포함 */
-}
-textarea { 
-    width: 100%; /* 너비를 테이블 셀에 맞춤 */ 
-    box-sizing: border-box; /* 패딩 포함 */
-    resize: none; /* 크기 조절 핸들 제거 (필요 시) */
 }
 
 /* 모바일 최적화 */
