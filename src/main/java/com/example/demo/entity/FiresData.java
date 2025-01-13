@@ -1,18 +1,18 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,24 +20,26 @@ import jakarta.persistence.Table;
 public class FiresData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false)
+    private Integer id;
+
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String regionProvince;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String regionCity;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String fireType;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("0")
     private Integer damageProperty;
 
     @Column(name = "casualties_deaths", nullable = false)
@@ -48,20 +50,35 @@ public class FiresData {
     @ColumnDefault("0")
     private Integer injuries;
 
-    @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FireCauseData> fireCauses = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fire_cause_id", nullable = false)
+    private FireCauseData fireCause;
 
-    @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FireLocationData> fireLocations = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fire_location_id", nullable = false)
+    private FireLocationData fireLocation;
 
-    @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FireItemData> fireItems = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fire_item_id", nullable = false)
+    private FireItemData fireItem;
 
-    public Long getId() {
+    // @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<FireCauseData> fireCauses = new ArrayList<>();
+
+    // @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<FireLocationData> fireLocations = new ArrayList<>();
+
+    // @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // private List<FireItemData> fireItems = new ArrayList<>();
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -121,28 +138,28 @@ public class FiresData {
         this.injuries = injuries;
     }
 
-    public List<FireCauseData> getFireCauses() {
-        return fireCauses;
+    public FireCauseData getFireCause() {
+        return fireCause;
     }
 
-    public void setFireCauses(List<FireCauseData> fireCauses) {
-        this.fireCauses = fireCauses;
+    public void setFireCause(FireCauseData fireCause) {
+        this.fireCause = fireCause;
     }
 
-    public List<FireLocationData> getFireLocations() {
-        return fireLocations;
+    public FireLocationData getFireLocation() {
+        return fireLocation;
     }
 
-    public void setFireLocations(List<FireLocationData> fireLocations) {
-        this.fireLocations = fireLocations;
+    public void setFireLocation(FireLocationData fireLocation) {
+        this.fireLocation = fireLocation;
     }
 
-    public List<FireItemData> getFireItems() {
-        return fireItems;
+    public FireItemData getFireItem() {
+        return fireItem;
     }
 
-    public void setFireItems(List<FireItemData> fireItems) {
-        this.fireItems = fireItems;
+    public void setFireItem(FireItemData fireItem) {
+        this.fireItem = fireItem;
     }
 
 }

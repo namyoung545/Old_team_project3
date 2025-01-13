@@ -4,13 +4,29 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.EDStatisticsData;
 import com.example.demo.entity.EDStatisticsJsonData;
+import com.example.demo.entity.FireCauseData;
+import com.example.demo.entity.FireItemData;
+import com.example.demo.entity.FireLocationData;
+import com.example.demo.entity.FiresData;
 import com.example.demo.repository.EDStatisticsRepository;
+import com.example.demo.repository.FireCauseDataRepository;
+import com.example.demo.repository.FireItemDataRepository;
+import com.example.demo.repository.FireLocationDataRepository;
+import com.example.demo.repository.FiresDataRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -21,6 +37,16 @@ public class SHPythonService {
 
     // 연간 화재 데이터 경로
     private static final String FireDataPath = "src/main/python/data/processed/fire_statistics";
+
+    // Fires Data Repository
+    @Autowired
+    private FiresDataRepository firesDataRepository;
+    @Autowired
+    private FireCauseDataRepository fireCauseDataRepository;
+    @Autowired
+    private FireLocationDataRepository fireLocationDataRepository;
+    @Autowired
+    private FireItemDataRepository fireItemDataRepository;
 
     // ED DB Repository
     @Autowired
@@ -46,20 +72,71 @@ public class SHPythonService {
         }
     }
 
-    public boolean checkFireStatistics() {
+    // Fires Data 확인
+    public boolean checkFiresData() {
         File[] files = checkFiles(FireDataPath);
-
         for (File file : files) {
-            if (!file.isFile() || !file.getName().endsWith(".csv")){
+            if (!file.isFile() || !file.getName().endsWith(".csv")) {
                 continue;
             }
 
             String fileNameWithoutExtension = file.getName().replace(".csv", "");
+            System.out.println(fileNameWithoutExtension);
+            if (firesDataRepository.existsByYear(Integer.parseInt(fileNameWithoutExtension))) {
+                System.out.println("DB에 데이터가 존재합니다." + fileNameWithoutExtension);
+                continue;
+            }
 
+            String jsonResult = callFiresData("insert_fires_data", fileNameWithoutExtension);
+            System.out.println("jsonResult" + jsonResult);
+            if (jsonResult != null) {
+                saveFiresData(jsonResult);
+                System.out.println("새로운 데이터가 입력되었습니다. " + fileNameWithoutExtension);
+            } else {
+                System.out.println("데이터 처리중 오류 발생 : " + fileNameWithoutExtension);
+            }
         }
 
-
         return true;
+    }
+
+    // Fires Data Python Script 실행
+    public String callFiresData(String functionName, String... args) {
+        System.out.println("callFiresData");
+        String pythonScript = "src/main/python/data/fires_data.py";
+
+        if (!new File(pythonScript).exists()) {
+            return "[ERROR] Python script not found at " + pythonScript;
+        }
+
+        String pythonExecutable = getPythonExecutablePath();
+        StringBuilder commandBuilder = new StringBuilder(pythonExecutable)
+                .append(" ").append(pythonScript)
+                .append(" ").append(functionName);
+        for (String arg : args) {
+            commandBuilder.append(" ").append(arg);
+        }
+
+        try {
+            Process process = Runtime.getRuntime().exec(commandBuilder.toString());
+            String output = getProcessOutput(process);
+
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("스크립트 실행 성공!");
+                return output;
+            } else {
+                System.out.println("스크립트 실행 실패!");
+                return "[ERROR] 스크립트 실행 실패";
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return "[ERROR] 스크립트 실행중 예외 발생!" + e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "[ERROR] 스크립트 실행중 예외 발생!" + e.getMessage();
+        }
+
     }
 
     // ED Statistic DB 확인
@@ -130,7 +207,103 @@ public class SHPythonService {
         }
     }
 
-    // 통계 데이터 DB 저장 JSON to DB
+    // 화재 데이터 DB 저장
+    public void saveFiresData(String jsonResult) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, Object>> firesDataList = objectMapper.readValue(jsonResult, new TypeReference<>() {
+            });
+            // List<Map<String, Object>> firesDataList = objectMapper.readValue(jsonResult,
+            // List.class);
+
+            List<FiresData> firesDataBatch = new ArrayList<>();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
+
+            for (Map<String, Object> fireDataMap : firesDataList) {
+                FiresData firesData = new FiresData();
+
+                // 일시 파싱
+                try {
+                    LocalDateTime dateTime = LocalDateTime.parse(fireDataMap.get("dateTime").toString(), formatter);
+                    firesData.setDateTime(dateTime);
+                } catch (DateTimeParseException e) {
+                    System.out.println("[ERROR] 날짜 형식 파싱 오류 : " + fireDataMap.get("dateTime").toString());
+                    continue;
+                }
+                firesData.setRegionProvince(fireDataMap.get("regionProvince").toString());
+                firesData.setRegionCity(fireDataMap.get("regionCity").toString());
+                firesData.setFireType(fireDataMap.get("fireType").toString());
+                firesData.setDamageProperty(Integer.parseInt(fireDataMap.get("damageProperty").toString()));
+                firesData.setDeaths(Integer.parseInt(fireDataMap.get("deaths").toString()));
+                firesData.setInjuries(Integer.parseInt(fireDataMap.get("injuries").toString()));
+
+                Map<String, String> fireCausesData = (Map<String, String>) fireDataMap.get("fireCauses");
+                Optional<FireCauseData> existingCause = fireCauseDataRepository
+                        .findByDetails(
+                                fireCausesData.get("causeCategory"),
+                                fireCausesData.get("causeSubcategory"),
+                                fireCausesData.get("ignitionSourceCategory"),
+                                fireCausesData.get("ignitionSourceSubcategory"));
+                FireCauseData fireCauseData;
+                if (existingCause.isPresent()) {
+                    fireCauseData = existingCause.get();
+                } else {
+                    fireCauseData = new FireCauseData();
+                    fireCauseData.setCauseCategory(fireCausesData.get("causeCategory"));
+                    fireCauseData.setCauseSubcategory(fireCausesData.get("causeSubcategory"));
+                    fireCauseData.setIgnitionSourceCategory(fireCausesData.get("ignitionSourceCategory"));
+                    fireCauseData.setIgnitionSourceSubcategory(fireCausesData.get("ignitionSourceSubcategory"));
+                    fireCauseData = fireCauseDataRepository.save(fireCauseData);
+                }
+                firesData.setFireCause(fireCauseData);
+
+                Map<String, String> fireLocationsData = (Map<String, String>) fireDataMap.get("fireLocations");
+                Optional<FireLocationData> existingLocation = fireLocationDataRepository
+                        .findByDetails(
+                                fireLocationsData.get("locationMainCategory"),
+                                fireLocationsData.get("locationSubCategory"),
+                                fireLocationsData.get("locationDetail"));
+                FireLocationData fireLocationData;
+                if (existingLocation.isPresent()) {
+                    fireLocationData = existingLocation.get();
+                } else {
+                    fireLocationData = new FireLocationData();
+                    fireLocationData.setLocationMainCategory(fireLocationsData.get("locationMainCategory"));
+                    fireLocationData.setLocationSubCategory(fireLocationsData.get("locationSubCategory"));
+                    fireLocationData.setLocationDetail(fireLocationsData.get("locationDetail"));
+                    fireLocationData = fireLocationDataRepository.save(fireLocationData);
+                }
+                firesData.setFireLocation(fireLocationData);
+
+                Map<String, String> fireItemsData = (Map<String, String>) fireDataMap.get("fireItems");
+                Optional<FireItemData> existingItem = fireItemDataRepository
+                        .findByDetails(
+                                fireItemsData.get("itemCategory"),
+                                fireItemsData.get("itemDetail"));
+                FireItemData fireItemData;
+                if (existingItem.isPresent()) {
+                    fireItemData = existingItem.get();
+                } else {
+                    fireItemData = new FireItemData();
+                    fireItemData.setItemCategory(fireItemsData.get("itemCategory"));
+                    fireItemData.setItemDetail(fireItemsData.get("itemDetail"));
+                    fireItemData = fireItemDataRepository.save(fireItemData);
+                }
+                firesData.setFireItem(fireItemData);
+
+
+                firesDataBatch.add(firesData);
+            }
+
+            if (!firesDataBatch.isEmpty()) {
+                firesDataRepository.saveAll(firesDataBatch);
+            }
+        } catch (Exception e) {
+            System.out.println("[ERROR] 데이터 저장 중 오류 발생 : " + e.getMessage());
+        }
+    }
+
+    // 전기재해 통계 데이터 DB 저장 JSON to DB
     public void saveEDStatisticsJsonData(String jsonResult) {
         // System.out.println(jsonResult);
         try {

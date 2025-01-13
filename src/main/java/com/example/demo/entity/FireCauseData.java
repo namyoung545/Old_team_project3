@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,33 +14,34 @@ import jakarta.persistence.Table;
 public class FireCauseData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name ="cause_id", nullable = false)
+    private Integer id;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String causeCategory;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String causeSubcategory;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String ignitionSourceCategory;
 
     @Column(nullable = false)
-    @ColumnDefault("미확인")
+    @ColumnDefault("'미확인'")
     private String ignitionSourceSubcategory;
 
-    @ManyToOne
-    @JoinColumn(name = "fire_id", nullable = false)
-    private FiresData fire;
+    // @ManyToOne
+    // @JoinColumn(name = "fire_id", nullable = false, referencedColumnName = "id")
+    // private FiresData fire;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -77,13 +76,4 @@ public class FireCauseData {
     public void setIgnitionSourceSubcategory(String ignitionSourceSubcategory) {
         this.ignitionSourceSubcategory = ignitionSourceSubcategory;
     }
-
-    public FiresData getFire() {
-        return fire;
-    }
-
-    public void setFire(FiresData fire) {
-        this.fire = fire;
-    }
-
 }

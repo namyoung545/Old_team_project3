@@ -20,7 +20,7 @@ public class SHApplication {
         virtualEnvService.setupVirtualEnv();
 
         // Fire Statistics
-        // pythonService.checkFireStatistics();
+        pythonService.checkFiresData();
 
         // ED Statistics DATA
         // Boolean result = pythonService.checkEDStatistics();
