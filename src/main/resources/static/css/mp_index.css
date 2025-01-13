@@ -75,7 +75,7 @@
 .mp_menuBox:hover {
     transform: translateY(-5px); /* 메뉴 박스 위로 살짝 떠오르게 */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
-    background-color: #fdf1e7; /* hover 시 배경색 변화 (연한 주황색) */
+    background-color: #FFEB62; /* hover 시 배경색 변화 (연한 주황색) */
 }
 
 /* 작은 화면에서 메뉴 박스 크기 조정 */

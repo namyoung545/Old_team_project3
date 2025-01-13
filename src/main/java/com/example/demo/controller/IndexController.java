@@ -14,18 +14,26 @@ public class IndexController {
 
     // localhost:8080 요청을 처리하는 메서드
     @GetMapping("/")
-    public String getindex() {
+    public String getindex(Model model) {
+        model.addAttribute("headerState", "default");
         return "index"; // resources/templates/index.html을 반환
     }
 
     @GetMapping("/login")
-    public String getLogin() {
+    public String getLogin(Model model) {
+        model.addAttribute("headerState", "default");
         return "login";
     }
 
     @GetMapping("/signup")
-    public String getSingUp() {
+    public String getSingUp(Model model) {
+        model.addAttribute("headerState", "default");
         return "signup";
+    }
+
+    @GetMapping("/dashboard")
+    public String getDashboard() {
+        return "dashboard";
     }
     
 }

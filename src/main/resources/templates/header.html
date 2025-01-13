@@ -1,8 +1,26 @@
 <header class="header_container" th:fragment="header">
     <div class="row">
-        <div class="col-md-12">
-            <span id="headerText">Old Team</span>
-            <a href="/login" class="login-link">로그인</a>
+        <!-- 기본 상태 -->
+        <div class="col-md-12" id="defaultHeader">
+            <span class="headerText">Old Team</span>
+            <!-- <a href="#" id="headerBoardIndexLink" class="header_link">게시판</a>
+            <a href="#" id="headerCalendarLink" class="header_link">AS 스케줄</a>
+            <a href="#" id="headerAsRegistLink" class="header_link">AS 접수</a>
+            <a href="#" id="headerASprocessStatusLink" class="header_link">AS 현황</a> -->
+
+            <!-- <a href="/login" class="header_link_default">로그인</a> -->
+        </div>
+        <!-- 게시판 상태 -->
+        <div class="col-md-12" id="boardIndexHeader" style="display: none;">
+            <span class="headerText">Old Team</span>
+            <div class="header_link_container">
+                <a href="#" id="headerBoardIndexLink" class="header_link_boardIndex">게시판</a>
+                <a href="#" id="headerCalendarLink" class="header_link_boardIndex">AS 스케줄</a>
+                <a href="#" id="headerAsRegistLink" class="header_link_boardIndex">AS 접수</a>
+                <a href="#" id="headerASprocessStatusLink" class="header_link_boardIndex">AS 현황</a>
+
+                <a href="/login" class="header_link_boardIndex">로그인2</a>
+            </div>
         </div>
     </div>
 </header>
