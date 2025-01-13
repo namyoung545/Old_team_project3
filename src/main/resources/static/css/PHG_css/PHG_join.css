@@ -1,0 +1,159 @@
+/* 기본 리셋 및 전역 스타일 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333333;
+}
+
+/* 메인 컨텐츠 스타일 */
+.main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.signup-container {
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border: 2px solid #cccccc;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.signup-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.signup-container h2 {
+    font-size: 1.5em;
+    color: #001f3f; /* 남색 */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.signup-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="password"],
+.signup-form input[type="email"],
+.signup-form input[type="tel"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.signup-form .input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.signup-form .input-group input {
+    flex: 1;
+}
+
+.signup-form .input-group button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #001f3f;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signup-form .input-group button:hover {
+    background-color: #003366;
+}
+
+.signup-form button[type="submit"] {
+    padding: 10px;
+    background-color: #001f3f; /* 남색 */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signup-form button[type="submit"]:hover {
+    background-color: #003366; /* 더 어두운 남색 */
+}
+
+.signup-form .message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.signup-form .login-link-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.signup-form .login-link-container a {
+    color: #001f3f;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signup-form .login-link-container a:hover {
+    text-decoration: underline;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .signup-container {
+        padding: 20px;
+    }
+
+    .login-link {
+        position: static;
+        transform: none;
+        margin-top: 10px;
+    }
+
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .signup-form .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .signup-form .input-group button {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
