@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>A/S 관리 게시판</title>
+    <link rel="stylesheet" href="/css/dy_css/list.css">
+</head>
+<body>
+    <header>
+        <!-- 공통 헤더 (필요 시 추가) -->
+    </header>
+    <main>
+        <div class="boardList">
+            <h1>노후시설 A/S관리 게시판</h1>
+            <hr>
+            <div class="list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>조회수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 게시글 목록 -->
+                        <tr th:each="board : ${boardlist}">
+                            <!-- Entity의 필드명에 따라 변경 -->
+                            <td th:text="${board.bnum}"></td>
+                            <td>
+                                <a th:href="@{/dy_post(bnum=${board.bnum})}" th:text="${board.title}"></a>
+                            </td>
+                            <td th:text="${board.ename}"></td>
+                            <td th:text="${#temporals.format(board.postdate, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${board.visitcount}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이징 네비게이션 -->
+            <div class="listButton">
+                <button th:if="${currentPage > 1}" th:onclick="'location.href=\'/dy_list?page=' + (${currentPage} - 1) + '\''">
+                    이전
+                </button>
+                <button th:each="i : ${#numbers.sequence(1, totalPages)}" 
+                        th:onclick="'location.href=\'/dy_list?page=' + ${i} + '\''"
+                        th:text="${i}">
+                </button>
+                <button th:if="${currentPage < totalPages}" th:onclick="'location.href=\'/dy_list?page=' + (${currentPage} + 1) + '\''">
+                    다음
+                </button>
+            </div>
+            <div class="listTop">
+                <button onclick="location.href='/dy_register'">작성하기</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <!-- 공통 푸터 (필요 시 추가) -->
+    </footer>
+</body>
+</html>

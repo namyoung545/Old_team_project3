@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>작성하기</title>
+    <!-- Head Requires // 헤더 공통 스크립트 -->
+    <th:block th:replace="dy_html/dy_headScripts"></th:block>
+    <!-- Page Style // 개별 페이지 스타일 -->
+    <link rel="stylesheet" type="text/css" href="/css/dy_css/register.css" />
+</head>
+<body>
+    <!-- Header Include -->
+    <!-- <header th:replace="includes/header :: header"></header> -->
+    <main>
+        <div class="boardRegister">
+            <h1>작성하기</h1>
+            <hr>
+            <div class="register">
+                <form th:action="@{/dy_register}" method="post">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><label for="title">제목</label></th>
+                                <td>
+                                    <input type="text" id="title" name="title" class="form-control" placeholder="글제목" />
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <textarea class="form-control" rows="12" name="content" placeholder="내용"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="registerButton">
+                        <button type="submit">작성하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    <!-- <footer th:replace="includes/footer :: footer"></footer> -->
+</body>
+</html>
