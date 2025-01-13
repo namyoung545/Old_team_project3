@@ -12,12 +12,12 @@
     <script>
         // DOM 요소들을 저장하는 객체
         let elements = {    
-            id: document.getElementById("user_id"),
-            pw: document.getElementById("user_pw"),
+            id: document.getElementById("userId"),
+            pw: document.getElementById("userPw"),
             pwCheck: document.getElementById("pwCheck"),
             email: document.getElementById("email"),
             name: document.getElementById("name"),
-            tel: document.getElementById("phone_number"),
+            tel: document.getElementById("phoneNumber"),
             address: document.getElementById("address")
         }
 
@@ -88,10 +88,10 @@
                 url: "/PHG_join/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
                 type: "POST",
                 dataType: "json",
-                data: { "user_id": $("#user_id").val() },  // 파라미터 이름 확인
+                data: { "userId": $("#userId").val() },  // 파라미터 이름 확인
                 success: function(data) {
                     console.log(data);
-                    let userId = $("#user_id").val().trim();
+                    let userId = $("#userId").val().trim();
                     if(userId === "") {
                         alert("아이디를 입력하세요.");
                     } else if(data === 0) { // 사용 가능
@@ -131,7 +131,7 @@
         // 추가적인 유효성 검사 및 이벤트 핸들러 (선택 사항)
         $(document).ready(function(){
             // 아이디 입력 시 중복 확인 상태 초기화
-            $("#user_id").on('input', function(){
+            $("#userId").on('input', function(){
                 $("#idOverlap").attr("data-overlap", "N");
                 $("#idMsg").text("");
             });
@@ -158,16 +158,16 @@
             <h2>회원가입</h2>
             <form class="signup-form" onsubmit="return formCheck()" method="post" action="/PHG_join/register">
                 <!-- 아이디 입력 및 중복 확인 -->
-                <label for="user_id">아이디</label>
+                <label for="userId">아이디</label>
                 <div class="input-group">
-                    <input type="text" id="user_id" name="user_id" required placeholder="아이디를 입력하세요">
+                    <input type="text" id="userId" name="userId" required placeholder="아이디를 입력하세요">
                     <button type="button" id="idOverlap" class="idOverlap" onclick="fn_idOverlap()">중복확인</button>
                 </div>
                 <p id="idMsg" class="message"></p>
 
                 <!-- 비밀번호 입력 -->
-                <label for="user_pw">비밀번호</label>
-                <input type="password" id="user_pw" name="user_pw" required placeholder="비밀번호를 입력하세요">
+                <label for="userPw">비밀번호</label>
+                <input type="password" id="userPw" name="userPw" required placeholder="비밀번호를 입력하세요">
                 <p id="pwMsg" class="message"></p>
 
                 <!-- 비밀번호 확인 입력 -->
@@ -186,8 +186,8 @@
                 <p id="nameMsg" class="message"></p>
 
                 <!-- 휴대폰 번호 입력 -->
-                <label for="phone_number">휴대폰 번호</label>
-                <input type="tel" id="phone_number" name="phone_number" required placeholder="휴대폰 번호를 입력하세요">
+                <label for="phoneNumber">휴대폰 번호</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="휴대폰 번호를 입력하세요">
                 <p id="telMsg" class="message"></p>
 
                 <!-- 주소 입력 및 검색 -->
