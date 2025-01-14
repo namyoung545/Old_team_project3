@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="css/PHG_css/PHG_header.css">
+    <link rel="stylesheet" href="css/PHG_css/PHG_footer.css">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #000080;
+            text-align: center;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .menu-item {
+            padding: 10px 20px;
+            background-color: #000080;
+            color: #ffffff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            background-color: #000050;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #000080;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4169e1;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #1e90ff;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="PHG/PHG_header :: header"></div>
+    
+    <div class="container">
+        <h1>마이페이지</h1>
+        <div class="menu">
+            <div class="menu-item" onclick="showContent('profile')">회원정보 수정</div>
+            <div class="menu-item" onclick="showContent('delete')">회원탈퇴</div>
+        </div>
+        <div id="profile" class="content">
+            <h2>회원정보 수정</h2>
+            <form onsubmit="return validatePassword()" action="/PHG_memberModify" method="post">
+                <div class="form-group">
+                    <label for="userid">아이디</label>
+                    <input type="text" id="userId" name="userId" th:value="${user.userId}">
+                </div>
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" th:value="${user.name}">
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" th:value="${user.email}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">전화번호</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" th:value="${user.phoneNumber}">
+                </div>
+                <div class="form-group">
+                    <label for="address">주소</label>
+                    <input type="text" id="address" name="address" th:value="${user.address}" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPw">현재 비밀번호</label>
+                    <input type="password" id="userPw" name="userPw">
+                </div>
+                <div class="form-group">
+                    <label for="userNewPw">새 비밀번호</label>
+                    <input type="password" id="userNewPw" name="userNewPw">
+                </div>
+                <div class="form-group">
+                    <label for="userNewPwCheck">새 비밀번호 확인</label>
+                    <input type="password" id="userNewPwCheck" name="userNewPwCheck">
+                </div>
+                <button type="submit" class="btn">정보 수정</button>
+            </form>
+        </div>
+        <div id="delete" class="content" style="display:none;">
+            <h2>회원탈퇴</h2>
+            <p>정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            <button class="btn btn-danger" onclick="memberDelete()">회원탈퇴</button>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div th:replace="PHG/PHG_footer.html :: footer"></div>
+    <script>
+        function showContent(contentId) {
+            document.querySelectorAll('.content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.getElementById(contentId).style.display = 'block';
+        }
+
+        function memberDelete(){
+            if(confirm('정말로 탈퇴하시겠습니까?')){
+                $.ajax({
+                    url: '/PHG_remove',
+                    type: 'POST',
+                    data:{
+                        userId: '${sessionScope.userId}'
+                    },
+                    success: function(response) {
+                        alert('회원 탈퇴가 완료되었습니다.');
+                        window.location.href = '/PHG_index';
+                    },
+                    //실패시
+                    error: function(xhr, status, error) {
+                        alert('회원 탈퇴 처리 중 오류가 발생했습니다.');
+                        console.error(error);
+                    }
+                });
+            }
+        }
+
+        function validatePassword() {
+            // 새 비밀번호와 새 비밀번호 확인 필드의 값을 가져옴
+            var newPw = document.getElementById('userNewPw').value;
+            var newPwCheck = document.getElementById('userNewPwCheck').value;
+            
+            // 만약 둘 다 값이 입력되었다면 비교 (빈 값인 경우, 비밀번호 변경이 없다고 판단할 수 있음)
+            if(newPw !== "" || newPwCheck !== "") {
+                if (newPw !== newPwCheck) {
+                    alert("새 비밀번호와 확인이 일치하지 않습니다.");
+                    return false; // 제출 중지
+                }
+            }
+            
+            // 모두 일치하면 제출 진행
+            return true;
+        }
+    </script>
+</body>
+</html>
