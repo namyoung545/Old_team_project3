@@ -1,0 +1,104 @@
+@charset "UTF-8";
+
+.boardRegister {
+	width: 100%;
+	max-width: 1000px;
+	text-align: center;
+	background-color: #fff;
+	border-radius: 12px;
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+	padding: 40px 30px;
+	margin: 0 auto;
+}
+
+/* 테이블 공통 스타일 */
+table {
+	width: 100%; /* 테이블 전체 너비 */
+	border-collapse: collapse; /* 경계선 중복 제거 */
+	margin: 20px 0;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff; /* 배경색 */
+	/* 	border: 1px solid #ddd; 테두리 */
+}
+
+table thead tr {
+	border-bottom: 2px solid #ddd; /* 아래쪽 테두리 */
+}
+
+/* 테이블 헤더 스타일 */
+table thead th {
+	background-color: #f4f4f4; /* 연한 회색 배경 */
+	color: #333; /* 어두운 텍스트 */
+	padding: 10px 15px;
+	font-weight: bold;
+	vertical-align: middle; /* 세로 가운데 정렬 */
+}
+
+table thead th.th_title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 테이블 본문 스타일 */
+table td {
+	color: #333; /* 기본 텍스트 */
+	border-bottom: 1px solid #ddd; /* 줄 간 구분선 */
+	padding: 10px 15px;
+	vertical-align: top; /* 텍스트 정렬 */
+}
+
+.registerButton {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	margin: 1rem;
+}
+
+.registerButton button {
+	background-color: #f68e3e;
+	font-size: 1rem;
+	font-weight: 600;
+	border: none;
+	border-radius: 5px;
+	color: #f0f0f0;
+	padding: 0.5rem 1rem;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
+}
+
+.registerButton button:hover {
+	color:#f0f0f0;
+	background-color: #e57a31;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.registerButton button:active {
+	color:#f0f0f0;
+	background-color: #e57a31;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 내용 행 스타일 */
+table td[colspan="6"] {
+	padding: 20px;
+	line-height: 1.6; /* 줄 간격 */
+	font-size: 16px; /* 내용 글씨 크기 */
+	color: #555; /* 약간 밝은 텍스트 색상 */
+	text-align: left;
+	/* 	background-color: #f9f9f9; 연한 배경 */
+}
+
+/* 모바일 최적화 */
+@media screen and (max-width: 768px) {
+	table {
+		font-size: 14px;
+	}
+	table td, table th {
+		padding: 8px;
+	}
+	table td[colspan="6"] {
+		font-size: 14px;
+	}
+}

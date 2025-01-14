@@ -14,7 +14,7 @@ public class SHApplication {
     @Autowired
     private SHPythonService pythonService;
 
-    public void setupPython() {
+    public void runSHApplication() {
         // Python 가상환경 설정
         System.out.println("Python Service");
         virtualEnvService.setupVirtualEnv();

@@ -41,12 +41,12 @@ CREATE TABLE fire_items (
 );
 
 -- Table: fire_statistics (통계 데이터 저장)
-CREATE TABLE fire_statistics (
-    year INT NOT NULL,
-    category VARCHAR(100) NOT NULL,
-    value FLOAT NOT NULL,
-    PRIMARY KEY (year, category)
-);
+-- CREATE TABLE fire_statistics (
+--     year INT NOT NULL,
+--     category VARCHAR(100) NOT NULL,
+--     value FLOAT NOT NULL,
+--     PRIMARY KEY (year, category)
+-- );
 
 -- Table: meta data (메타 데이터) 임시
 CREATE TABLE fires_meta (
