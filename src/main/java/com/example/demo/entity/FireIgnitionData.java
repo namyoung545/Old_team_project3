@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "fire_ignition")
+@Table(name = "fire_ignitions")
 public class FireIgnitionData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
