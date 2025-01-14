@@ -244,6 +244,7 @@ public class SHPythonService {
                 }
 
                 firesData.setDamageProperty(Integer.parseInt(fireDataMap.get("damageProperty").toString()));
+                firesData.setCasualtiesTotal(Integer.parseInt(fireDataMap.get("casualtiesTotal").toString()));
                 firesData.setDeaths(Integer.parseInt(fireDataMap.get("deaths").toString()));
                 firesData.setInjuries(Integer.parseInt(fireDataMap.get("injuries").toString()));
 
