@@ -1,26 +1,24 @@
 <header class="header_container" th:fragment="header">
-    <div class="row">
-        <!-- 기본 상태 -->
-        <div class="col-md-12" id="defaultHeader">
-            <span class="headerText">Old Team</span>
-            <!-- <a href="#" id="headerBoardIndexLink" class="header_link">게시판</a>
-            <a href="#" id="headerCalendarLink" class="header_link">AS 스케줄</a>
-            <a href="#" id="headerAsRegistLink" class="header_link">AS 접수</a>
-            <a href="#" id="headerASprocessStatusLink" class="header_link">AS 현황</a> -->
+    <!-- <div class="row"> -->
+    <!-- 기본 상태 -->
+    <div class="col-md-12" id="defaultHeader">
+        <span class="headerText">Old Team</span>
+    </div>
 
-            <!-- <a href="/login" class="header_link_default">로그인</a> -->
+    <!-- 게시판 상태 -->
+    <div class="col-md-12" id="boardIndexHeader" style="display: none;">
+        <div id="headerText_container">
+            <span class="headerText">노후 시설 AS 신고 관리 시스템</span>
         </div>
-        <!-- 게시판 상태 -->
-        <div class="col-md-12" id="boardIndexHeader" style="display: none;">
-            <span class="headerText">Old Team</span>
-            <div class="header_link_container">
-                <a href="#" id="headerBoardIndexLink" class="header_link_boardIndex">게시판</a>
-                <a href="#" id="headerCalendarLink" class="header_link_boardIndex">AS 스케줄</a>
-                <a href="#" id="headerAsRegistLink" class="header_link_boardIndex">AS 접수</a>
-                <a href="#" id="headerASprocessStatusLink" class="header_link_boardIndex">AS 현황</a>
-
-                <a href="/login" class="header_link_boardIndex">로그인2</a>
-            </div>
+        <div id="header_link_container">
+            <a href="#" id="headerBoardIndexLink" class="header_link_boardIndex">게시판</a>
+            <a href="#" id="headerCalendarLink" class="header_link_boardIndex">AS 스케줄</a>
+            <a href="#" id="headerAsRegistLink" class="header_link_boardIndex">AS 접수</a>
+            <a href="#" id="headerASprocessStatusLink" class="header_link_boardIndex">AS 현황</a>
+        </div>
+        <div id="headerboardIndex_container">
+            <a href="/login" class="header_link_boardIndex">로그인2</a>
         </div>
     </div>
+    <!-- </div> -->
 </header>

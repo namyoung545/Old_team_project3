@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.entity.dy_boardData;
+import com.example.demo.service.dy_boardService;
+
 @Controller
 @RequestMapping("/managementPage")
 public class managementPageController {
+    @Autowired
+    private dy_boardService service;
     
     @GetMapping("")
     public String getindex(Model model) {
@@ -43,19 +49,41 @@ public class managementPageController {
 		return "BoardIndex";
 	}
 
-    // @GetMapping("/fullCalendar")
-    // public String showNewsPage(Model model) {
-    //     // 가짜 데이터: 실제로는 Service에서 데이터를 가져와야 함
-    //     List<Map<String, Object>> events = new ArrayList<>();
-    //     Map<String, Object> event = new HashMap<>();
-    //     event.put("title", "Meeting");
-    //     event.put("start", "2025-01-10");
-    //     events.add(event);
+    // 공지사항 게시판 페이지
+	@GetMapping("/noticeBoard")
+    public String getNoticeBoard(Model model, @RequestParam(defaultValue = "1") int page) {
+        int pageSize = 10; // 페이지당 게시물 수
+        int offset = (page - 1) * pageSize;
 
+        List<dy_boardData> boardList = service.getBoardList(pageSize, offset);
+        model.addAttribute("boardlist", boardList);
 
-    //     model.addAttribute("events", events); // 데이터를 모델에 추가
-    //     return "fullCalendar"; // dy_html/dy_news.html 파일 반환
-    // }
+        int totalCount = service.getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
+		return "noticeBoard"; // jsp 파일 경로
+	}
+
+    // QnA 게시판 페이지
+	@GetMapping("/qnaBoard")
+    public String getQnaBoard(Model model, @RequestParam(defaultValue = "1") int page) {
+        int pageSize = 10; // 페이지당 게시물 수
+        int offset = (page - 1) * pageSize;
+
+        List<dy_boardData> boardList = service.getBoardList(pageSize, offset);
+        model.addAttribute("boardlist", boardList);
+
+        int totalCount = service.getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
+		return "qnaBoard"; // jsp 파일 경로
+	}
 
     @GetMapping("/fullCalendar")
     public String loadFullCalendarPage(Model model) {
@@ -84,13 +112,14 @@ public class managementPageController {
         return events; // JSON으로 반환
     }
 
+    // as 등록 페이지
     @GetMapping("/registAS")
     public String scheduleRegistAS(Model model) {
         model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
         return "registAS";
     }
 
-    	// 처리현황 페이지
+    // as 처리현황 페이지
 	@GetMapping("/ASprocessStatus")
     public String getASprocessStatus(Model model) {
 	// public String getProcessStatus(Model model) {
