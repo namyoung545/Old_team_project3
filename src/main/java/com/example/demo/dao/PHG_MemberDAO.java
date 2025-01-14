@@ -8,9 +8,9 @@ public interface PHG_MemberDAO {
 
 	int idOverlap(PHG_MemberDTO dto) throws Exception;
 
-	// int login(PHG_MemberDTO dto) throws Exception;
-
-	int delete(PHG_MemberDTO dto) throws Exception;
+	int delete(String userId) throws Exception;
 
 	PHG_MemberDTO getUserById(String user_id) throws Exception;
+
+	int memberUpdate(PHG_MemberDTO dto) throws Exception;
 }

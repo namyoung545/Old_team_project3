@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.PHG_MemberDTO;
@@ -90,18 +91,18 @@ public class PHGController {
 
         // 세션 생성 및 사용자 ID 저장
         HttpSession session = request.getSession();
-        session.setAttribute("user_id", memberDTO.getUserId());
+        session.setAttribute("userId", memberDTO.getUserId());
         System.out.println("세션 생성 완료 - 사용자 ID: " + memberDTO.getUserId());
 
         // 아이디 저장 쿠키 처리
         if (rememberId) {
-            Cookie cookie = new Cookie("user_id", memberDTO.getUserId());
+            Cookie cookie = new Cookie("userId", memberDTO.getUserId());
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60 * 24 * 7); // 7일
             response.addCookie(cookie);
             System.out.println("자동로그인 쿠키 생성 완료");
         } else {
-            Cookie idCookie = new Cookie("user_id", "");
+            Cookie idCookie = new Cookie("userId", "");
             idCookie.setPath("/");
             idCookie.setMaxAge(0);
             response.addCookie(idCookie);
@@ -119,7 +120,7 @@ public class PHGController {
     public String logout(HttpSession session, HttpServletResponse response) {
         // 세션 무효화 및 쿠키 삭제
         session.invalidate();
-        Cookie idCookie = new Cookie("user_id", "");
+        Cookie idCookie = new Cookie("userId", "");
         idCookie.setPath("/");
         idCookie.setMaxAge(0);
         response.addCookie(idCookie);
@@ -127,13 +128,14 @@ public class PHGController {
     }
 
     // 회원 탈퇴 처리 (삭제 성공 후 alertPrint.jsp 페이지로 이동)
-    @PostMapping("/remove")
+    @PostMapping("/PHG_remove")
     public String remove(PHG_MemberDTO memberDTO, Model model, HttpSession session) {
         try {
-            int rowCnt = memberService.delete(memberDTO);
+            String userId = (String) session.getAttribute("userId");
+            int rowCnt = memberService.delete(userId);
             session.invalidate();
             model.addAttribute("msg", "탈퇴 처리되었읍니다.");
-            model.addAttribute("url", "/main");
+            model.addAttribute("url", "/PHG_login");
             if (rowCnt != 1) {
                 throw new Exception("remove error");
             }
@@ -154,13 +156,70 @@ public class PHGController {
     }
 
     @GetMapping("/PHG_managementPage")
-    public String getManagement() {
+    public String getManagement(HttpSession session, Model model) {
+        // 세션에서 userId 확인
+        if (session.getAttribute("userId") == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
         return "/PHG/PHG_managementPage";
     }
 
     @GetMapping("/PHG_ElectricalDisaster")
     public String getMethodName() {
         return "/PHG/PHG_ElectricalDisasterMonitoring";
+    }
+
+    @GetMapping("/PHG_memberModify")
+    public String getMemberModify(HttpSession session, Model model) {
+        // 세션에서 userId 가져옴
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
+
+        try {
+            // Service를 통해 DB 조회
+            PHG_MemberDTO storedUser = memberService.getUserById(userId);
+            // 모델에 실어서 Thymeleaf로 넘김
+            model.addAttribute("user", storedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("msg", "회원 정보를 가져오는 중 오류가 발생했습니다.");
+            model.addAttribute("url", "/PHG_index");
+            return "/PHG/PHG_alertPrint";
+        }
+
+        return "/PHG/PHG_memberModify";
+    }
+
+    @PostMapping("/PHG_memberModify")
+    public String getMemberUpdate(PHG_MemberDTO memberDTO,
+            @RequestParam("userNewPw") String newPassword,
+            HttpSession session,
+            Model model) throws Exception {
+        // 세션 체크
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null || !userId.equals(memberDTO.getUserId())) {
+            model.addAttribute("msg", "잘못된 접근입니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
+
+        int result = memberService.memberUpdate(memberDTO, newPassword);
+
+        if (result != 1) {
+            model.addAttribute("msg", "현재 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("url", "/PHG_memberModify");
+            return "/PHG/PHG_alertPrint";
+        }
+
+        model.addAttribute("msg", "회원정보가 수정되었습니다.");
+        model.addAttribute("url", "/PHG_managementPage");
+        return "/PHG/PHG_alertPrint";
     }
 
 }

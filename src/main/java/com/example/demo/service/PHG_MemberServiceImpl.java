@@ -62,8 +62,33 @@ public class PHG_MemberServiceImpl implements PHG_MemberService {
 	}
 
 	@Override
-	public int delete(PHG_MemberDTO dto) throws Exception {
-		return memberDAO.delete(dto);
+	public PHG_MemberDTO getUserById(String userId) throws Exception {
+		return memberDAO.getUserById(userId);
+	}
+
+	@Override
+	public int delete(String userId) throws Exception {
+		return memberDAO.delete(userId);
+	}
+
+	@Override
+	public int memberUpdate(PHG_MemberDTO currentUser, String newPassword) throws Exception {
+		// 1. 현재 저장된 사용자 정보 조회
+		PHG_MemberDTO storedUser = memberDAO.getUserById(currentUser.getUserId());
+
+		// 2. 현재 비밀번호 확인
+		if (!passwordEncoder.matches(currentUser.getUserPw(), storedUser.getUserPw())) {
+			return 0; // 현재 비밀번호가 일치하지 않음
+		}
+
+		// 3. 새 비밀번호 암호화 및 설정
+		if (newPassword != null && !newPassword.trim().isEmpty()) {
+			String encodedNewPassword = passwordEncoder.encode(newPassword);
+			currentUser.setUserPw(encodedNewPassword);
+		}
+
+		// 4. 회원 정보 업데이트
+		return memberDAO.memberUpdate(currentUser);
 	}
 
 }
