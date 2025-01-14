@@ -63,23 +63,35 @@ modified_time DATETIME NOT NULL
 
 
 -- DROP TABLE
-DROP TABLE fire_causes;
-DROP TABLE fire_ignition;
-DROP TABLE fire_items;
-DROP TABLE fire_locations;
-DROP TABLE fire_region;
-DROP TABLE fire_statistics;
-DROP TABLE fire_type;
-DROP TABLE fires;
+-- DROP TABLE fire_causes;
+-- DROP TABLE fire_ignition;
+-- DROP TABLE fire_items;
+-- DROP TABLE fire_locations;
+-- DROP TABLE fire_region;
+-- DROP TABLE fire_statistics;
+-- DROP TABLE fire_type;
+-- DROP TABLE fires;
 
 
 DESCRIBE fires;
 SELECT * FROM fires;
+SELECT COUNT(*), SUM(f.damage_property) FROM fires as f WHERE year(date_time) = 2023;
+SELECT COUNT(*), SUM(f.casualties_total), SUM(f.casualties_deaths), SUM(f.casualties_injuries), SUM(f.damage_property) FROM fires as f WHERE fire_region_id IN (27, 84, 107, 138, 207) AND date_time >= 2023;
 SELECT COUNT(*) as cnt FROM fires;
+SELECT * FROM fire_regions WHERE region_province LIKE "%울산%";
 SELECT * FROM fire_causes;
 SELECT COUNT(*) as cnt FROM fire_causes;
 SELECT * FROM fire_locations;
+SELECT COUNT(*) as cnt FROM fire_locations;
 SELECT * FROM fire_items;
+SELECT COUNT(*) as cnt FROM fire_items;
+SELECT * FROM fire_ignition;
 
+RENAME TABLE 
+	fire_type TO fire_types,
+    fire_region TO fire_regions,
+    fire_ignition TO fire_ignitions;
+
+DROP TABLE fire_statistics;
 DESCRIBE fire_statistics;
 SELECT * FROM fire_statistics;
