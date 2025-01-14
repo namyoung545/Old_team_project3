@@ -118,4 +118,8 @@ build/
 hs_err_pid*
 replay_pid*
 
-src/main/resources/config
+# Python 가상환경
+src/main/python/venv/
+
+# Application Local Settings
+src/main/resources/config/
