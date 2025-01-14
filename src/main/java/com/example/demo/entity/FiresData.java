@@ -30,6 +30,10 @@ public class FiresData {
     @ColumnDefault("0")
     private Integer damageProperty;
 
+    @Column(name = "casualties_total", nullable = false)
+    @ColumnDefault("0")
+    private Integer casualtiesTotal;
+
     @Column(name = "casualties_deaths", nullable = false)
     @ColumnDefault("0")
     private Integer deaths;
@@ -42,7 +46,7 @@ public class FiresData {
     @JoinColumn(name = "fire_type_id", nullable = false)
     private FireTypeData fireType;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fire_region_id", nullable = false)
     private FireRegionData fireRegion;
 
@@ -50,8 +54,8 @@ public class FiresData {
     @JoinColumn(name = "fire_cause_id", nullable = false)
     private FireCauseData fireCause;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name ="fire_ignition_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fire_ignition_id", nullable = false)
     private FireIgnitionData fireIgnition;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -84,6 +88,14 @@ public class FiresData {
 
     public void setDamageProperty(Integer damageProperty) {
         this.damageProperty = damageProperty;
+    }
+
+    public Integer getCasualtiesTotal() {
+        return casualtiesTotal;
+    }
+
+    public void setCasualtiesTotal(Integer casualtiesTotal) {
+        this.casualtiesTotal = casualtiesTotal;
     }
 
     public Integer getDeaths() {
@@ -150,5 +162,4 @@ public class FiresData {
         this.fireItem = fireItem;
     }
 
-    
 }

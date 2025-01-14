@@ -1,3 +1,4 @@
+-- 아래 테이블 생성 코드는 참고용임 JPA에서 테이블을 자동 생성함
 -- Table: fires (화재 기본 정보)
 CREATE TABLE fires (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,13 +41,15 @@ CREATE TABLE fire_items (
 	FOREIGN KEY (fire_id) REFERENCES fires(id) ON DELETE CASCADE
 );
 
--- Table: fire_statistics (통계 데이터 저장)
--- CREATE TABLE fire_statistics (
---     year INT NOT NULL,
---     category VARCHAR(100) NOT NULL,
---     value FLOAT NOT NULL,
---     PRIMARY KEY (year, category)
--- );
+CREATE TABLE statistics (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    year INT NOT NULL,
+    stat_name VARCHAR(255) NOT NULL,
+    stat_value DOUBLE NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 
 -- Table: meta data (메타 데이터) 임시
 CREATE TABLE fires_meta (
@@ -58,12 +61,25 @@ created_time DATETIME NOT NULL,
 modified_time DATETIME NOT NULL
 );
 
-DESCRIBE fires;
-SELECT COUNT(*) as cnt FROM fires;
--- DROP TABLE fires;
 
+-- DROP TABLE
+DROP TABLE fire_causes;
+DROP TABLE fire_ignition;
+DROP TABLE fire_items;
+DROP TABLE fire_locations;
+DROP TABLE fire_region;
+DROP TABLE fire_statistics;
+DROP TABLE fire_type;
+DROP TABLE fires;
+
+
+DESCRIBE fires;
 SELECT * FROM fires;
+SELECT COUNT(*) as cnt FROM fires;
 SELECT * FROM fire_causes;
 SELECT COUNT(*) as cnt FROM fire_causes;
 SELECT * FROM fire_locations;
 SELECT * FROM fire_items;
+
+DESCRIBE fire_statistics;
+SELECT * FROM fire_statistics;

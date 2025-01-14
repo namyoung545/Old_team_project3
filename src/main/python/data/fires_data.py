@@ -16,6 +16,9 @@ def insert_fires_data(dataname):
             raise FileNotFoundError(f"파일을 찾을 수 없습니다. {file_path}")
 
         df = pd.read_csv(file_path, encoding="EUC-KR")
+        df.fillna(
+            {"재산피해소계": 0, "인명피해소계": 0, "사망": 0, "부상": 0}, inplace=True
+        )
         df.fillna("미확인", inplace=True)
 
         fires_data = []
@@ -25,6 +28,7 @@ def insert_fires_data(dataname):
                 "dateTime": row.get("일시"),
                 # "dateTime": row.get("일시", datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
                 "damageProperty": int(row.get("재산피해소계", 0)),
+                "casualtiesTotal": int(row.get("인명피해소계", 0)),
                 "deaths": int(row.get("사망", 0)),
                 "injuries": int(row.get("부상", 0)),
                 "fireCauses": {
