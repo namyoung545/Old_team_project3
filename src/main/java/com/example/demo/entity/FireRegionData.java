@@ -10,20 +10,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "fire_causes")
-public class FireCauseData {
+@Table(name = "fire_region")
+public class FireRegionData {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="cause_id", nullable = false)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "region_id", nullable = false)
     private Integer id;
 
     @Column(nullable = false)
     @ColumnDefault("'미확인'")
-    private String causeCategory;
+    private String regionProvince;
 
     @Column(nullable = false)
     @ColumnDefault("'미확인'")
-    private String causeSubcategory;
+    private String regionCity;
 
     public Integer getId() {
         return id;
@@ -33,19 +33,21 @@ public class FireCauseData {
         this.id = id;
     }
 
-    public String getCauseCategory() {
-        return causeCategory;
+    public String getRegionProvince() {
+        return regionProvince;
     }
 
-    public void setCauseCategory(String causeCategory) {
-        this.causeCategory = causeCategory;
+    public void setRegionProvince(String regionProvince) {
+        this.regionProvince = regionProvince;
     }
 
-    public String getCauseSubcategory() {
-        return causeSubcategory;
+    public String getRegionCity() {
+        return regionCity;
     }
 
-    public void setCauseSubcategory(String causeSubcategory) {
-        this.causeSubcategory = causeSubcategory;
+    public void setRegionCity(String regionCity) {
+        this.regionCity = regionCity;
     }
+    
+    
 }

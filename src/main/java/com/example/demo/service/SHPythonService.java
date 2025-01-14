@@ -18,13 +18,19 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.EDStatisticsData;
 import com.example.demo.entity.EDStatisticsJsonData;
 import com.example.demo.entity.FireCauseData;
+import com.example.demo.entity.FireIgnitionData;
 import com.example.demo.entity.FireItemData;
 import com.example.demo.entity.FireLocationData;
+import com.example.demo.entity.FireRegionData;
+import com.example.demo.entity.FireTypeData;
 import com.example.demo.entity.FiresData;
 import com.example.demo.repository.EDStatisticsRepository;
 import com.example.demo.repository.FireCauseDataRepository;
+import com.example.demo.repository.FireIgnitionDataRepository;
 import com.example.demo.repository.FireItemDataRepository;
 import com.example.demo.repository.FireLocationDataRepository;
+import com.example.demo.repository.FireRegionDataRepository;
+import com.example.demo.repository.FireTypeDataRepository;
 import com.example.demo.repository.FiresDataRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,9 +50,15 @@ public class SHPythonService {
     @Autowired
     private FireCauseDataRepository fireCauseDataRepository;
     @Autowired
-    private FireLocationDataRepository fireLocationDataRepository;
+    private FireIgnitionDataRepository fireIgnitionDataRepository;
     @Autowired
     private FireItemDataRepository fireItemDataRepository;
+    @Autowired
+    private FireLocationDataRepository fireLocationDataRepository;
+    @Autowired
+    private FireRegionDataRepository fireRegionDataRepository;
+    @Autowired
+    private FireTypeDataRepository fireTypeDataRepository;
 
     // ED DB Repository
     @Autowired
@@ -230,9 +242,7 @@ public class SHPythonService {
                     System.out.println("[ERROR] 날짜 형식 파싱 오류 : " + fireDataMap.get("dateTime").toString());
                     continue;
                 }
-                firesData.setRegionProvince(fireDataMap.get("regionProvince").toString());
-                firesData.setRegionCity(fireDataMap.get("regionCity").toString());
-                firesData.setFireType(fireDataMap.get("fireType").toString());
+
                 firesData.setDamageProperty(Integer.parseInt(fireDataMap.get("damageProperty").toString()));
                 firesData.setDeaths(Integer.parseInt(fireDataMap.get("deaths").toString()));
                 firesData.setInjuries(Integer.parseInt(fireDataMap.get("injuries").toString()));
@@ -241,9 +251,7 @@ public class SHPythonService {
                 Optional<FireCauseData> existingCause = fireCauseDataRepository
                         .findByDetails(
                                 fireCausesData.get("causeCategory"),
-                                fireCausesData.get("causeSubcategory"),
-                                fireCausesData.get("ignitionSourceCategory"),
-                                fireCausesData.get("ignitionSourceSubcategory"));
+                                fireCausesData.get("causeSubcategory"));
                 FireCauseData fireCauseData;
                 if (existingCause.isPresent()) {
                     fireCauseData = existingCause.get();
@@ -251,11 +259,41 @@ public class SHPythonService {
                     fireCauseData = new FireCauseData();
                     fireCauseData.setCauseCategory(fireCausesData.get("causeCategory"));
                     fireCauseData.setCauseSubcategory(fireCausesData.get("causeSubcategory"));
-                    fireCauseData.setIgnitionSourceCategory(fireCausesData.get("ignitionSourceCategory"));
-                    fireCauseData.setIgnitionSourceSubcategory(fireCausesData.get("ignitionSourceSubcategory"));
                     fireCauseData = fireCauseDataRepository.save(fireCauseData);
                 }
                 firesData.setFireCause(fireCauseData);
+
+                Map<String, String> fireIgnitionsData = (Map<String, String>) fireDataMap.get("fireIgnitions");
+                Optional<FireIgnitionData> existingIgnition = fireIgnitionDataRepository
+                        .findByDetails(
+                                fireIgnitionsData.get("ignitionSourceCategory"),
+                                fireIgnitionsData.get("ignitionSourceSubcategory"));
+                FireIgnitionData fireIgnitionData;
+                if (existingIgnition.isPresent()) {
+                    fireIgnitionData = existingIgnition.get();
+                } else {
+                    fireIgnitionData = new FireIgnitionData();
+                    fireIgnitionData.setIgnitionSourceCategory(fireIgnitionsData.get("ignitionSourceCategory"));
+                    fireIgnitionData.setIgnitionSourceSubcategory(fireIgnitionsData.get("ignitionSourceSubcategory"));
+                    fireIgnitionData = fireIgnitionDataRepository.save(fireIgnitionData);
+                }
+                firesData.setFireIgnition(fireIgnitionData);
+
+                Map<String, String> fireItemsData = (Map<String, String>) fireDataMap.get("fireItems");
+                Optional<FireItemData> existingItem = fireItemDataRepository
+                        .findByDetails(
+                                fireItemsData.get("itemCategory"),
+                                fireItemsData.get("itemDetail"));
+                FireItemData fireItemData;
+                if (existingItem.isPresent()) {
+                    fireItemData = existingItem.get();
+                } else {
+                    fireItemData = new FireItemData();
+                    fireItemData.setItemCategory(fireItemsData.get("itemCategory"));
+                    fireItemData.setItemDetail(fireItemsData.get("itemDetail"));
+                    fireItemData = fireItemDataRepository.save(fireItemData);
+                }
+                firesData.setFireItem(fireItemData);
 
                 Map<String, String> fireLocationsData = (Map<String, String>) fireDataMap.get("fireLocations");
                 Optional<FireLocationData> existingLocation = fireLocationDataRepository
@@ -275,22 +313,34 @@ public class SHPythonService {
                 }
                 firesData.setFireLocation(fireLocationData);
 
-                Map<String, String> fireItemsData = (Map<String, String>) fireDataMap.get("fireItems");
-                Optional<FireItemData> existingItem = fireItemDataRepository
+                Map<String, String> fireRegionsData = (Map<String, String>) fireDataMap.get("fireRegions");
+                Optional<FireRegionData> existingRegion = fireRegionDataRepository
                         .findByDetails(
-                                fireItemsData.get("itemCategory"),
-                                fireItemsData.get("itemDetail"));
-                FireItemData fireItemData;
-                if (existingItem.isPresent()) {
-                    fireItemData = existingItem.get();
+                                fireRegionsData.get("regionProvince"),
+                                fireRegionsData.get("regionCity"));
+                FireRegionData fireRegionData;
+                if (existingRegion.isPresent()) {
+                    fireRegionData = existingRegion.get();
                 } else {
-                    fireItemData = new FireItemData();
-                    fireItemData.setItemCategory(fireItemsData.get("itemCategory"));
-                    fireItemData.setItemDetail(fireItemsData.get("itemDetail"));
-                    fireItemData = fireItemDataRepository.save(fireItemData);
+                    fireRegionData = new FireRegionData();
+                    fireRegionData.setRegionProvince(fireRegionsData.get("regionProvince"));
+                    fireRegionData.setRegionCity(fireRegionsData.get("regionCity"));
+                    fireRegionData = fireRegionDataRepository.save(fireRegionData);
                 }
-                firesData.setFireItem(fireItemData);
+                firesData.setFireRegion(fireRegionData);
 
+                Map<String, String> fireTypesData = (Map<String, String>) fireDataMap.get("fireTypes");
+                Optional<FireTypeData> existingType = fireTypeDataRepository
+                .findByDetails(fireTypesData.get("fireType"));
+                FireTypeData fireTypeData;
+                if (existingType.isPresent()) {
+                    fireTypeData = existingType.get();
+                } else {
+                    fireTypeData = new FireTypeData();
+                    fireTypeData.setFireType(fireTypesData.get("fireType"));
+                    fireTypeData = fireTypeDataRepository.save(fireTypeData);
+                }
+                firesData.setFireType(fireTypeData);
 
                 firesDataBatch.add(firesData);
             }

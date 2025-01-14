@@ -27,18 +27,6 @@ public class FiresData {
     private LocalDateTime dateTime;
 
     @Column(nullable = false)
-    @ColumnDefault("'미확인'")
-    private String regionProvince;
-
-    @Column(nullable = false)
-    @ColumnDefault("'미확인'")
-    private String regionCity;
-
-    @Column(nullable = false)
-    @ColumnDefault("'미확인'")
-    private String fireType;
-
-    @Column(nullable = false)
     @ColumnDefault("0")
     private Integer damageProperty;
 
@@ -51,8 +39,20 @@ public class FiresData {
     private Integer injuries;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fire_type_id", nullable = false)
+    private FireTypeData fireType;
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "fire_region_id", nullable = false)
+    private FireRegionData fireRegion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fire_cause_id", nullable = false)
     private FireCauseData fireCause;
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name ="fire_ignition_id", nullable = false)
+    private FireIgnitionData fireIgnition;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fire_location_id", nullable = false)
@@ -61,18 +61,6 @@ public class FiresData {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fire_item_id", nullable = false)
     private FireItemData fireItem;
-
-    // @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<FireCauseData> fireCauses = new ArrayList<>();
-
-    // @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<FireLocationData> fireLocations = new ArrayList<>();
-
-    // @OneToMany(mappedBy = "fire", cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private List<FireItemData> fireItems = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -88,30 +76,6 @@ public class FiresData {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-    }
-
-    public String getRegionProvince() {
-        return regionProvince;
-    }
-
-    public void setRegionProvince(String regionProvince) {
-        this.regionProvince = regionProvince;
-    }
-
-    public String getRegionCity() {
-        return regionCity;
-    }
-
-    public void setRegionCity(String regionCity) {
-        this.regionCity = regionCity;
-    }
-
-    public String getFireType() {
-        return fireType;
-    }
-
-    public void setFireType(String fireType) {
-        this.fireType = fireType;
     }
 
     public Integer getDamageProperty() {
@@ -138,12 +102,36 @@ public class FiresData {
         this.injuries = injuries;
     }
 
+    public FireTypeData getFireType() {
+        return fireType;
+    }
+
+    public void setFireType(FireTypeData fireType) {
+        this.fireType = fireType;
+    }
+
+    public FireRegionData getFireRegion() {
+        return fireRegion;
+    }
+
+    public void setFireRegion(FireRegionData fireRegion) {
+        this.fireRegion = fireRegion;
+    }
+
     public FireCauseData getFireCause() {
         return fireCause;
     }
 
     public void setFireCause(FireCauseData fireCause) {
         this.fireCause = fireCause;
+    }
+
+    public FireIgnitionData getFireIgnition() {
+        return fireIgnition;
+    }
+
+    public void setFireIgnition(FireIgnitionData fireIgnition) {
+        this.fireIgnition = fireIgnition;
     }
 
     public FireLocationData getFireLocation() {
@@ -162,4 +150,5 @@ public class FiresData {
         this.fireItem = fireItem;
     }
 
+    
 }

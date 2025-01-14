@@ -24,26 +24,32 @@ def insert_fires_data(dataname):
             fire_entry = {
                 "dateTime": row.get("일시"),
                 # "dateTime": row.get("일시", datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-                "regionProvince": row.get("시도", "미확인"),
-                "regionCity": row.get("시군구", "미확인"),
-                "fireType": row.get("화재유형", "미확인"),
                 "damageProperty": int(row.get("재산피해소계", 0)),
                 "deaths": int(row.get("사망", 0)),
                 "injuries": int(row.get("부상", 0)),
                 "fireCauses": {
                     "causeCategory": row.get("발화요인대분류", "미확인"),
                     "causeSubcategory": row.get("발화요인소분류", "미확인"),
+                },
+                "fireIgnitions": {
                     "ignitionSourceCategory": row.get("발화열원대분류", "미확인"),
                     "ignitionSourceSubcategory": row.get("발화열원소분류", "미확인"),
+                },
+                "fireItems": {
+                    "itemCategory": row.get("최초착화물대분류", "미확인"),
+                    "itemDetail": row.get("최초착화물소분류", "미확인"),
                 },
                 "fireLocations": {
                     "locationMainCategory": row.get("장소대분류", "미확인"),
                     "locationSubCategory": row.get("장소중분류", "미확인"),
                     "locationDetail": row.get("장소소분류", "미확인"),
                 },
-                "fireItems": {
-                    "itemCategory": row.get("최초착화물대분류", "미확인"),
-                    "itemDetail": row.get("최초착화물소분류", "미확인"),
+                "fireRegions": {
+                    "regionProvince": row.get("시도", "미확인"),
+                    "regionCity": row.get("시군구", "미확인"),
+                },
+                "fireTypes": {
+                    "fireType": row.get("화재유형", "미확인"),
                 },
             }
             fires_data.append(fire_entry)

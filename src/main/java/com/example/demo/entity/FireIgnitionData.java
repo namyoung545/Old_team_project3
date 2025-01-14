@@ -10,20 +10,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "fire_causes")
-public class FireCauseData {
+@Table(name = "fire_ignition")
+public class FireIgnitionData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="cause_id", nullable = false)
+    @Column (name = "ignition_id", nullable = false)
     private Integer id;
 
     @Column(nullable = false)
     @ColumnDefault("'미확인'")
-    private String causeCategory;
+    private String ignitionSourceCategory;
 
     @Column(nullable = false)
     @ColumnDefault("'미확인'")
-    private String causeSubcategory;
+    private String ignitionSourceSubcategory;
 
     public Integer getId() {
         return id;
@@ -33,19 +33,21 @@ public class FireCauseData {
         this.id = id;
     }
 
-    public String getCauseCategory() {
-        return causeCategory;
+    public String getIgnitionSourceCategory() {
+        return ignitionSourceCategory;
     }
 
-    public void setCauseCategory(String causeCategory) {
-        this.causeCategory = causeCategory;
+    public void setIgnitionSourceCategory(String ignitionSourceCategory) {
+        this.ignitionSourceCategory = ignitionSourceCategory;
     }
 
-    public String getCauseSubcategory() {
-        return causeSubcategory;
+    public String getIgnitionSourceSubcategory() {
+        return ignitionSourceSubcategory;
     }
 
-    public void setCauseSubcategory(String causeSubcategory) {
-        this.causeSubcategory = causeSubcategory;
+    public void setIgnitionSourceSubcategory(String ignitionSourceSubcategory) {
+        this.ignitionSourceSubcategory = ignitionSourceSubcategory;
     }
+    
+    
 }
