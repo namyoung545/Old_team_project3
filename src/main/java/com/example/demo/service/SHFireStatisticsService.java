@@ -25,8 +25,10 @@ public class SHFireStatisticsService {
 
     public void runFireStatistics() {
         // analyzeYearlyCasualty(null);
-        getFireCauseCategory("전기");
+        // getFireCauseCategory("전기");
     }
+
+
 
     // 화재 원인 분류 분석
     private void getFireCauseCategory(String keyword) {
