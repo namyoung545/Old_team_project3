@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,29 +26,24 @@ public class SHFireStatisticsService {
 
     public void runFireStatistics() {
         // analyzeYearlyCasualty(null);
-        // getFireCauseCategory("전기");
+        getFireCauseCategory("전기");
     }
 
 
 
     // 화재 원인 분류 분석
-    private void getFireCauseCategory(String keyword) {
+    private List<Integer> getFireCauseCategory(String keyword) {
         System.out.println("getFireCauseCategory");
         List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findLikeCauseCategory(keyword);
-        // System.out.println(fireCauseDataList);
 
         // 검색된 결과 출력
         if (!fireCauseDataList.isEmpty()) {
-            for (FireCauseData fireCauseData : fireCauseDataList) {
-                // 각 FireCauseData 객체의 ID를 출력
-                System.out.println("FireCauseData ID: " + fireCauseData.getId());
-            }
             List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId).collect(Collectors.toList());
-
-            Long fireCount = firesDataRepository.countByFireCauseIds(fireCauseIds);
-            System.out.println("FireCount for FireCauseData IDs " + fireCauseIds + " : " + fireCount);
+            System.out.println("검색된 화재 원인 카테고리 ID 리스트 : " + fireCauseIds);
+            return fireCauseIds;
         } else {
-            System.out.println("해당 키워드에 일치하는 화재 원인 카테고리가 없습니다.");
+            System.out.println("검색된 화재 원인 카테고리 ID가 없습니다.");
+            return Collections.emptyList();
         }
     }
 
@@ -57,6 +53,7 @@ public class SHFireStatisticsService {
         List<Object[]> results;
         if (year != null) {
             // results = firesDataRepository.
+            // Long fireCount = firesDataRepository.countByFireCauseIds(fireCauseIds);
         }
     }
 
