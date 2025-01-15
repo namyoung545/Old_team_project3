@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +11,20 @@ import com.example.demo.entity.FireRegionData;
 
 @Repository
 public interface FireRegionDataRepository extends JpaRepository<FireRegionData, Integer> {
-    @Query("SELECT r FROM FireRegionData r WHERE r.regionProvince = :regionProvince "
-            + "AND r.regionCity = :regionCity")
-    Optional<FireRegionData> findByDetails(
-            String regionProvince,
-            String regionCity);
+
+        // 카테고리 검색
+        @Query("SELECT r FROM FireRegionData r WHERE r.regionProvince LIKE %:regionProvince%")
+        List<FireRegionData> findLikeRegionProvince(String regionProvince);
+
+        // 서브 카테고리 검색
+        @Query("SELECT r FROM FireRegionData r WHERE r.regionCity LIKE %:regionCity%")
+        List<FireRegionData> findLikeRegionCity(String regionCity);
+
+        // 데이터 중복 확인
+        @Query("SELECT r FROM FireRegionData r WHERE r.regionProvince = :regionProvince "
+                        + "AND r.regionCity = :regionCity")
+        Optional<FireRegionData> findByDetails(
+                        String regionProvince,
+                        String regionCity);
 
 }

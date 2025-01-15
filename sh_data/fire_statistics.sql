@@ -78,24 +78,44 @@ SELECT * FROM fires;
 SELECT COUNT(*), SUM(f.damage_property) FROM fires as f WHERE year(date_time) = 2023;
 SELECT COUNT(*), SUM(f.casualties_total), SUM(f.casualties_deaths), SUM(f.casualties_injuries), SUM(f.damage_property) FROM fires as f WHERE fire_region_id IN (27, 84, 107, 138, 207) AND date_time >= 2023;
 SELECT COUNT(*) as cnt FROM fires;
-SELECT * FROM fire_regions WHERE region_province LIKE "%울산%";
 
 DESCRIBE fire_causes;
 SELECT * FROM fire_causes;
 SELECT COUNT(*) as cnt FROM fire_causes;
+SELECT * FROM fire_causes WHERE cause_category LIKE "%전기%";
+SELECT * FROM fire_causes WHERE cause_subcategory LIKE "%불씨%";
+
+DESCRIBE fire_ignitions;
+SELECT * FROM fire_ignitions;
+SELECT * FROM fire_ignitions AS i WHERE i.ignition_source_category LIKE "%작동%";
+SELECT * FROM fire_ignitions WHERE ignition_source_subcategory LIKE "%전기%";
+
+DESCRIBE fire_items;
+SELECT * FROM fire_items;
+SELECT COUNT(*) as cnt FROM fire_items;
+SELECT * FROM fire_items WHERE item_category LIKE "%전기%";
+SELECT * FROM fire_items WHERE item_detail LIKE "%나무%";
 
 DESCRIBE fire_locations;
 SELECT * FROM fire_locations;
 SELECT COUNT(*) as cnt FROM fire_locations;
-SELECT * FROM fire_items;
-SELECT COUNT(*) as cnt FROM fire_items;
-SELECT * FROM fire_ignition;
+SELECT * FROM fire_locations WHERE location_main_category LIKE "%주거%";
+SELECT * FROM fire_locations WHERE location_sub_category LIKE "%단독%";
+SELECT * FROM fire_locations WHERE location_detail LIKE "%자동차%";
 
-RENAME TABLE 
-	fire_type TO fire_types,
-    fire_region TO fire_regions,
-    fire_ignition TO fire_ignitions;
+DESCRIBE fire_regions;
+SELECT * FROM fire_regions;
+SELECT * FROM fire_regions WHERE region_province LIKE "%울산%";
+SELECT * FROM fire_regions WHERE region_city LIKE "%남구%";
 
-DROP TABLE fire_statistics;
+DESCRIBE fire_types;
+SELECT * FROM fire_types WHERE fire_type LIKE "%건축%";
+
+-- RENAME TABLE 
+-- 	fire_type TO fire_types,
+--     fire_region TO fire_regions,
+--     fire_ignition TO fire_ignitions;
+
+-- DROP TABLE fire_statistics;
 DESCRIBE fire_statistics;
 SELECT * FROM fire_statistics;
