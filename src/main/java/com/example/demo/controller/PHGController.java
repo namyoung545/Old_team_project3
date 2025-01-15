@@ -235,10 +235,13 @@ public class PHGController {
             PHG_PythonExecutor executor = new PHG_PythonExecutor(
                     "C:\\My\\Spring_Example\\UI_Project\\src\\main\\webapp\\resources\\Python",
                     "ElectricalFireStatisticsDashboard");
-            Object result = executor.executeFunction("ElectricalFireStatistics");
+            Object ElectricalFireStatistics = executor.executeFunction("ElectricalFireStatistics");
+
+            Object RegionalIgnitionCauses = executor.executeFunction("RegionalIgnitionCauses");
 
             response.put("status", "success");
-            response.put("data", result);
+            response.put("ElectricalFireStatistics", ElectricalFireStatistics);
+            response.put("RegionalIgnitionCauses", RegionalIgnitionCauses);
         } catch (Exception e) {
             response.put("status", "error");
             response.put("message", e.getMessage());
