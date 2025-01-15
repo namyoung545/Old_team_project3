@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Data Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Graph from Python Data</h1>
+    <button onclick="fetchGraphData()">Load Graph</button>
+    <canvas id="myChart" width="800" height="400"></canvas>
+
+    <script>
+        async function fetchGraphData() {
+            try {
+                const response = await fetch("/python-data");
+                const graphData = await response.json();
+
+                const labels = graphData.regions;
+                const totalIncidents = graphData.totalIncidents;
+                const totalDamage = graphData.totalDamage;
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Total Incidents',
+                                data: totalIncidents,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Total Damage',
+                                data: totalDamage,
+                                type: 'line',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderWidth: 2,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching graph data:", error);
+            }
+        }
+    </script>
+</body>
+</html>
