@@ -23,7 +23,7 @@ public interface FireCauseDataRepository extends JpaRepository<FireCauseData, In
         @Query("SELECT c FROM FireCauseData c WHERE c.causeCategory = :causeCategory")
         List<FireCauseData> findByCauseCategory(String causeCategory);
 
-        // 화재 원인 카테고리 확인
+        // 화재 원인 서브 카테고리 확인
         @Query("SELECT c FROM FireCauseData c WHERE c.causeSubcategory = :causeSubcategory")
         List<FireCauseData> findByCauseSubcategory(String causeSubcategory);
 

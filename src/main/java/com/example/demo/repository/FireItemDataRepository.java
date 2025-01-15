@@ -11,6 +11,21 @@ import com.example.demo.entity.FireItemData;
 
 @Repository
 public interface FireItemDataRepository extends JpaRepository<FireItemData, Integer> {
+        // 화재 착화물 카테고리 목록
+        @Query("SELECT DISTINCT i.itemCategory FROM FireItemData i")
+        List<String> findDistinctItemCategory();
+
+        // 화재 착화물 상세 목록
+        @Query("SELECT DISTINCT i.itemDetail FROM FireItemData i")
+        List<String> findDistinctItemDetail();
+
+        // 화재 착화물 카테고리 확인
+        @Query("SELECT i FROM FireItemData i WHERE i.itemCategory = :itemCategory")
+        List<FireItemData> findByItemCategory(String itemCategory);
+
+        // 화재 착화물 디테일 확인
+        @Query("SELECT i FROM FireItemData i WHERE i.itemDetail = :itemDetail")
+        List<FireItemData> findByItemDetail(String itemDetail);
 
         // 카테고리 검색
         @Query("SELECT i FROM FireItemData i WHERE i.itemCategory LIKE %:itemCategory%")

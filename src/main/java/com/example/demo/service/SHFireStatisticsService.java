@@ -90,6 +90,7 @@ public class SHFireStatisticsService {
 
     }
 
+
     // 연간 화재 발생 건수 분석
     private void analyzeYearlyFiresData() {
         System.out.println("analyzeYearlFiresData");
@@ -146,6 +147,12 @@ public class SHFireStatisticsService {
         }
     }
 
+    // 화재 열연별 분석 
+    private void analyzeYearlyFiresByIgnitions() {
+        System.out.println("analyzeFiresByIgnitions");
+        // List<String> fireIgnitions = getFireIgnitionCategories();
+        
+    }
     // 연간 재산피해 분석
     private void analyzeYearlyDamageProperty() {
         System.out.println("analyzeYearlyDamageProperty");

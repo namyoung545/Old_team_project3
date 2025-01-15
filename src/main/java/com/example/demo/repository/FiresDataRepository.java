@@ -27,6 +27,46 @@ public interface FiresDataRepository extends JpaRepository<FiresData, Long> {
                         + " ORDER BY YEAR(f.dateTime)")
         List<Object[]> countYearlyFiresByCauseIds(@Param("fireCauseIds") List<Integer> fireCauseIds);
 
+        // 연간 열원별 화재 발생 건수
+        @Query("SELECT YEAR(f.dateTime), COUNT(f)"
+                + " FROM FiresData f"
+                + " WHERE f.fireIgnition.id IN :fireIgnitionIds"
+                + " GROUP BY YEAR(f.dateTime)"
+                + " ORDER BY YEAR(f.dateTime)")
+        List<Object[]> countYearlyFiresByIgnitionIds(@Param("fireIgnitionIds") List<Integer> fireIgnitionIds);
+
+        // 연간 착화물별 화재 발생 건수
+        @Query("SELECT YEAR(f.dateTime), COUNT(f)"
+                + " FROM FiresData f"
+                + " WHERE f.fireItem.id IN :fireItemIds"
+                + " GROUP BY YEAR(f.dateTime)"
+                + " ORDER BY YEAR(f.dateTime)")
+        List<Object[]> countYearlyFiresByItemIds(@Param("fireItemIds") List<Integer> fireItemIds);
+
+        // 연간 발화 장소별 화재 발생 건수
+        @Query("SELECT YEAR(f.dateTime), COUNT(f)"
+                + " FROM FiresData f"
+                + " WHERE f.fireLocation.id IN :fireLocationIds"
+                + " GROUP BY YEAR(f.dateTime)"
+                + " ORDER BY YEAR(f.dateTime)")
+        List<Object[]> countYearlyFiresByLocationIds(@Param("fireLocationIds") List<Integer> fireLocationIds);
+
+        // 연간 발화 지역별 화재 발생 건수
+        @Query("SELECT YEAR(f.dateTime), COUNT(f)"
+                + " FROM FiresData f"
+                + " WHERE f.fireRegion.id IN :fireRegionIds"
+                + " GROUP BY YEAR(f.dateTime)"
+                + " ORDER BY YEAR(f.dateTime)")
+        List<Object[]> countYearlyFiresByRegionIds(@Param("fireRegionIds") List<Integer> fireRegionIds);
+
+        // 연간 화재 유형별 화재 발생 건수
+        @Query("SELECT YEAR(f.dateTime), COUNT(f)"
+                + " FROM FiresData f"
+                + " WHERE f.fireType.id IN :fireTypeIds"
+                + " GROUP BY YEAR(f.dateTime)"
+                + " ORDER BY YEAR(f.dateTime)")
+        List<Object[]> countYearlyFiresByTypeIds(@Param("fireTypeIds") List<Integer> fireTypeIds);
+
         // 연간 재산피해 합계
         @Query("SELECT YEAR(f.dateTime), SUM(f.damageProperty)"
                         + " FROM FiresData f"

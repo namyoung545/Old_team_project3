@@ -12,6 +12,30 @@ import com.example.demo.entity.FireLocationData;
 @Repository
 public interface FireLocationDataRepository extends JpaRepository<FireLocationData, Integer> {
 
+        // 화재 발화 장소별 주요 카테고리 목록
+        @Query("SELECT DISTINCT l.locationMainCategory FROM FireLocationData l")
+        List<String> findDistinctLocationMainCategory();
+
+        // 화재 발화 장소별 서브 카테고리 목록
+        @Query("SELECT DISTINCT l.locationSubCategory FROM FireLocationData l")
+        List<String> findDistinctLocationSubCategory();
+
+        // 화재 발화 장소별 세부명 목록
+        @Query("SELECT DISTINCT l.locationDetail FROM FireLocationData l")
+        List<String> findDistinctLocationDetail();
+
+        // 화재 발화 장소별 카테고리 확인
+        @Query("SELECT l FROM FireLocationData l WHERE l.locationMainCategory = :locationMainCategory")
+        List<FireLocationData> findByLocationMainCategory(String locationMainCategory);
+
+        // 화재 발화 장소별 서브 카테고리 확인
+        @Query("SELECT l FROM FireLocationData l WHERE l.locationSubCategory = :locationSubCategory")
+        List<FireLocationData> findByLocationSubcategory(String locationSubCategory);
+
+        // 화재 발화 장소별 디테일 확인
+        @Query("SELECT l FROM FireLocationData l WHERE l.locationDetail = :locationDetail")
+        List<FireLocationData> findByLocationDetail(String locationDetail);
+
         // 카테고리 검색
         @Query("SELECT l FROM FireLocationData l WHERE l.locationMainCategory LIKE %:locationMainCategory%")
         List<FireLocationData> findLikeLocationMainCategory(String locationMainCategory);
