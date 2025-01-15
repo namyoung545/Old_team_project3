@@ -1,10 +1,10 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,31 +46,124 @@ public class SHFireStatisticsService {
     private FireStatisticsRepository fireStatisticsRepository;
 
     public void runFireStatistics() {
+
+        // 연간 화재 발생 건수 분석
+        // analyzeYearlyFiresData();
+
+        // 연간 원인별 화재 발생 건수 분석
+        // analyzeYearlyFiresByCause("기타");
+
+        //연간 재산피해 분석
+        // analyzeYearlyDamageProperty();
+
+        // 연간 원인별 재산피해 분석
+        // analyzeYearlyDamagePropertyByCause("전기");
+
+        // 연간 사망 부상자 분석
         // analyzeYearlyCasualty(null);
 
-        // 데이터 검증 확인용
-        getFireCauseCategoryIds("전기");
-        getFireCauseSubcategoryIds("불씨");
-        getFireIgnitionCategoryIds("작동");
-        getFireIgnitionSubcategoryIds("전기");
-        getFireItemCategoryIds("전기");
-        getFireItemDetailIds("나무");
-        getFireLocationMainCategoryIds("주거");
-        getFireLocationSubcategoryIds("단독");
-        getFireLocationDetailIds("자동차");
-        getFireRegionProvinceIds("울산");
-        getFireRegionCityIds("남구");
-        getFireTypeIds("건축");
+        // 연간 원인별 사망 부상자 분석
+        // analyzeYearlyCasualtiesByCause("전기");
 
+        // 분류 목록
+        // getFireCauseCategories();
+        // getFireCauseSubcategories();
+
+        // 데이터 검증 확인용
+        // getFireCauseCategoryIds("전기");
+        // getFireCauseSubcategoryIds("불씨");
+        // getFireIgnitionCategoryIds("작동");
+        // getFireIgnitionSubcategoryIds("전기");
+        // getFireItemCategoryIds("전기");
+        // getFireItemDetailIds("나무");
+        // getFireLocationMainCategoryIds("주거");
+        // getFireLocationSubcategoryIds("단독");
+        // getFireLocationDetailIds("자동차");
+        // getFireRegionProvinceIds("울산");
+        // getFireRegionCityIds("남구");
+        // getFireTypeIds("건축");
+
+        // analyzeYearlyFiresByCauses();
     }
 
-    // 연간 화재 원인 통계 분석
-    private void analyzeYearlyCausesData(Integer year) {
-        System.out.println("analyzeYearlyCausesData");
-        List<Object[]> results;
-        if (year != null) {
-            // results = firesDataRepository.
-            // Long fireCount = firesDataRepository.countByFireCauseIds(fireCauseIds);
+    // 연간 화재 발생 건수 분석
+    private void analyzeYearlyFiresData() {
+        System.out.println("analyzeYearlFiresData");
+        List<Object[]> results = firesDataRepository.countYearlyFires();
+
+        for (Object[] result : results) {
+            System.out.println("Result :" + result);
+            System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String totalFires = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "화재발생건수", totalFires);
+        }
+    }
+
+    // 연간 원인별 화재 발생 건수 분석(키워드)
+    private void analyzeYearlyFiresByCause(String keyword) {
+        System.out.println("analyzeYearlyFiresByCause");
+        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
+
+        List<Object[]> results = firesDataRepository.countYearlyFiresByCauseIds(fireCauseIds);
+        for (Object[] result : results) {
+            System.out.println("Result : " + result);
+            System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String countValue = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "화재발생건수(원인) " + keyword, countValue);
+        }
+    }
+
+    // 연간 원인별 화재 발생 건수 분석(자동)
+    private void analyzeYearlyFiresByCauses() {
+        System.out.println("analyzeYearlyFiresByCauses");
+        List<String> fireCauses = getFireCauseCategories();
+
+        for (String cause : fireCauses) {
+            List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findByCauseCategory(cause);
+            List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId).collect(Collectors.toList());
+            System.out.println(fireCauseIds);
+            // for (FireCauseData data : causeDatas ) {
+            //     System.out.println(data);
+            // }
+        }
+    }
+
+    // 연간 재산피해 분석
+    private void analyzeYearlyDamageProperty() {
+        System.out.println("analyzeYearlyDamageProperty");
+        List<Object[]> results = firesDataRepository.sumYearlyDamageProperty();
+
+        for (Object[] result : results) {
+            System.out.println("Result : " + result);
+            System.out.println(Arrays.toString(result));
+
+            String yearValue= result[0].toString();
+            String sumDamageProperty = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "재산피해합계", sumDamageProperty);
+        }
+    }
+
+    // 연간 원인별 재산피해 분석(키워드)
+    private void analyzeYearlyDamagePropertyByCause(String keyword) {
+        System.out.println("analyzeYearlyDamagePropertyByCause");
+        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
+
+        List<Object[]> results = firesDataRepository.sumYearlyDamagePropertyByCauseIds(fireCauseIds);
+        for (Object[] result : results) {
+            System.out.println("Result : " + result);
+            System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String sumDamageProperty = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "재산피해합계(원인) " + keyword, sumDamageProperty);
         }
     }
 
@@ -79,15 +172,13 @@ public class SHFireStatisticsService {
         System.out.println("analyzeYearlyCasualty " + year);
         List<Object[]> results;
         if (year != null) {
-            results = firesDataRepository.findYearlyCasualtyStatistics(year);
+            results = firesDataRepository.countYearlyCasualties(year);
         } else {
-            results = firesDataRepository.findYearlyCasualtyStatistics();
+            results = firesDataRepository.countYearlyCasualties();
         }
 
         // 결과 저장
         for (Object[] result : results) {
-
-            System.out.println(result.toString());
             String yearValue = result[0].toString();
             String totalDeaths = result[1].toString();
             String totalInjuries = result[2].toString();
@@ -104,7 +195,27 @@ public class SHFireStatisticsService {
         }
     }
 
-    // 통계 데이터 업데이트 또는 저장
+    // 연간 원인별 사망자 부상자 분석(키워드)
+    private void analyzeYearlyCasualtiesByCause(String keyword) {
+        System.out.println("analyzeYearlyCasualtiesByCause");
+        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
+        List<Object[]> results = firesDataRepository.countYearlyCasualtiesByCausesIds(fireCauseIds);
+        for (Object[] result : results) {
+            System.out.println("Result : " + result);
+            System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String countDeaths = result[1].toString();
+            String countInjuries = result[2].toString();
+            String countCasualties = result[3].toString();
+
+            saveFireStatisticsDB(yearValue, "사망자 수(원인) " + keyword, countDeaths);
+            saveFireStatisticsDB(yearValue, "부상자 수(원인) " + keyword, countInjuries);
+            saveFireStatisticsDB(yearValue, "인명피해 합계(원인) " + keyword, countCasualties);
+        }
+    }
+
+    // 통계 데이터 업데이트 저장
     private void saveFireStatisticsDB(String year, String statName, String statValue) {
         // 기존 데이터 조회
         Optional<FireStatistics> existingStat = fireStatisticsRepository.findByYearAndStatName(year, statName);
@@ -127,6 +238,22 @@ public class SHFireStatisticsService {
 
         // 저장
         fireStatisticsRepository.save(fireStatistics);
+    }
+    
+    // 화재 원인 카테고리 목록
+    private List<String> getFireCauseCategories() {
+        System.out.println("getFireCauseCetegories");
+        List<String> fireCauses = fireCauseDataRepository.findDistinctCauseCategory();
+        System.out.println("fireCausesCategories : " + fireCauses);
+        return fireCauses;
+    }
+
+    // 화재 원인 서브 카테고리 목록
+    private List<String> getFireCauseSubcategories() {
+        System.out.println("getFireCauseSubcategories");
+        List<String> fireCauses = fireCauseDataRepository.findDistinctCauseSubcategory();
+        System.out.println("fireCauseSubcategories : " + fireCauses);
+        return fireCauses;
     }
 
     // 화재 원인 카테고리 ID 정보
