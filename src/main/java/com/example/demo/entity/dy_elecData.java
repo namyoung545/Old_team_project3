@@ -1,44 +1,28 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "dy_merged_fire_data")
-
+@Table(name = "dy_merged_fire_data") // DB 테이블 이름
 public class dy_elecData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    private Integer year;
+    @Id
+    private Long id; // Primary Key에 해당하는 필드
 
     private String region;
-
-    @Column(name = "total_incidents")
     private Integer totalIncidents;
+    private Integer totalDamage;
+    private Integer year;
 
-    @Column(name = "total_damage")
-    private Long totalDamage;
-
+    // Getter와 Setter 추가
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
     }
 
     public String getRegion() {
@@ -57,12 +41,19 @@ public class dy_elecData {
         this.totalIncidents = totalIncidents;
     }
 
-    public Long getTotalDamage() {
+    public Integer getTotalDamage() {
         return totalDamage;
     }
 
-    public void setTotalDamage(Long totalDamage) {
+    public void setTotalDamage(Integer totalDamage) {
         this.totalDamage = totalDamage;
     }
-    
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
 }
