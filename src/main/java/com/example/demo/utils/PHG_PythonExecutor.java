@@ -14,14 +14,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * PythonExecutor 클래스
- * 
- * 이 클래스는 Java 애플리케이션에서 Python 코드를 실행하고 그 결과를 가져오는 기능을 제공합니다.
- * Python 함수를 호출하고, 그 결과를 문자열이나 JSON 객체로 반환합니다.
- * 
- * Java에 사용될 함수명: PythonExecutor, PythonExecutor.executeFunction
- */
 public class PHG_PythonExecutor {
     // Python 실행 명령어
     private static final String PYTHON_COMMAND = "python";
@@ -91,10 +83,10 @@ public class PHG_PythonExecutor {
     public Object executeFunction(String functionName, Object... args) {
         long startTime = System.nanoTime();
         LOCK.lock();
+        Process process = null;
         try {
             validateFunction(functionName);
 
-            Process process = null;
             try {
                 process = executeProcess(buildCommand(functionName, args));
                 String result = captureOutput(process);
@@ -115,6 +107,8 @@ public class PHG_PythonExecutor {
                 if (process != null) {
                     process.destroyForcibly();
                 }
+                // Python 실행 후 __pycache__ 폴더 삭제
+                deletePyCache();
                 if (DEBUG_MODE) {
                     long executionTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
                     System.out.println("[DEBUG] 함수 실행 시간: " + executionTime + "ms");
@@ -241,5 +235,43 @@ public class PHG_PythonExecutor {
             }
         }
         return output.toString().trim();
+    }
+
+    /**
+     * pythonPath 하위에 생성된 __pycache__ 폴더와 그 내용을 삭제합니다.
+     */
+    private void deletePyCache() {
+        // pythonPath 디렉토리 내에 __pycache__ 폴더가 존재하는지 확인
+        File pycacheDir = new File(pythonPath, "__pycache__");
+        if (pycacheDir.exists() && pycacheDir.isDirectory()) {
+            boolean deleted = deleteDirectory(pycacheDir);
+            if (DEBUG_MODE) {
+                if (deleted) {
+                    System.out.println("[DEBUG] __pycache__ 폴더 삭제 성공");
+                } else {
+                    System.out.println("[DEBUG] __pycache__ 폴더 삭제 실패");
+                }
+            }
+        }
+    }
+
+    /**
+     * 재귀적으로 디렉토리 삭제 (디렉토리 내의 파일 및 하위 디렉토리 모두 삭제)
+     * 
+     * @param directory 삭제할 디렉토리
+     * @return 삭제 성공 여부
+     */
+    private boolean deleteDirectory(File directory) {
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (!deleteDirectory(file)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return directory.delete();
     }
 }
