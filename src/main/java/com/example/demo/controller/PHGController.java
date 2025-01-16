@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.PHG_MemberDTO;
 import com.example.demo.service.PHG_MemberService;
+import com.example.demo.utils.PHG_PythonExecutor;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -220,6 +224,30 @@ public class PHGController {
         model.addAttribute("msg", "회원정보가 수정되었습니다.");
         model.addAttribute("url", "/PHG_managementPage");
         return "/PHG/PHG_alertPrint";
+    }
+
+    @PostMapping("/PHG/PHG_ElectricalDisaster")
+    @ResponseBody
+    public Map<String, Object> getFireStatistics() {
+
+        Map<String, Object> response = new HashMap<>();
+        try {
+            PHG_PythonExecutor executor = new PHG_PythonExecutor(
+                    "./src/main/python/PHG",
+                    "ElectricalFireStatisticsDashboard");
+            Object ElectricalFireStatistics = executor.executeFunction("ElectricalFireStatistics");
+
+            Object RegionalIgnitionCauses = executor.executeFunction("RegionalIgnitionCauses");
+
+            response.put("status", "success");
+            response.put("ElectricalFireStatistics", ElectricalFireStatistics);
+            response.put("RegionalIgnitionCauses", RegionalIgnitionCauses);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        }
+
+        return response;
     }
 
 }

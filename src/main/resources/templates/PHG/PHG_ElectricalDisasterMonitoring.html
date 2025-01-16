@@ -1,298 +1,282 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>모니터링 페이지</title>
-    <link rel="stylesheet" href="css/PHG_css/PHG_header.css">
-    <link rel="stylesheet" href="css/PHG_css/PHG_footer.css">
-    <style>
-        /* 기본 리셋 및 전역 스타일 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333333;
-        }
-
-        /* 메인 컨텐츠 스타일 */
-        .main {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px; /* 패딩을 줄여 여백 최소화 */
-        }
-
-        .content {
-            width: 100%;
-            height: 100%; /* 높이를 100%으로 설정 */
-            display: flex;
-            flex-wrap: wrap; /* 박스가 여러 줄로 감싸지도록 설정 */
-            justify-content: space-between;
-            align-items: stretch;
-            gap: 20px; /* 박스 간격 유지 */
-            max-width: none; /* 최대 너비 제한 제거 */
-        }
-
-        /* 박스 스타일 */
-        .box {
-            flex: 1 1 calc(33% - 20px); /* 3열 레이아웃 */
-            background-color: #ffffff;
-            border: 2px solid #cccccc;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            text-decoration: none;
-            min-width: 250px; /* 최소 너비 설정 */
-        }
-
-        .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .box h2 {
-            font-size: 1.5em; /* 폰트 크기 조절 */
-            color: #001f3f; /* 남색 */
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .box table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-
-        .box th, .box td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        .box th {
-            background-color: #f2f2f2;
-        }
-
-        /* 반응형 디자인 */
-        @media (max-width: 1200px) {
-            .box {
-                flex: 1 1 calc(50% - 20px); /* 2열 레이아웃 */
-            }
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
-            }
-
-            .box {
-                width: 100%;
-                flex: none;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>모니터링 페이지</title>
+  <link rel="stylesheet" href="css/PHG_css/PHG_header.css">
+  <link rel="stylesheet" href="css/PHG_css/PHG_footer.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333333;
+    }
+    
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
+    
+    /* Flex 대신 CSS Grid 사용 */
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 2컬럼 */
+      grid-template-rows: auto auto auto;
+      grid-template-areas: 
+        "box1 box2"
+        "box3 box3"
+        "box4 box5";
+      gap: 20px;
+      width: 100%;
+    }
+    
+    .box {
+      background-color: #ffffff;
+      border: 2px solid #cccccc;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      min-width: 450px;
+      min-height: 450px;
+    }
+    
+    .box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .box h2 {
+      font-size: 1.5em;
+      color: #001f3f;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    /* 각 영역에 이름 부여 */
+    .box1 { grid-area: box1; }
+    .box2 { grid-area: box2; }
+    .box3 { grid-area: box3; }
+    .box4 { grid-area: box4; }
+    .box5 { grid-area: box5; }
+    
+    /* 테이블 관련 스타일 추가 */
+    .box table {
+      width: 100%; 
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+    }
+    
+    .box th, .box td {
+      border: 1px solid #dddddd;
+      text-align: center;
+      padding: 8px;
+    }
+    
+    .box th {
+      background-color: #f2f2f2;
+    }
+    
+    @media (max-width: 1200px) {
+      .box {
+        min-width: 100%;
+      }
+      .content {
+        grid-template-columns: 1fr; /* 좁은 화면에서는 한 컬럼으로 표시 */
+        grid-template-areas: 
+          "box1"
+          "box2"
+          "box3"
+          "box4"
+          "box5";
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- 헤더 -->
-    <div th:replace="PHG/PHG_header :: header"></div>
-
-    <div class="main">
-        <div class="content">
-            <!-- 2018년 데이터 박스 -->
-            <div class="box">
-                <h2>2018년</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    <tr>
-                        <th>지역</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>경기도</td><td>2738</td></tr>
-                    <tr><td>서울특별시</td><td>1524</td></tr>
-                    <tr><td>경상남도</td><td>745</td></tr>
-                    <!-- 추가 지역 데이터 -->
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    <tr>
-                        <th>유형</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>주거</td><td>3116</td></tr>
-                    <tr><td>산업시설</td><td>1795</td></tr>
-                    <tr><td>생활서비스</td><td>1461</td></tr>
-                    <!-- 추가 유형 데이터 -->
-                </table>
-            </div>
-
-            <!-- 2019년 데이터 박스 -->
-            <div class="box">
-                <h2>2019년</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    <tr>
-                        <th>지역</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>경기도</td><td>2418</td></tr>
-                    <tr><td>서울특별시</td><td>1322</td></tr>
-                    <tr><td>경상남도</td><td>734</td></tr>
-                    <!-- 추가 지역 데이터 -->
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    <tr>
-                        <th>유형</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>주거</td><td>2635</td></tr>
-                    <tr><td>산업시설</td><td>1582</td></tr>
-                    <tr><td>생활서비스</td><td>1324</td></tr>
-                    <!-- 추가 유형 데이터 -->
-                </table>
-            </div>
-
-            <!-- 2020년 데이터 박스 -->
-            <div class="box">
-                <h2>2020년</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    <tr>
-                        <th>지역</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>경기도</td><td>2489</td></tr>
-                    <tr><td>서울특별시</td><td>1265</td></tr>
-                    <tr><td>경상남도</td><td>646</td></tr>
-                    <!-- 추가 지역 데이터 -->
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    <tr>
-                        <th>유형</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>주거</td><td>2712</td></tr>
-                    <tr><td>산업시설</td><td>1621</td></tr>
-                    <tr><td>생활서비스</td><td>1150</td></tr>
-                    <!-- 추가 유형 데이터 -->
-                </table>
-            </div>
-
-            <!-- 2021년 데이터 박스 -->
-            <div class="box">
-                <h2>2021년</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    <tr>
-                        <th>지역</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>경기도</td><td>2514</td></tr>
-                    <tr><td>서울특별시</td><td>1362</td></tr>
-                    <tr><td>경상남도</td><td>681</td></tr>
-                    <!-- 추가 지역 데이터 -->
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    <tr>
-                        <th>유형</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>주거</td><td>2838</td></tr>
-                    <tr><td>산업시설</td><td>1685</td></tr>
-                    <tr><td>생활서비스</td><td>1270</td></tr>
-                    <!-- 추가 유형 데이터 -->
-                </table>
-            </div>
-
-            <!-- 2022년 데이터 박스 -->
-            <div class="box">
-                <h2>2022년</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    <tr>
-                        <th>지역</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>경기도</td><td>2731</td></tr>
-                    <tr><td>서울특별시</td><td>1456</td></tr>
-                    <tr><td>경상남도</td><td>702</td></tr>
-                    <!-- 추가 지역 데이터 -->
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    <tr>
-                        <th>유형</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>주거</td><td>2992</td></tr>
-                    <tr><td>산업시설</td><td>1624</td></tr>
-                    <tr><td>생활서비스</td><td>1165</td></tr>
-                    <!-- 추가 유형 데이터 -->
-                </table>
-            </div>
-
-            <!-- 2023년 데이터 박스 -->
-            <div class="box">
-                <h2>2023년</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    <tr>
-                        <th>지역</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>경기도</td><td>2683</td></tr>
-                    <tr><td>서울특별시</td><td>1411</td></tr>
-                    <tr><td>경상남도</td><td>808</td></tr>
-                    <!-- 추가 지역 데이터 -->
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    <tr>
-                        <th>유형</th>
-                        <th>건수</th>
-                    </tr>
-                    <tr><td>주거</td><td>3162</td></tr>
-                    <tr><td>산업시설</td><td>1621</td></tr>
-                    <tr><td>생활서비스</td><td>1270</td></tr>
-                    <!-- 추가 유형 데이터 -->
-                </table>
-            </div>
-
-            <!-- 추가 연도 데이터 박스는 아래와 같이 복사하여 사용하세요 -->
-
-            <div class="box">
-                <h2>연도</h2>
-                <h3>주요 지역</h3>
-                <table>
-                    
-                </table>
-                <h3>주요 유형</h3>
-                <table>
-                    
-                </table>
-            </div>
-            
-        </div>
+  <div th:replace="PHG/PHG_header :: header"></div>
+  
+  <div class="main">
+    <div class="content">
+      <!-- box1: 차트 영역 -->
+      <div class="box box1">
+        <canvas id="ElectricalFireStatistics"></canvas>
+      </div>
+      
+      <!-- box2: 두 번째 표 영역 -->
+      <div class="box box2">
+        <!-- 다른 내용 추가 가능 -->
+      </div>
+      
+      <!-- box3: 영역 확장 (두 컬럼 차지) -->
+      <div class="box box3">
+        <table id="RegionalIgnitionCauses">
+            <!-- 테이블 내용은 JavaScript에서 동적으로 추가 -->
+          </table>
+      </div>
+      
+      <!-- box4: -->
+      <div class="box box4">
+        <!-- 다른 내용 추가 가능 -->
+      </div>
+      
+      <!-- box5: -->
+      <div class="box box5">
+        <!-- 다른 내용 추가 가능 -->
+      </div>
     </div>
-
-    <!-- 푸터 -->
-    <div th:replace="PHG/PHG_footer.html :: footer"></div>
+  </div>
+  
+  <div th:replace="PHG/PHG_footer.html :: footer"></div>
+  
+  <script>
+    $.ajax({
+      url: '/PHG/PHG_ElectricalDisaster',
+      type: 'POST',
+      dataType: 'json',
+      success: function(response) {
+        if(response.status === 'success') {
+          updateChart(response.ElectricalFireStatistics);
+          updateTables(response.ElectricalFireStatistics);
+          updateRegionalIgnitionTable(response.RegionalIgnitionCauses);
+        } else {
+          alert('데이터를 불러오는 데 실패했습니다.');
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('데이터 로딩 중 오류 발생:', error);
+        alert('데이터를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
+      }
+    });
+    
+    function updateChart(data) {
+      var ctx = document.getElementById('ElectricalFireStatistics').getContext('2d');
+      var chartData = {
+        labels: data.map(function(item) { return item.region_province; }),
+        datasets: [{
+          label: '사고 발생 건수',
+          data: data.map(function(item) { return item.accident_count; }),
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      };
+      
+      new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: '사고 발생 건수'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: '지역'
+              },
+              ticks: {
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: '전기적 요인 화재현황 (2023년 기준)',
+              font: {
+                size: 18
+              }
+            },
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+    
+    function updateTables(data) {
+      // 예제: #year2023Table이 사용된 곳이 없으므로 생략 혹은 추가하시면 됩니다.
+    }
+    
+    /**
+     * RegionalIgnitionCauses 데이터를 토대로, 행은 ignition_type, 열은 region으로 구성된 표 생성
+     */
+    function updateRegionalIgnitionTable(data) {
+      var regions = [];
+      var ignitionTypes = [];
+      
+      data.forEach(function(item) {
+        if (regions.indexOf(item.region) === -1) {
+          regions.push(item.region);
+        }
+        if (ignitionTypes.indexOf(item.ignition_type) === -1) {
+          ignitionTypes.push(item.ignition_type);
+        }
+      });
+      
+      var table = $('#RegionalIgnitionCauses');
+      table.empty();
+      
+      var thead = $('<thead></thead>');
+      var headerRow = $('<tr></tr>');
+      headerRow.append('<th>발화원</th>');
+      regions.forEach(function(region) {
+        headerRow.append('<th>' + region + '</th>');
+      });
+      thead.append(headerRow);
+      table.append(thead);
+      
+      var tbody = $('<tbody></tbody>');
+      
+      ignitionTypes.forEach(function(type) {
+        var row = $('<tr></tr>');
+        row.append('<th>' + type + '</th>');
+        
+        regions.forEach(function(region) {
+          var item = data.find(function(d) {
+            return d.region === region && d.ignition_type === type;
+          });
+          var count = item ? item.ignition_count : 0;
+          row.append('<td>' + count + '</td>');
+        });
+        
+        tbody.append(row);
+      });
+      
+      table.append(tbody);
+    }
+  </script>        
 </body>
 </html>
