@@ -86,7 +86,7 @@
         // 아이디 중복 확인 함수
         function fn_idOverlap() {
             $.ajax({
-                url: "/PHG_join/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
+                url: "/signup/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
                 type: "POST",
                 dataType: "json",
                 data: { "userId": $("#userId").val() },  // 파라미터 이름 확인

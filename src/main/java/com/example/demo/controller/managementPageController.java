@@ -23,13 +23,12 @@ public class managementPageController {
     private dy_boardService service;
     
     @GetMapping("")
-    public String getindex(Model model) {
-        model.addAttribute("headerState", "default");
+    public String getindex() {
         return "managementPage";
     }
 
     @GetMapping("/boardIndex")
-    public String getBoardIndex(Model model) {
+    public String getBoardIndex() {
 	// public String boardList(Model model, @RequestParam(defaultValue = "1") int page) {
 	// 	int pageSize = 10; // 한 페이지에 표시할 게시물 수
 	// 	int offset = (page - 1) * pageSize;
@@ -45,7 +44,6 @@ public class managementPageController {
 	// 	// 페이징 정보 모델에 추가
 	// 	model.addAttribute("currentPage", page);
 	// 	model.addAttribute("totalPages", totalPages);
-        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
 		return "BoardIndex";
 	}
 
@@ -63,7 +61,6 @@ public class managementPageController {
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
 		return "noticeBoard"; // jsp 파일 경로
 	}
 
@@ -81,13 +78,11 @@ public class managementPageController {
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
 		return "qnaBoard"; // jsp 파일 경로
 	}
 
     @GetMapping("/fullCalendar")
-    public String loadFullCalendarPage(Model model) {
-        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
+    public String loadFullCalendarPage() {
         return "fullCalendar"; // templates/fullCalendar.html
     }
 
@@ -114,18 +109,16 @@ public class managementPageController {
 
     // as 등록 페이지
     @GetMapping("/registAS")
-    public String scheduleRegistAS(Model model) {
-        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
+    public String scheduleRegistAS() {
         return "registAS";
     }
 
     // as 처리현황 페이지
 	@GetMapping("/ASprocessStatus")
-    public String getASprocessStatus(Model model) {
+    public String getASprocessStatus() {
 	// public String getProcessStatus(Model model) {
 		// List<ReservationDTO> statusList = scheduleMapper.getStatusList();
 		// model.addAttribute("statusList", statusList);
-        model.addAttribute("isDashboard", true); // 특정 페이지 여부 전달
 		return "ASprocessStatusBoard"; // jsp 파일 경로
 	}
 
