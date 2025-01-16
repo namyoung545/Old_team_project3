@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="css/memberModify.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/footer.css" />
+    <script src="js/header.js" defer></script>
+    <script src="js/memberModify.js" defer></script>
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
+
+    <!-- 메인 컨텐츠 -->
+    <div class="memberModify_container">
+        <h1>마이페이지</h1>
+        <div class="menu_container">
+            <div class="menu-item" onclick="showContent('profile')">회원정보 수정</div>
+            <div class="menu-item" onclick="showContent('delete')">회원탈퇴</div>
+        </div>
+        <div id="profile" class="content_container">
+            <h2>회원정보 수정</h2>
+            <form onsubmit="return validatePassword()" action="/memberModify" method="post">
+                <div class="form-group">
+                    <label for="userid">아이디</label>
+                    <input type="text" id="userId" name="userId" th:value="${user.userId}">
+                </div>
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" th:value="${user.name}">
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" th:value="${user.email}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">전화번호</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" th:value="${user.phoneNumber}">
+                </div>
+                <div class="form-group">
+                    <label for="address">주소</label>
+                    <input type="text" id="address" name="address" th:value="${user.address}" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPw">현재 비밀번호</label>
+                    <input type="password" id="userPw" name="userPw">
+                </div>
+                <div class="form-group">
+                    <label for="userNewPw">새 비밀번호</label>
+                    <input type="password" id="userNewPw" name="userNewPw">
+                </div>
+                <div class="form-group">
+                    <label for="userNewPwCheck">새 비밀번호 확인</label>
+                    <input type="password" id="userNewPwCheck" name="userNewPwCheck">
+                </div>
+                <button type="submit" class="btn">정보 수정</button>
+            </form>
+        </div>
+        <div id="delete" class="content_container" style="display:none;">
+            <h2>회원탈퇴</h2>
+            <p>정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            <button class="btn btn-danger" onclick="memberDelete()">회원탈퇴</button>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+</body>
+</html>
