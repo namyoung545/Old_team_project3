@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,66 @@ import com.example.demo.entity.FiresData;
 
 @Repository
 public interface FiresDataRepository extends JpaRepository<FiresData, Long> {
+        // ------------------------------
+        // 연간 화재 통합 통계 기능
+
+        // 연간 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFires();
+
+        // 연간 원인별 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " WHERE f.fireCause.id IN :fireCauseIds"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFiresByCauseIds(@Param("fireCauseIds") List<Integer> fireCauseIds);
+
+        // 연간 열원별 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " WHERE f.fireIgnition.id IN :fireIgnitionIds"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFiresByIgnitionIds(
+                        @Param("fireIgnitionIds") List<Integer> fireIgnitionIds);
+
+        // 연간 착화물별 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " WHERE f.fireItem.id IN :fireItemIds"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFiresByItemIds(@Param("fireItemIds") List<Integer> fireItemIds);
+
+        // 연간 발화 장소별 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " WHERE f.fireLocation.id IN :fireLocationIds"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFiresByLocationIds(
+                        @Param("fireLocationIds") List<Integer> fireLocationIds);
+
+        // 연간 발화 지역별 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " WHERE f.fireRegion.id IN :fireRegionIds"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFiresByRegionIds(@Param("fireRegionIds") List<Integer> fireRegionIds);
+
+        // 연간 화재 유형별 통합 통계
+        @Query("SELECT YEAR(f.dateTime) AS year, COUNT(f) AS count, SUM(f.damageProperty) AS sumProperty, SUM(f.deaths) AS sumDeaths, SUM(f.injuries) AS sumInjuries, SUM(f.casualtiesTotal) AS sumCasualties"
+                        + " FROM FiresData f"
+                        + " WHERE f.fireType.id IN :fireTypeIds"
+                        + " GROUP BY YEAR(f.dateTime)"
+                        + " ORDER BY YEAR(f.dateTime)")
+        List<Map<String, Object>> analyzeYearlyFiresByTypeIds(@Param("fireTypeIds") List<Integer> fireTypeIds);
+
         // ------------------------------
         // 화재 발생 건수 통계 기능
 

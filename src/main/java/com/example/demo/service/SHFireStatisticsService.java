@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,34 +47,30 @@ public class SHFireStatisticsService {
     private FireStatisticsRepository fireStatisticsRepository;
 
     public void runFireStatistics() {
+        // ------------------------------
+        // 통합 통계 기능
+        analyzeYearlyFires();
+        analyzeYearlyFiresByCauseIds();
+        analyzeYearlyFiresByIgnitionIds();
+        analyzeYearlyFiresByItemIds();
+        analyzeYearlyFiresByLocationIds();
+        analyzeYearlyFiresByRegionIds();
+        analyzeYearlyFiresByTypeIds();
 
-        // 연간 화재 발생 건수 분석
-        analyzeYearlyFiresData();
 
-        // 연간 원인별 화재 발생 건수 분석
-        analyzeYearlyFiresByCauses();
-        // analyzeYearlyFiresByCause("전기적 요인");
+        // ------------------------------
+        // 분할된 통계 기능(사용하지 않음)
+        // // 연간 화재 발생 건수 분석
+        // countYearlyFiresData();
 
-        // 연간 재산피해 분석
-        analyzeYearlyDamageProperty();
-
-        // 연간 원인별 재산피해 분석
-        analyzeYearlyDamagePropertyByCauses();
-        // analyzeYearlyDamagePropertyByCause("전기");
-
-        // 연간 사망 부상자 분석
-        analyzeYearlyCasualties(null);
-
-        // 연간 원인별 사망 부상자 분석
-        analyzeYearlyCasualtiesByCauses();
-        // analyzeYearlyCasualtiesByCause("전기");
-
+        // ------------------------------
         // 기능 확인용 코드
 
         // 분류 목록
         // getFireCauseCategories();
         // getFireCauseSubcategories();
 
+        // ------------------------------
         // 데이터 검증 확인용
         // getFireCauseCategoryIds("전기");
         // getFireCauseSubcategoryIds("불씨");
@@ -90,42 +87,36 @@ public class SHFireStatisticsService {
 
     }
 
-    // 연간 화재 발생 건수 분석
-    private void analyzeYearlyFiresData() {
-        System.out.println("analyzeYearlFiresData");
-        List<Object[]> results = firesDataRepository.countYearlyFires();
+    // ------------------------------
+    // 통합 통계 기능
+    private void analyzeYearlyFires() {
+        System.out.println("analyzeYearlyFires");
+        List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFires();
 
-        for (Object[] result : results) {
-            // System.out.println("Result :" + result);
-            // System.out.println(Arrays.toString(result));
+        for (Map<String, Object> row : results) {
+            // NULL 체크만 수행하고 String으로 변환
+            String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+            String count = row.get("count") != null ? row.get("count").toString() : "0";
+            String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+            String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+            String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+            String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-            String yearValue = result[0].toString();
-            String totalFires = result[1].toString();
+            System.out.println("Year: " + year + ", Count: " + count + ", Total Property Damage: " + sumProperty
+                    + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                    + sumCasualties);
 
-            saveFireStatisticsDB(yearValue, "화재발생건수", totalFires);
+            saveFireStatisticsDB(year, "화재발생건수", count);
+            saveFireStatisticsDB(year, "재산피해합계", sumProperty);
+            saveFireStatisticsDB(year, "사망자 수", sumDeaths);
+            saveFireStatisticsDB(year, "부상자 수", sumInjuries);
+            saveFireStatisticsDB(year, "인명피해 합계", sumCasualties);
         }
     }
 
-    // 연간 원인별 화재 발생 건수 분석(키워드)
-    private void analyzeYearlyFiresByCause(String keyword) {
-        System.out.println("analyzeYearlyFiresByCause");
-        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
-
-        List<Object[]> results = firesDataRepository.countYearlyFiresByCauseIds(fireCauseIds);
-        for (Object[] result : results) {
-            // System.out.println("Result : " + result);
-            // System.out.println(Arrays.toString(result));
-
-            String yearValue = result[0].toString();
-            String countValue = result[1].toString();
-
-            saveFireStatisticsDB(yearValue, "화재발생건수(원인) " + keyword, countValue);
-        }
-    }
-
-    // 연간 원인별 화재 발생 건수 분석(자동)
-    private void analyzeYearlyFiresByCauses() {
-        System.out.println("analyzeYearlyFiresByCauses");
+    // 연간 화재 원인별 통합 통계
+    private void analyzeYearlyFiresByCauseIds() {
+        System.out.println("analyzeYearlyFiresByCauseIds");
         List<String> fireCauses = getFireCauseCategories();
 
         for (String cause : fireCauses) {
@@ -133,188 +124,202 @@ public class SHFireStatisticsService {
             List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
                     .collect(Collectors.toList());
 
-            List<Object[]> results = firesDataRepository.countYearlyFiresByCauseIds(fireCauseIds);
-            for (Object[] result : results) {
-                // System.out.println("Result : " + result);
-                // System.out.println(Arrays.toString(result));
+            List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFiresByCauseIds(fireCauseIds);
+            for (Map<String, Object> row : results) {
+                // NULL 체크만 수행하고 String으로 변환
+                String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+                String count = row.get("count") != null ? row.get("count").toString() : "0";
+                String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+                String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+                String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+                String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                String yearValue = result[0].toString();
-                String countValue = result[1].toString();
+                System.out.println("Cause: " + cause + ", Year: " + year + ", Count: " + count
+                        + ", Total Property Damage: " + sumProperty
+                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                        + sumCasualties);
 
-                saveFireStatisticsDB(yearValue, "화재발생건수(원인) " + cause, countValue);
+                saveFireStatisticsDB(year, "화재발생건수(원인) " + cause, count);
+                saveFireStatisticsDB(year, "재산피해합계(원인) " + cause, sumProperty);
+                saveFireStatisticsDB(year, "사망자 수(원인) " + cause, sumDeaths);
+                saveFireStatisticsDB(year, "부상자 수(원인) " + cause, sumInjuries);
+                saveFireStatisticsDB(year, "인명피해 합계(원인) " + cause, sumCasualties);
             }
         }
     }
 
-    // 연간 화재 열원별 분석(자동)
-    private void analyzeYearlyFiresByIgnitions() {
-        System.out.println("analyzeFiresByIgnitions");
+    // 연간 열원별 통합 통계
+    private void analyzeYearlyFiresByIgnitionIds() {
+        System.out.println("analyzeYearlyFiresByIgnitionIds");
         List<String> fireIgnitions = getFireIgnitionCategories();
 
         for (String ignition : fireIgnitions) {
             List<FireIgnitionData> fireIgnitionDataList = fireIgnitionDataRepository.findByIgnitionCategory(ignition);
-            List<Integer> fireIgnitionIds = fireIgnitionDataList.stream().map(FireIgnitionData::getId).collect(Collectors.toList());
-
-            // List<Object[]> results = firesDataRepository.countYearlyCasualtiesByIgnitionIds(fireIgnitionIds);
-        }
-
-    }
-
-    // 연간 재산피해 분석
-    private void analyzeYearlyDamageProperty() {
-        System.out.println("analyzeYearlyDamageProperty");
-        List<Object[]> results = firesDataRepository.sumYearlyDamageProperty();
-
-        for (Object[] result : results) {
-            // System.out.println("Result : " + result);
-            // System.out.println(Arrays.toString(result));
-
-            String yearValue = result[0].toString();
-            String sumDamageProperty = result[1].toString();
-
-            saveFireStatisticsDB(yearValue, "재산피해합계", sumDamageProperty);
-        }
-    }
-
-    // 연간 원인별 재산피해 분석(키워드)
-    private void analyzeYearlyDamagePropertyByCause(String keyword) {
-        System.out.println("analyzeYearlyDamagePropertyByCause");
-        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
-
-        List<Object[]> results = firesDataRepository.sumYearlyDamagePropertyByCauseIds(fireCauseIds);
-        for (Object[] result : results) {
-            // System.out.println("Result : " + result);
-            // System.out.println(Arrays.toString(result));
-
-            String yearValue = result[0].toString();
-            String sumDamageProperty = result[1].toString();
-
-            saveFireStatisticsDB(yearValue, "재산피해합계(원인) " + keyword, sumDamageProperty);
-        }
-    }
-
-    // 연간 원인별 재산피해 분석(자동)
-    private void analyzeYearlyDamagePropertyByCauses() {
-        System.out.println("analyzeYearlyDamagePropertyByCauses");
-        List<String> fireCauses = getFireCauseCategories();
-
-        for (String cause : fireCauses) {
-            List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findByCauseCategory(cause);
-            List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
+            List<Integer> fireIgnitionIds = fireIgnitionDataList.stream().map(FireIgnitionData::getId)
                     .collect(Collectors.toList());
 
-            List<Object[]> results = firesDataRepository.sumYearlyDamagePropertyByCauseIds(fireCauseIds);
-            for (Object[] result : results) {
-                // System.out.println("Result : " + result);
-                // System.out.println(Arrays.toString(result));
+            List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFiresByIgnitionIds(fireIgnitionIds);
+            for (Map<String, Object> row : results) {
+                // NULL 체크만 수행하고 String으로 변환
+                String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+                String count = row.get("count") != null ? row.get("count").toString() : "0";
+                String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+                String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+                String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+                String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                String yearValue = result[0].toString();
-                String sumDamageProperty = result[1].toString();
+                System.out.println("Ignition: " + ignition + ", Year: " + year + ", Count: " + count
+                        + ", Total Property Damage: " + sumProperty
+                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                        + sumCasualties);
 
-                saveFireStatisticsDB(yearValue, "재산피해합계(원인) " + cause, sumDamageProperty);
+                saveFireStatisticsDB(year, "화재발생건수(열원) " + ignition, count);
+                saveFireStatisticsDB(year, "재산피해합계(열원) " + ignition, sumProperty);
+                saveFireStatisticsDB(year, "사망자 수(열원) " + ignition, sumDeaths);
+                saveFireStatisticsDB(year, "부상자 수(열원) " + ignition, sumInjuries);
+                saveFireStatisticsDB(year, "인명피해 합계(열원) " + ignition, sumCasualties);
             }
         }
     }
 
-    // 연간 사망 부상자 통계 분석
-    private void analyzeYearlyCasualties(Integer year) {
-        System.out.println("analyzeYearlyCasualty " + year);
-        List<Object[]> results;
-        if (year != null) {
-            results = firesDataRepository.countYearlyCasualties(year);
-        } else {
-            results = firesDataRepository.countYearlyCasualties();
-        }
+    // 연간 착화물별 통합 통계
+    private void analyzeYearlyFiresByItemIds() {
+        System.out.println("analyzeYearlyFiresByItemIds");
+        List<String> fireItems = getFireItemCategories();
 
-        // 결과 저장
-        for (Object[] result : results) {
-            String yearValue = result[0].toString();
-            String totalDeaths = result[1].toString();
-            String totalInjuries = result[2].toString();
-            String totalCasualties = result[3].toString();
-
-            // "사망자 수" 통계 저장 또는 업데이트
-            saveFireStatisticsDB(yearValue, "사망자 수", totalDeaths);
-
-            // "부상자 수" 통계 저장 또는 업데이트
-            saveFireStatisticsDB(yearValue, "부상자 수", totalInjuries);
-
-            // "인명피해 합계" 통계 저장 또는 업데이트
-            saveFireStatisticsDB(yearValue, "인명피해 합계", totalCasualties);
-        }
-    }
-
-    // 연간 원인별 사망자 부상자 분석(키워드)
-    private void analyzeYearlyCasualtiesByCause(String keyword) {
-        System.out.println("analyzeYearlyCasualtiesByCause");
-        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
-        List<Object[]> results = firesDataRepository.countYearlyCasualtiesByCausesIds(fireCauseIds);
-        for (Object[] result : results) {
-            // System.out.println("Result : " + result);
-            // System.out.println(Arrays.toString(result));
-
-            String yearValue = result[0].toString();
-            String countDeaths = result[1].toString();
-            String countInjuries = result[2].toString();
-            String countCasualties = result[3].toString();
-
-            saveFireStatisticsDB(yearValue, "사망자 수(원인) " + keyword, countDeaths);
-            saveFireStatisticsDB(yearValue, "부상자 수(원인) " + keyword, countInjuries);
-            saveFireStatisticsDB(yearValue, "인명피해 합계(원인) " + keyword, countCasualties);
-        }
-    }
-
-    // 연간 원인별 사망자 부상자 분석(자동)
-    private void analyzeYearlyCasualtiesByCauses() {
-        System.out.println("analyzeYearlyCasualtiesByCauses");
-        List<String> fireCauses = getFireCauseCategories();
-
-        for (String cause : fireCauses) {
-            List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findByCauseCategory(cause);
-            List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
+        for (String item : fireItems) {
+            List<FireItemData> fireItemDataList = fireItemDataRepository.findByItemCategory(item);
+            List<Integer> fireItemIds = fireItemDataList.stream().map(FireItemData::getId)
                     .collect(Collectors.toList());
 
-            List<Object[]> results = firesDataRepository.countYearlyCasualtiesByCausesIds(fireCauseIds);
-            for (Object[] result : results) {
-                // System.out.println("Result : " + result);
-                // System.out.println(Arrays.toString(result));
+            List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFiresByItemIds(fireItemIds);
+            for (Map<String, Object> row : results) {
+                // NULL 체크만 수행하고 String으로 변환
+                String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+                String count = row.get("count") != null ? row.get("count").toString() : "0";
+                String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+                String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+                String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+                String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                String yearValue = result[0].toString();
-                String countDeaths = result[1].toString();
-                String countInjuries = result[2].toString();
-                String countCasualties = result[3].toString();
+                System.out.println("Item: " + item + ", Year: " + year + ", Count: " + count
+                        + ", Total Property Damage: " + sumProperty
+                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                        + sumCasualties);
 
-                saveFireStatisticsDB(yearValue, "사망자 수(원인) " + cause, countDeaths);
-                saveFireStatisticsDB(yearValue, "부상자 수(원인) " + cause, countInjuries);
-                saveFireStatisticsDB(yearValue, "인명피해 합계(원인) " + cause, countCasualties);
+                saveFireStatisticsDB(year, "화재발생건수(착화물) " + item, count);
+                saveFireStatisticsDB(year, "재산피해합계(착화물) " + item, sumProperty);
+                saveFireStatisticsDB(year, "사망자 수(착화물) " + item, sumDeaths);
+                saveFireStatisticsDB(year, "부상자 수(착화물) " + item, sumInjuries);
+                saveFireStatisticsDB(year, "인명피해 합계(착화물) " + item, sumCasualties);
             }
         }
     }
 
-    // 통계 데이터 업데이트 저장
-    private void saveFireStatisticsDB(String year, String statName, String statValue) {
-        // 기존 데이터 조회
-        Optional<FireStatistics> existingStat = fireStatisticsRepository.findByYearAndStatName(year, statName);
-        FireStatistics fireStatistics = existingStat.orElse(new FireStatistics());
+    // 연간 발화 장소별 통합 통계
+    private void analyzeYearlyFiresByLocationIds() {
+        System.out.println("analyzeYearlyFiresByLocationIds");
+        List<String> fireLocations = getFireLocationMainCategories();
 
-        // 기존 데이터가 있으면 업데이트, 없으면 새로 생성
-        fireStatistics.setYear(year);
-        fireStatistics.setStatName(statName);
-        fireStatistics.setStatValue(statValue);
+        for (String location : fireLocations) {
+            List<FireLocationData> fireLocationDataList = fireLocationDataRepository.findByLocationMainCategory(location);
+            List<Integer> fireLocationIds = fireLocationDataList.stream().map(FireLocationData::getId)
+                    .collect(Collectors.toList());
 
-        // 시간 정보 수동처리 (현재 자동화 시킴)
-        // fireStatistics.setCreatedAt(fireStatistics.getCreatedAt() == null ?
-        // LocalDateTime.now() : fireStatistics.getCreatedAt());
-        // fireStatistics.setUpdatedAt(LocalDateTime.now());
+            List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFiresByLocationIds(fireLocationIds);
+            for (Map<String, Object> row : results) {
+                // NULL 체크만 수행하고 String으로 변환
+                String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+                String count = row.get("count") != null ? row.get("count").toString() : "0";
+                String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+                String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+                String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+                String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-        // 기존 데이터가 있으면 updatedAt을 갱신해야 함
-        if (existingStat.isPresent()) {
-            fireStatistics.setUpdatedAt(LocalDateTime.now()); // 수동으로 updatedAt 갱신
+                System.out.println("Location: " + location + ", Year: " + year + ", Count: " + count
+                        + ", Total Property Damage: " + sumProperty
+                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                        + sumCasualties);
+
+                saveFireStatisticsDB(year, "화재발생건수(장소) " + location, count);
+                saveFireStatisticsDB(year, "재산피해합계(장소) " + location, sumProperty);
+                saveFireStatisticsDB(year, "사망자 수(장소) " + location, sumDeaths);
+                saveFireStatisticsDB(year, "부상자 수(장소) " + location, sumInjuries);
+                saveFireStatisticsDB(year, "인명피해 합계(장소) " + location, sumCasualties);
+            }
         }
-
-        // 저장
-        fireStatisticsRepository.save(fireStatistics);
     }
+
+    // 연간 지역별 통합 통계
+    private void analyzeYearlyFiresByRegionIds() {
+        System.out.println("analyzeYearlyFiresByRegionIds");
+        List<String> fireRegions = getFireRegionProvinces();
+
+        for (String region : fireRegions) {
+            List<FireRegionData> fireRegionDataList = fireRegionDataRepository.findByRegionProvince(region);
+            List<Integer> fireRegionIds = fireRegionDataList.stream().map(FireRegionData::getId)
+                    .collect(Collectors.toList());
+
+            List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFiresByRegionIds(fireRegionIds);
+            for (Map<String, Object> row : results) {
+                // NULL 체크만 수행하고 String으로 변환
+                String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+                String count = row.get("count") != null ? row.get("count").toString() : "0";
+                String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+                String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+                String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+                String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
+
+                System.out.println("Region: " + region + ", Year: " + year + ", Count: " + count
+                        + ", Total Property Damage: " + sumProperty
+                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                        + sumCasualties);
+
+                saveFireStatisticsDB(year, "화재발생건수(지역) " + region, count);
+                saveFireStatisticsDB(year, "재산피해합계(지역) " + region, sumProperty);
+                saveFireStatisticsDB(year, "사망자 수(지역) " + region, sumDeaths);
+                saveFireStatisticsDB(year, "부상자 수(지역) " + region, sumInjuries);
+                saveFireStatisticsDB(year, "인명피해 합계(지역) " + region, sumCasualties);
+            }
+        }
+    }
+
+    // 연간 화재 유형별 통합 통계
+    private void analyzeYearlyFiresByTypeIds() {
+        System.out.println("analyzeYearlyFiresByTypeIds");
+        List<String> fireTypes = getFireTypes();
+
+        for (String type : fireTypes) {
+            List<FireTypeData> fireTypeDataList = fireTypeDataRepository.findByType(type);
+            List<Integer> fireTypeIds = fireTypeDataList.stream().map(FireTypeData::getId)
+                    .collect(Collectors.toList());
+
+            List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFiresByTypeIds(fireTypeIds);
+            for (Map<String, Object> row : results) {
+                // NULL 체크만 수행하고 String으로 변환
+                String year = row.get("year") != null ? row.get("year").toString() : "N/A";
+                String count = row.get("count") != null ? row.get("count").toString() : "0";
+                String sumProperty = row.get("sumProperty") != null ? row.get("sumProperty").toString() : "0";
+                String sumDeaths = row.get("sumDeaths") != null ? row.get("sumDeaths").toString() : "0";
+                String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
+                String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
+
+                System.out.println("Type: " + type + ", Year: " + year + ", Count: " + count
+                        + ", Total Property Damage: " + sumProperty
+                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                        + sumCasualties);
+
+                saveFireStatisticsDB(year, "화재발생건수(유형) " + type, count);
+                saveFireStatisticsDB(year, "재산피해합계(유형) " + type, sumProperty);
+                saveFireStatisticsDB(year, "사망자 수(유형) " + type, sumDeaths);
+                saveFireStatisticsDB(year, "부상자 수(유형) " + type, sumInjuries);
+                saveFireStatisticsDB(year, "인명피해 합계(유형) " + type, sumCasualties);
+            }
+        }
+    }
+
+    // ------------------------------
+    // 통계 카테고리 검색 기능
 
     // 화재 원인 카테고리 목록
     private List<String> getFireCauseCategories() {
@@ -390,6 +395,216 @@ public class SHFireStatisticsService {
     private List<String> getFireTypes() {
         System.out.println("getFireTypes");
         return fireTypeDataRepository.findDistinctFireType();
+    }
+
+    // ------------------------------
+    // DB 업데이트 기능
+    // 통계 데이터 업데이트 저장
+    private void saveFireStatisticsDB(String year, String statName, String statValue) {
+        // 기존 데이터 조회
+        Optional<FireStatistics> existingStat = fireStatisticsRepository.findByYearAndStatName(year, statName);
+        FireStatistics fireStatistics = existingStat.orElse(new FireStatistics());
+
+        // 기존 데이터가 있으면 업데이트, 없으면 새로 생성
+        fireStatistics.setYear(year);
+        fireStatistics.setStatName(statName);
+        fireStatistics.setStatValue(statValue);
+
+        // 시간 정보 수동처리 (현재 자동화 시킴)
+        // fireStatistics.setCreatedAt(fireStatistics.getCreatedAt() == null ?
+        // LocalDateTime.now() : fireStatistics.getCreatedAt());
+        // fireStatistics.setUpdatedAt(LocalDateTime.now());
+
+        // 기존 데이터가 있으면 updatedAt을 갱신해야 함
+        if (existingStat.isPresent()) {
+            fireStatistics.setUpdatedAt(LocalDateTime.now()); // 수동으로 updatedAt 갱신
+        }
+
+        // 저장
+        fireStatisticsRepository.save(fireStatistics);
+    }
+
+    // ------------------------------
+    // 백업 기능 작동하지만 사용하지 말 것
+
+    // ------------------------------
+    // 분할 통계 기능 (사용하지 않음)
+    // 연간 화재 발생 건수 분석
+    private void countYearlyFiresData() {
+        List<Object[]> results = firesDataRepository.countYearlyFires();
+
+        for (Object[] result : results) {
+            // System.out.println("Result :" + result);
+            // System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String totalFires = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "화재발생건수", totalFires);
+        }
+    }
+
+    // 연간 원인별 화재 발생 건수 분석(키워드)
+    private void countYearlyFiresByCause(String keyword) {
+        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
+
+        List<Object[]> results = firesDataRepository.countYearlyFiresByCauseIds(fireCauseIds);
+        for (Object[] result : results) {
+            // System.out.println("Result : " + result);
+            // System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String countValue = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "화재발생건수(원인) " + keyword, countValue);
+        }
+    }
+
+    // 연간 원인별 화재 발생 건수 분석(자동)
+    private void countYearlyFiresByCauses() {
+        List<String> fireCauses = getFireCauseCategories();
+
+        for (String cause : fireCauses) {
+            List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findByCauseCategory(cause);
+            List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
+                    .collect(Collectors.toList());
+
+            List<Object[]> results = firesDataRepository.countYearlyFiresByCauseIds(fireCauseIds);
+            for (Object[] result : results) {
+                // System.out.println("Result : " + result);
+                // System.out.println(Arrays.toString(result));
+
+                String yearValue = result[0].toString();
+                String countValue = result[1].toString();
+
+                saveFireStatisticsDB(yearValue, "화재발생건수(원인) " + cause, countValue);
+            }
+        }
+    }
+
+    // 연간 재산피해 분석
+    private void sumYearlyDamageProperty() {
+        List<Object[]> results = firesDataRepository.sumYearlyDamageProperty();
+
+        for (Object[] result : results) {
+            // System.out.println("Result : " + result);
+            // System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String sumDamageProperty = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "재산피해합계", sumDamageProperty);
+        }
+    }
+
+    // 연간 원인별 재산피해 분석(키워드)
+    private void sumYearlyDamagePropertyByCause(String keyword) {
+        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
+
+        List<Object[]> results = firesDataRepository.sumYearlyDamagePropertyByCauseIds(fireCauseIds);
+        for (Object[] result : results) {
+            // System.out.println("Result : " + result);
+            // System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String sumDamageProperty = result[1].toString();
+
+            saveFireStatisticsDB(yearValue, "재산피해합계(원인) " + keyword, sumDamageProperty);
+        }
+    }
+
+    // 연간 원인별 재산피해 분석(자동)
+    private void sumYearlyDamagePropertyByCauses() {
+        List<String> fireCauses = getFireCauseCategories();
+
+        for (String cause : fireCauses) {
+            List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findByCauseCategory(cause);
+            List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
+                    .collect(Collectors.toList());
+
+            List<Object[]> results = firesDataRepository.sumYearlyDamagePropertyByCauseIds(fireCauseIds);
+            for (Object[] result : results) {
+                // System.out.println("Result : " + result);
+                // System.out.println(Arrays.toString(result));
+
+                String yearValue = result[0].toString();
+                String sumDamageProperty = result[1].toString();
+
+                saveFireStatisticsDB(yearValue, "재산피해합계(원인) " + cause, sumDamageProperty);
+            }
+        }
+    }
+
+    // 연간 사망 부상자 통계 분석
+    private void countYearlyCasualties(Integer year) {
+        List<Object[]> results;
+        if (year != null) {
+            results = firesDataRepository.countYearlyCasualties(year);
+        } else {
+            results = firesDataRepository.countYearlyCasualties();
+        }
+
+        // 결과 저장
+        for (Object[] result : results) {
+            String yearValue = result[0].toString();
+            String totalDeaths = result[1].toString();
+            String totalInjuries = result[2].toString();
+            String totalCasualties = result[3].toString();
+
+            // "사망자 수" 통계 저장 또는 업데이트
+            saveFireStatisticsDB(yearValue, "사망자 수", totalDeaths);
+
+            // "부상자 수" 통계 저장 또는 업데이트
+            saveFireStatisticsDB(yearValue, "부상자 수", totalInjuries);
+
+            // "인명피해 합계" 통계 저장 또는 업데이트
+            saveFireStatisticsDB(yearValue, "인명피해 합계", totalCasualties);
+        }
+    }
+
+    // 연간 원인별 사망자 부상자 분석(키워드)
+    private void countYearlyCasualtiesByCause(String keyword) {
+        List<Integer> fireCauseIds = getFireCauseCategoryIds(keyword);
+        List<Object[]> results = firesDataRepository.countYearlyCasualtiesByCausesIds(fireCauseIds);
+        for (Object[] result : results) {
+            // System.out.println("Result : " + result);
+            // System.out.println(Arrays.toString(result));
+
+            String yearValue = result[0].toString();
+            String countDeaths = result[1].toString();
+            String countInjuries = result[2].toString();
+            String countCasualties = result[3].toString();
+
+            saveFireStatisticsDB(yearValue, "사망자 수(원인) " + keyword, countDeaths);
+            saveFireStatisticsDB(yearValue, "부상자 수(원인) " + keyword, countInjuries);
+            saveFireStatisticsDB(yearValue, "인명피해 합계(원인) " + keyword, countCasualties);
+        }
+    }
+
+    // 연간 원인별 사망자 부상자 분석(자동)
+    private void countYearlyCasualtiesByCauses() {
+        List<String> fireCauses = getFireCauseCategories();
+
+        for (String cause : fireCauses) {
+            List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findByCauseCategory(cause);
+            List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
+                    .collect(Collectors.toList());
+
+            List<Object[]> results = firesDataRepository.countYearlyCasualtiesByCausesIds(fireCauseIds);
+            for (Object[] result : results) {
+                // System.out.println("Result : " + result);
+                // System.out.println(Arrays.toString(result));
+
+                String yearValue = result[0].toString();
+                String countDeaths = result[1].toString();
+                String countInjuries = result[2].toString();
+                String countCasualties = result[3].toString();
+
+                saveFireStatisticsDB(yearValue, "사망자 수(원인) " + cause, countDeaths);
+                saveFireStatisticsDB(yearValue, "부상자 수(원인) " + cause, countInjuries);
+                saveFireStatisticsDB(yearValue, "인명피해 합계(원인) " + cause, countCasualties);
+            }
+        }
     }
 
     // 화재 원인 카테고리 ID 정보
