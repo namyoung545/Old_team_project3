@@ -233,7 +233,7 @@ public class PHGController {
         Map<String, Object> response = new HashMap<>();
         try {
             PHG_PythonExecutor executor = new PHG_PythonExecutor(
-                    "C:\\My\\Spring_Example\\UI_Project\\src\\main\\webapp\\resources\\Python",
+                    "./src/main/python/PHG",
                     "ElectricalFireStatisticsDashboard");
             Object ElectricalFireStatistics = executor.executeFunction("ElectricalFireStatistics");
 
