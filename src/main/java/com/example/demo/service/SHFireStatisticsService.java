@@ -90,7 +90,6 @@ public class SHFireStatisticsService {
 
     }
 
-
     // 연간 화재 발생 건수 분석
     private void analyzeYearlyFiresData() {
         System.out.println("analyzeYearlFiresData");
@@ -147,12 +146,20 @@ public class SHFireStatisticsService {
         }
     }
 
-    // 화재 열연별 분석 
+    // 연간 화재 열원별 분석(자동)
     private void analyzeYearlyFiresByIgnitions() {
         System.out.println("analyzeFiresByIgnitions");
-        // List<String> fireIgnitions = getFireIgnitionCategories();
-        
+        List<String> fireIgnitions = getFireIgnitionCategories();
+
+        for (String ignition : fireIgnitions) {
+            List<FireIgnitionData> fireIgnitionDataList = fireIgnitionDataRepository.findByIgnitionCategory(ignition);
+            List<Integer> fireIgnitionIds = fireIgnitionDataList.stream().map(FireIgnitionData::getId).collect(Collectors.toList());
+
+            // List<Object[]> results = firesDataRepository.countYearlyCasualtiesByIgnitionIds(fireIgnitionIds);
+        }
+
     }
+
     // 연간 재산피해 분석
     private void analyzeYearlyDamageProperty() {
         System.out.println("analyzeYearlyDamageProperty");
@@ -323,6 +330,66 @@ public class SHFireStatisticsService {
         List<String> fireCauses = fireCauseDataRepository.findDistinctCauseSubcategory();
         System.out.println("fireCauseSubcategories : " + fireCauses);
         return fireCauses;
+    }
+
+    // 화재 열원 카테고리 목록
+    private List<String> getFireIgnitionCategories() {
+        System.out.println("getFireIgnitionCategories");
+        return fireIgnitionDataRepository.findDistinctIgnitionCategory();
+    }
+
+    // 화재 열원 서브 카테고리 목록
+    private List<String> getFireIgnitionSubcategories() {
+        System.out.println("getFireIgnitionSubcategories");
+        return fireIgnitionDataRepository.findDistinctIgnitionSubcategory();
+    }
+
+    // 화재 착화물 카테고리 목록
+    private List<String> getFireItemCategories() {
+        System.out.println("getFireItemCategories");
+        return fireItemDataRepository.findDistinctItemCategory();
+    }
+
+    // 화재 착화물 상세 목록
+    private List<String> getFireItemDetails() {
+        System.out.println("getFireItemDetails");
+        return fireItemDataRepository.findDistinctItemDetail();
+    }
+
+    // 화재 발화 장소 주요 카테고리 목록
+    private List<String> getFireLocationMainCategories() {
+        System.out.println("getFireLocationMainCategories");
+        return fireLocationDataRepository.findDistinctLocationMainCategory();
+    }
+
+    // 화재 발화 장소 서브 카테고리 목록
+    private List<String> getFireLocationSubCategories() {
+        System.out.println("GetFireLocationSubCategories");
+        return fireLocationDataRepository.findDistinctLocationSubCategory();
+    }
+
+    // 화재 발화 장소 세보 목록
+    private List<String> getFireLocationDetails() {
+        System.out.println("getFireLocationDetails");
+        return fireLocationDataRepository.findDistinctLocationDetail();
+    }
+
+    // 화재 시도 목록
+    private List<String> getFireRegionProvinces() {
+        System.out.println("getFireRegionProvince");
+        return fireRegionDataRepository.findDistinctRegionProvince();
+    }
+
+    // 화재 시군구 목록
+    private List<String> getFireRegionCities() {
+        System.out.println("getFireRegionCities");
+        return fireRegionDataRepository.findDistinctRegionCity();
+    }
+
+    // 화재 유형 목록
+    private List<String> getFireTypes() {
+        System.out.println("getFireTypes");
+        return fireTypeDataRepository.findDistinctFireType();
     }
 
     // 화재 원인 카테고리 ID 정보
