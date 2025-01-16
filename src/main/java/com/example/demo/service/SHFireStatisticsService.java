@@ -48,14 +48,14 @@ public class SHFireStatisticsService {
 
     public void runFireStatistics() {
         // ------------------------------
-        // 통합 통계 기능
-        analyzeYearlyFires();
-        analyzeYearlyFiresByCauseIds();
-        analyzeYearlyFiresByIgnitionIds();
-        analyzeYearlyFiresByItemIds();
-        analyzeYearlyFiresByLocationIds();
-        analyzeYearlyFiresByRegionIds();
-        analyzeYearlyFiresByTypeIds();
+        // 통합 통계 기능 (완성)
+        // analyzeYearlyFires();
+        // analyzeYearlyFiresByCauseIds();
+        // analyzeYearlyFiresByIgnitionIds();
+        // analyzeYearlyFiresByItemIds();
+        // analyzeYearlyFiresByLocationIds();
+        // analyzeYearlyFiresByRegionIds();
+        // analyzeYearlyFiresByTypeIds();
 
 
         // ------------------------------
