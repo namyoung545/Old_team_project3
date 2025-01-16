@@ -1,4 +1,4 @@
-<div th:fragment="managementPage_headscript">
+<head th:fragment="managementPage_headscript">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -7,4 +7,16 @@
     <link rel="stylesheet" href="css/footer.css" />
     <link rel="stylesheet" href="css/managementPage.css" />
     <script src="js/header.js" defer></script>
-</div>
+    <script src="js/managementPageFetchAPI.js" defer></script>
+    <script src="js/headerFetchAPI.js" defer></script>
+    <script src="js/managementPage.js" defer></script>
+
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="/css/fullCalendar.css">
+    <script src="js/fullCalendar.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/ko.global.js"></script>
+
+    <!-- Board -->
+    <link rel="stylesheet" href="/css/noticeBoard.css">
+</head>
