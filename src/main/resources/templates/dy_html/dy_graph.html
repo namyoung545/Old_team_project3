@@ -124,6 +124,18 @@
                                         }
                                     }
                                 }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            // hover 시 숫자값 형식화
+                                            const value = context.raw; // 데이터값(raw value)
+                                            return Math.round(value).toLocaleString(); // 소숫점 제거 후 천 단위 구분                                        }
+                                    
+                                        }
+                                    }
+                                }
                             }
                         }
                     });
@@ -132,6 +144,6 @@
                 console.error("Error fetching or rendering data:", error);
             }
         }
-    </script>
+</script>
 </body>
 </html>
