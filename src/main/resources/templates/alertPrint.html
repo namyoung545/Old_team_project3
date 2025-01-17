@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<body>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    // Thymeleaf 표현식은 JS 주석에 넣는다.
+    let msg = /*[[${msg}]]*/ '기본 메시지';
+    let url = /*[[${url}]]*/ '/defaultUrl';
+    
+    alert(msg);
+    document.location.href = url;
+  /*]]>*/
+  </script>
+</body>
+</html>

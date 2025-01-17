@@ -2,11 +2,8 @@
 <html lang="ko">
 
 <head>
-  <title>풍력 발전량 예측 모니터링</title>
-  <div th:insert="dashboard_headscript.html :: dashboard_headscript"></div> <!-- main 삽입 -->
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
-  <script type="module" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <title>전기재해 모니터링</title>
+  <head th:replace="dashboard_headscript.html :: dashboard_headscript"></head> <!-- main 삽입 -->
 </head>
 
 <body>

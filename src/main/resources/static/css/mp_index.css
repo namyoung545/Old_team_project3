@@ -1,18 +1,10 @@
-/* 전체 페이지 기본 스타일 */
+전체 페이지 기본 스타일
 #mp_index_container {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4; /* 밝은 회색 배경 */
-}
-
-/* 메인 콘텐츠 */
-main {
-    padding: 40px 20px;
+    flex: 1;
     display: flex;
-    justify-content: center;  /* 가로로 가운데 정렬 */
-    align-items: center;      /* 세로로 가운데 정렬 */
-    height: 100vh;            /* 화면 전체 높이를 사용 */
+    justify-content: center;
+    align-items: center;
+    padding: 10px; /* 패딩을 줄여 여백 최소화 */
 }
 
 /* home 컨테이너 스타일 */
@@ -83,7 +75,7 @@ main {
 .mp_menuBox:hover {
     transform: translateY(-5px); /* 메뉴 박스 위로 살짝 떠오르게 */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
-    background-color: #fdf1e7; /* hover 시 배경색 변화 (연한 주황색) */
+    background-color: #FFEB62; /* hover 시 배경색 변화 (연한 주황색) */
 }
 
 /* 작은 화면에서 메뉴 박스 크기 조정 */

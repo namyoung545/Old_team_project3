@@ -1,18 +1,43 @@
 /* 헤더 스타일 */
 header {
-    background-color: #001f3f;
+    background-color: #f5f6f7;
     /* 남색 */
-    color: #ffffff;
+    color: #000000;
+    height: 80px;
     padding: 20px;
-    text-align: center;
+    text-align: left;
     font-size: 1.5em;
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    box-sizing: border-box;
 }
 
-#headerText {
+.headerText {
     font-size: 1.8em;
+}
+
+#defaultHeader{
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+}
+
+#headerText_containers{
+    grid-column: 1;
+    font-size: 0.7em;
+}
+
+#header_link_containers{
+    grid-column: 2;
+    text-align: center;
+    align-content: center;
+}
+
+#headerboardIndex_containers{
+    grid-column: 3;
+    text-align: right;
+    align-content: center;
 }
 
 /* 반응형 디자인 */
@@ -25,21 +50,48 @@ header {
 }
 
 /* 로그인 링크 스타일 */
-.login-link {
+.header_link_default {
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    background-color: #ffffff;
+    background-color: #FFE000;
     color: #001f3f;
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
+    gap:20px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
 }
 
-.login-link:hover {
-    background-color: #001f3f;
-    color: #ffffff;
+.header_link_container{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);    
+}
+
+.header_link_boardIndex, .header_link_memberModify{
+    background-color: #FFE000;
+    color: #001f3f;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+    gap:20px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
+}
+
+.header_link_default:hover,.header_link_boardIndex:hover, .header_link_memberModify:hover {
+    background-color: #DAB800;
+    /* color: #ffffff; */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 */
+}
+
+.header_link_default:active,.header_link_boardIndex:active, .header_link_memberModify:active {
+	background-color: #FFD700; /* 클릭 시 배경색 */
+	box-shadow: none; /* 클릭 시 그림자 제거 */
 }
