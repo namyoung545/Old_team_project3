@@ -18,23 +18,41 @@ header {
 }
 
 #defaultHeader{
+    display: grid;
+    height:auto;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     gap: 10px;
 }
 
-#headerText_containers{
+#indexHeader{
+    display: grid;
+    height:auto;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+}
+
+#boardHeader{
+    display:grid;
+    height: auto;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+}
+
+.headerText_container{
     grid-column: 1;
     font-size: 0.7em;
 }
 
-#header_link_containers{
+.header_link_container{
     grid-column: 2;
     text-align: center;
     align-content: center;
 }
 
-#headerboardIndex_containers{
+.headerboardIndex_container{
     grid-column: 3;
     text-align: right;
     align-content: center;
@@ -64,13 +82,6 @@ header {
     transition: background-color 0.3s, color 0.3s;
     gap:20px;
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
-}
-
-.header_link_container{
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);    
 }
 
 .header_link_boardIndex, .header_link_memberModify{

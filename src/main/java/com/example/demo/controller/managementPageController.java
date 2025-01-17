@@ -82,7 +82,7 @@ public class managementPageController {
 	}
 
     @GetMapping("/fullCalendar")
-    public String loadFullCalendarPage() {
+    public String loadFullCalendarPage(Model model) {
         return "fullCalendar"; // templates/fullCalendar.html
     }
 
