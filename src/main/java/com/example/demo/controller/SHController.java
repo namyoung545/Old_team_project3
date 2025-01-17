@@ -19,4 +19,9 @@ public class SHController {
         return "/sh_html/sh_map";
     }
     
+    @GetMapping("/sh_chart")
+    public String getMethodName(Model model) {
+        return "/sh_html/sh_chart";
+    }
+    
 }

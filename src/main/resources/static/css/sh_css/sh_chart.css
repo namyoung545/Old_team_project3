@@ -1,0 +1,26 @@
+* {
+    margin: 0;
+}
+
+main {
+    width: 100vw;
+    height: 100vh;
+    background-color: #d0d0d050;
+}
+
+.mainContainer {
+    padding: 1rem;
+}
+
+.chartBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fefefe;
+    width: 50%;
+    height:auto;
+    border-radius: 1rem;
+    box-shadow: 5px 5px 10px rgb(0 0 0 / 20%);
+    padding: 1rem;
+    margin: 1rem auto;
+}
