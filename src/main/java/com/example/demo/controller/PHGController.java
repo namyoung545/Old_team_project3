@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.dto.PHG_AsReceptionDTO;
 import com.example.demo.dto.PHG_MemberDTO;
+import com.example.demo.service.PHG_AsReceptionService;
 import com.example.demo.service.PHG_MemberService;
 import com.example.demo.utils.PHG_PythonExecutor;
 
@@ -25,6 +27,9 @@ public class PHGController {
 
     @Autowired
     PHG_MemberService memberService;
+
+    @Autowired
+    PHG_AsReceptionService asReceptionService;
 
     @GetMapping("/PHG_index")
     public String getIndex() {
@@ -149,32 +154,6 @@ public class PHGController {
         return "/PHG/PHG_alertPrint";
     }
 
-    @GetMapping("/schedule/registAS")
-    public String scheduleRegistAS() {
-        return "/PHG/RequestCode/registAS";
-    }
-
-    @GetMapping("/schedule/registResult")
-    public String scheduleRegistResult() {
-        return "/PHG/RequestCode/registResult";
-    }
-
-    @GetMapping("/PHG_managementPage")
-    public String getManagement(HttpSession session, Model model) {
-        // 세션에서 userId 확인
-        if (session.getAttribute("userId") == null) {
-            model.addAttribute("msg", "로그인이 필요합니다.");
-            model.addAttribute("url", "/PHG_login");
-            return "/PHG/PHG_alertPrint";
-        }
-        return "/PHG/PHG_managementPage";
-    }
-
-    @GetMapping("/PHG_ElectricalDisaster")
-    public String getMethodName() {
-        return "/PHG/PHG_ElectricalDisasterMonitoring";
-    }
-
     @GetMapping("/PHG_memberModify")
     public String getMemberModify(HttpSession session, Model model) {
         // 세션에서 userId 가져옴
@@ -226,6 +205,63 @@ public class PHGController {
         return "/PHG/PHG_alertPrint";
     }
 
+    // --------------------------------------------------------------------------------------------------
+    @GetMapping("/schedule/registAS")
+    public String scheduleRegistAS() {
+        return "/PHG/RequestCode/registAS";
+    }
+
+    @PostMapping("/schedule/registAS/insert")
+    public String insertAsReception(PHG_AsReceptionDTO asReceptionDTO, Model model) {
+        try {
+            int result = asReceptionService.AS_Reception(asReceptionDTO);
+
+            if (result > 0) {
+                model.addAttribute("msg", "A/S 접수가 성공적으로 완료되었습니다.");
+                model.addAttribute("url", "/PHG_managementPage"); // 목록 페이지 URL
+            } else {
+                model.addAttribute("msg", "A/S 접수 처리 중 문제가 발생했습니다.");
+                model.addAttribute("url", "/schedule/registAS"); // 접수 페이지 URL
+            }
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            model.addAttribute("url", "/schedule/registAS");
+        }
+
+        return "/PHG/PHG_alertPrint";
+    }
+
+    // --------------------------------------------------------------------------------------------------
+    @GetMapping("/schedule/calendar")
+    public String getFullCalendar() {
+        return "/PHG/RequestCode/PHG_FullCalendar";
+    }
+
+    // --------------------------------------------------------------------------------------------------
+    @GetMapping("/schedule/processStatus")
+    public String scheduleRegistResult() {
+        return "/PHG/RequestCode/registProcessStatus";
+    }
+
+    // --------------------------------------------------------------------------------------------------
+    @GetMapping("/PHG_managementPage")
+    public String getManagement(HttpSession session, Model model) {
+        // 세션에서 userId 확인
+        if (session.getAttribute("userId") == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
+        return "/PHG/PHG_managementPage";
+    }
+
+    // --------------------------------------------------------------------------------------------------
+    @GetMapping("/PHG_ElectricalDisaster")
+    public String getElectricalDisaster() {
+        return "/PHG/PHG_ElectricalDisasterMonitoring";
+    }
+
     @PostMapping("/PHG/PHG_ElectricalDisaster")
     @ResponseBody
     public Map<String, Object> getFireStatistics() {
@@ -250,4 +286,5 @@ public class PHGController {
         return response;
     }
 
+    // --------------------------------------------------------------------------------------------------
 }
