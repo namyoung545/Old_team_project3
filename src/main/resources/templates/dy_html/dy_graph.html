@@ -17,21 +17,30 @@
     <button onclick="fetchAndRenderData(2022)">2022</button>
     <button onclick="fetchAndRenderData(2023)">2023</button>
 
-    <!-- 차트표시 영역 -->
-    <canvas id="myChart" width="800" height="400"></canvas>
+    <!-- 그래프 표시 영역 -->
+    <div>
+        <h3>재해발생건수 그래프</h3>
+        <canvas id="incidentChart" width="800" height="400"></canvas>
+    </div>
+    <div>
+        <h3>피해금액 그래프</h3>
+        <canvas id="damageChart" width="800" height="400"></canvas>
+    </div>
 
     <script>
-        let chartInstance; // 기존 Chart.js 인스턴스를 저장할 변수
-        
+        let incidentChartInstance; // 재해발생건수 그래프 Chart.js 인스턴스
+        let damageChartInstance; // 피해금액 그래프 Chart.js 인스턴스
+
         // 페이지 로드 시 기본값으로 2023년 데이터를 불러옴
         window.onload = function () {
             fetchAndRenderData(2023);
         };
-        
-        // 데이터를 Fetch 및 그래프 생성/업데이트
+
         async function fetchAndRenderData(year) {
             try {
-                const response = await fetch(`/electric-fires?year=${year}`);
+                const response = await fetch(`/electric-fires?year=${year}`, {
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' }
+                });
                 const data = await response.json();
 
                 // 데이터가 없을 경우 처리
@@ -43,19 +52,16 @@
                 // 데이터 처리
                 const labels = data.map(item => item.region); // x축 지역 이름
                 const totalIncidents = data.map(item => item.totalIncidents); // y축 건수 데이터
-                const totalDamage = data.map(item => item.totalDamage); // y축 피해 금액 데이터
+                const totalDamage = data.map(item => item.totalDamage / 1000); // y축 피해금액 데이터 (단위: 백만원)
 
-                const ctx = document.getElementById('myChart').getContext('2d');
-
-                if (chartInstance) {
-                    // 기존 그래프 업데이트
-                    chartInstance.data.labels = labels;
-                    chartInstance.data.datasets[0].data = totalIncidents;
-                    chartInstance.data.datasets[1].data = totalDamage;
-                    chartInstance.update();
+                // 재해발생건수 그래프 업데이트 또는 생성
+                const incidentCtx = document.getElementById('incidentChart').getContext('2d');
+                if (incidentChartInstance) {
+                    incidentChartInstance.data.labels = labels;
+                    incidentChartInstance.data.datasets[0].data = totalIncidents;
+                    incidentChartInstance.update();
                 } else {
-                    // 새로운 그래프 생성
-                    chartInstance = new Chart(ctx, {
+                    incidentChartInstance = new Chart(incidentCtx, {
                         type: 'bar',
                         data: {
                             labels: labels,
@@ -66,15 +72,6 @@
                                     backgroundColor: 'rgba(54, 162, 235, 0.7)',
                                     borderColor: 'rgba(54, 162, 235, 1)',
                                     borderWidth: 1
-                                },
-                                {
-                                    label: 'Total Damage (단위, 백만)',
-                                    data: totalDamage.map(val => val / 1000), // 천원 단위 변환
-                                    type: 'line',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    borderWidth: 2,
-                                    fill: false
                                 }
                             ]
                         },
@@ -85,7 +82,45 @@
                                     beginAtZero: true,
                                     ticks: {
                                         callback: function (value) {
-                                            return value.toLocaleString(); // Y축 천원 단위 표시
+                                            return value.toLocaleString(); // 천 단위 구분
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 피해금액 그래프 업데이트 또는 생성
+                const damageCtx = document.getElementById('damageChart').getContext('2d');
+                if (damageChartInstance) {
+                    damageChartInstance.data.labels = labels;
+                    damageChartInstance.data.datasets[0].data = totalDamage;
+                    damageChartInstance.update();
+                } else {
+                    damageChartInstance = new Chart(damageCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Total Damage (단위: 백만)',
+                                    data: totalDamage,
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderWidth: 2,
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function (value) {
+                                            return value.toLocaleString(); // 천 단위 구분
                                         }
                                     }
                                 }

@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 @Controller
@@ -26,16 +30,21 @@ public class dy_GraphController {
 
             Process process = pb.start();
 
-            // Python 출력 읽기
+            // Python 출력 읽기 (UTF-8 인코딩 처리)
             String output;
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
                 output = reader.lines().collect(Collectors.joining());
             }
 
             // Python 프로세스 완료 대기
             process.waitFor();
 
-            return ResponseEntity.ok(output); // JSON 응답 반환
+            // JSON 응답 UTF-8 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+            return new ResponseEntity<>(output, headers, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("{\"error\": \"" + e.getMessage() + "\"}");
