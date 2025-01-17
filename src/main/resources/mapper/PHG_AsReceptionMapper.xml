@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.PHG_AsReceptionDAO">
+
+	<!-- 시설 A/S 접수 -->
+	<insert id="AS_Reception" parameterType="com.example.demo.dto.PHG_AsReceptionDTO">
+		INSERT INTO as_reception (name, phoneNumber, email, postcode, address, detailAddress, facilityType, issueTitle, issueDetails, preferredDate, preferredTime)
+		VALUES (#{name}, #{phoneNumber}, #{email}, #{postcode}, #{address}, #{detailAddress}, #{facilityType}, #{issueTitle}, #{issueDetails}, #{preferredDate}, #{preferredTime})
+	</insert>
+</mapper>

@@ -8,6 +8,7 @@ header {
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative; /* 자식 요소의 absolute 배치를 위한 position */
+    height: 65px;
 }
 
 /* "Old Team" 링크 스타일 */

@@ -31,6 +31,7 @@
 		WHERE userId = #{userId}
 	</select>
 
+	<!-- 사용자 정보 수정 -->
 	<update id="memberUpdate" parameterType="com.example.demo.dto.PHG_MemberDTO">
 		UPDATE member 
 		SET userPw = #{userPw},
