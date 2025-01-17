@@ -1,0 +1,1379 @@
+[
+    {
+      "id": 1,
+      "year": 2015,
+      "region": "강원도",
+      "totalIncidents": 459,
+      "totalDamage": 2826284,
+      "riskLevel": 2,
+      "riskScore": 565578
+    },
+    {
+      "id": 2,
+      "year": 2015,
+      "region": "경기도",
+      "totalIncidents": 2263,
+      "totalDamage": 41473703,
+      "riskLevel": 3,
+      "riskScore": 8296320
+    },
+    {
+      "id": 3,
+      "year": 2015,
+      "region": "경상남도",
+      "totalIncidents": 644,
+      "totalDamage": 4169864,
+      "riskLevel": 2,
+      "riskScore": 834424
+    },
+    {
+      "id": 4,
+      "year": 2015,
+      "region": "경상북도",
+      "totalIncidents": 592,
+      "totalDamage": 4395935,
+      "riskLevel": 3,
+      "riskScore": 879601
+    },
+    {
+      "id": 5,
+      "year": 2015,
+      "region": "광주광역시",
+      "totalIncidents": 220,
+      "totalDamage": 903462,
+      "riskLevel": 1,
+      "riskScore": 180846
+    },
+    {
+      "id": 6,
+      "year": 2015,
+      "region": "대구광역시",
+      "totalIncidents": 367,
+      "totalDamage": 1280949,
+      "riskLevel": 1,
+      "riskScore": 256447
+    },
+    {
+      "id": 7,
+      "year": 2015,
+      "region": "대전광역시",
+      "totalIncidents": 258,
+      "totalDamage": 1043837,
+      "riskLevel": 1,
+      "riskScore": 208948
+    },
+    {
+      "id": 8,
+      "year": 2015,
+      "region": "부산광역시",
+      "totalIncidents": 438,
+      "totalDamage": 1073893,
+      "riskLevel": 1,
+      "riskScore": 215085
+    },
+    {
+      "id": 9,
+      "year": 2015,
+      "region": "서울특별시",
+      "totalIncidents": 1330,
+      "totalDamage": 2961276,
+      "riskLevel": 2,
+      "riskScore": 593186
+    },
+    {
+      "id": 10,
+      "year": 2015,
+      "region": "세종특별자치시",
+      "totalIncidents": 49,
+      "totalDamage": 197879,
+      "riskLevel": 1,
+      "riskScore": 39610.1
+    },
+    {
+      "id": 11,
+      "year": 2015,
+      "region": "울산광역시",
+      "totalIncidents": 144,
+      "totalDamage": 685951,
+      "riskLevel": 1,
+      "riskScore": 137291
+    },
+    {
+      "id": 12,
+      "year": 2015,
+      "region": "인천광역시",
+      "totalIncidents": 457,
+      "totalDamage": 3076301,
+      "riskLevel": 2,
+      "riskScore": 615580
+    },
+    {
+      "id": 13,
+      "year": 2015,
+      "region": "전라남도",
+      "totalIncidents": 549,
+      "totalDamage": 4332499,
+      "riskLevel": 3,
+      "riskScore": 866884
+    },
+    {
+      "id": 14,
+      "year": 2015,
+      "region": "전라북도",
+      "totalIncidents": 347,
+      "totalDamage": 2291732,
+      "riskLevel": 1,
+      "riskScore": 458589
+    },
+    {
+      "id": 15,
+      "year": 2015,
+      "region": "제주특별자치도",
+      "totalIncidents": 140,
+      "totalDamage": 891966,
+      "riskLevel": 1,
+      "riskScore": 178491
+    },
+    {
+      "id": 16,
+      "year": 2015,
+      "region": "충청남도",
+      "totalIncidents": 455,
+      "totalDamage": 2998586,
+      "riskLevel": 2,
+      "riskScore": 600036
+    },
+    {
+      "id": 17,
+      "year": 2015,
+      "region": "충청북도",
+      "totalIncidents": 268,
+      "totalDamage": 2569402,
+      "riskLevel": 1,
+      "riskScore": 514068
+    },
+    {
+      "id": 18,
+      "year": 2016,
+      "region": "강원도",
+      "totalIncidents": 399,
+      "totalDamage": 2492720,
+      "riskLevel": 1,
+      "riskScore": 498823
+    },
+    {
+      "id": 19,
+      "year": 2016,
+      "region": "경기도",
+      "totalIncidents": 2329,
+      "totalDamage": 28560252,
+      "riskLevel": 3,
+      "riskScore": 5713680
+    },
+    {
+      "id": 20,
+      "year": 2016,
+      "region": "경상남도",
+      "totalIncidents": 735,
+      "totalDamage": 4510456,
+      "riskLevel": 3,
+      "riskScore": 902606
+    },
+    {
+      "id": 21,
+      "year": 2016,
+      "region": "경상북도",
+      "totalIncidents": 525,
+      "totalDamage": 3110295,
+      "riskLevel": 2,
+      "riskScore": 622426
+    },
+    {
+      "id": 22,
+      "year": 2016,
+      "region": "광주광역시",
+      "totalIncidents": 228,
+      "totalDamage": 1271131,
+      "riskLevel": 1,
+      "riskScore": 254386
+    },
+    {
+      "id": 23,
+      "year": 2016,
+      "region": "대구광역시",
+      "totalIncidents": 353,
+      "totalDamage": 1384900,
+      "riskLevel": 1,
+      "riskScore": 277227
+    },
+    {
+      "id": 24,
+      "year": 2016,
+      "region": "대전광역시",
+      "totalIncidents": 256,
+      "totalDamage": 909901,
+      "riskLevel": 1,
+      "riskScore": 182159
+    },
+    {
+      "id": 25,
+      "year": 2016,
+      "region": "부산광역시",
+      "totalIncidents": 504,
+      "totalDamage": 2131584,
+      "riskLevel": 1,
+      "riskScore": 426670
+    },
+    {
+      "id": 26,
+      "year": 2016,
+      "region": "서울특별시",
+      "totalIncidents": 1274,
+      "totalDamage": 4192556,
+      "riskLevel": 2,
+      "riskScore": 839403
+    },
+    {
+      "id": 27,
+      "year": 2016,
+      "region": "세종특별자치시",
+      "totalIncidents": 64,
+      "totalDamage": 591646,
+      "riskLevel": 1,
+      "riskScore": 118374
+    },
+    {
+      "id": 28,
+      "year": 2016,
+      "region": "울산광역시",
+      "totalIncidents": 152,
+      "totalDamage": 666953,
+      "riskLevel": 1,
+      "riskScore": 133497
+    },
+    {
+      "id": 29,
+      "year": 2016,
+      "region": "인천광역시",
+      "totalIncidents": 467,
+      "totalDamage": 4363838,
+      "riskLevel": 2,
+      "riskScore": 873094
+    },
+    {
+      "id": 30,
+      "year": 2016,
+      "region": "전라남도",
+      "totalIncidents": 480,
+      "totalDamage": 4991629,
+      "riskLevel": 3,
+      "riskScore": 998662
+    },
+    {
+      "id": 31,
+      "year": 2016,
+      "region": "전라북도",
+      "totalIncidents": 337,
+      "totalDamage": 1712728,
+      "riskLevel": 1,
+      "riskScore": 342782
+    },
+    {
+      "id": 32,
+      "year": 2016,
+      "region": "제주특별자치도",
+      "totalIncidents": 140,
+      "totalDamage": 2458540,
+      "riskLevel": 1,
+      "riskScore": 491806
+    },
+    {
+      "id": 33,
+      "year": 2016,
+      "region": "충청남도",
+      "totalIncidents": 458,
+      "totalDamage": 4043093,
+      "riskLevel": 2,
+      "riskScore": 808939
+    },
+    {
+      "id": 34,
+      "year": 2016,
+      "region": "충청북도",
+      "totalIncidents": 261,
+      "totalDamage": 3278904,
+      "riskLevel": 2,
+      "riskScore": 655964
+    },
+    {
+      "id": 35,
+      "year": 2017,
+      "region": "강원도",
+      "totalIncidents": 401,
+      "totalDamage": 3188434,
+      "riskLevel": 1,
+      "riskScore": 637968
+    },
+    {
+      "id": 36,
+      "year": 2017,
+      "region": "경기도",
+      "totalIncidents": 2361,
+      "totalDamage": 58017515,
+      "riskLevel": 3,
+      "riskScore": 11605200
+    },
+    {
+      "id": 37,
+      "year": 2017,
+      "region": "경상남도",
+      "totalIncidents": 714,
+      "totalDamage": 4401735,
+      "riskLevel": 2,
+      "riskScore": 880847
+    },
+    {
+      "id": 38,
+      "year": 2017,
+      "region": "경상북도",
+      "totalIncidents": 546,
+      "totalDamage": 5788458,
+      "riskLevel": 2,
+      "riskScore": 1158070
+    },
+    {
+      "id": 39,
+      "year": 2017,
+      "region": "광주광역시",
+      "totalIncidents": 177,
+      "totalDamage": 753210,
+      "riskLevel": 1,
+      "riskScore": 150766
+    },
+    {
+      "id": 40,
+      "year": 2017,
+      "region": "대구광역시",
+      "totalIncidents": 339,
+      "totalDamage": 1399707,
+      "riskLevel": 1,
+      "riskScore": 280179
+    },
+    {
+      "id": 41,
+      "year": 2017,
+      "region": "대전광역시",
+      "totalIncidents": 261,
+      "totalDamage": 2221541,
+      "riskLevel": 1,
+      "riskScore": 444491
+    },
+    {
+      "id": 42,
+      "year": 2017,
+      "region": "부산광역시",
+      "totalIncidents": 517,
+      "totalDamage": 2042238,
+      "riskLevel": 1,
+      "riskScore": 408810
+    },
+    {
+      "id": 43,
+      "year": 2017,
+      "region": "서울특별시",
+      "totalIncidents": 1315,
+      "totalDamage": 3749802,
+      "riskLevel": 1,
+      "riskScore": 750881
+    },
+    {
+      "id": 44,
+      "year": 2017,
+      "region": "세종특별자치시",
+      "totalIncidents": 59,
+      "totalDamage": 1068380,
+      "riskLevel": 1,
+      "riskScore": 213717
+    },
+    {
+      "id": 45,
+      "year": 2017,
+      "region": "울산광역시",
+      "totalIncidents": 175,
+      "totalDamage": 385874,
+      "riskLevel": 1,
+      "riskScore": 77297.3
+    },
+    {
+      "id": 46,
+      "year": 2017,
+      "region": "인천광역시",
+      "totalIncidents": 477,
+      "totalDamage": 5307401,
+      "riskLevel": 2,
+      "riskScore": 1061810
+    },
+    {
+      "id": 47,
+      "year": 2017,
+      "region": "전라남도",
+      "totalIncidents": 533,
+      "totalDamage": 7823761,
+      "riskLevel": 3,
+      "riskScore": 1565130
+    },
+    {
+      "id": 48,
+      "year": 2017,
+      "region": "전라북도",
+      "totalIncidents": 418,
+      "totalDamage": 3929327,
+      "riskLevel": 2,
+      "riskScore": 786158
+    },
+    {
+      "id": 49,
+      "year": 2017,
+      "region": "제주특별자치도",
+      "totalIncidents": 163,
+      "totalDamage": 723373,
+      "riskLevel": 1,
+      "riskScore": 144789
+    },
+    {
+      "id": 50,
+      "year": 2017,
+      "region": "충청남도",
+      "totalIncidents": 490,
+      "totalDamage": 3814888,
+      "riskLevel": 2,
+      "riskScore": 763321
+    },
+    {
+      "id": 51,
+      "year": 2017,
+      "region": "충청북도",
+      "totalIncidents": 318,
+      "totalDamage": 7146936,
+      "riskLevel": 3,
+      "riskScore": 1429610
+    },
+    {
+      "id": 52,
+      "year": 2018,
+      "region": "강원도",
+      "totalIncidents": 450,
+      "totalDamage": 8725607,
+      "riskLevel": 3,
+      "riskScore": 1745440
+    },
+    {
+      "id": 53,
+      "year": 2018,
+      "region": "경기도",
+      "totalIncidents": 2738,
+      "totalDamage": 53216597,
+      "riskLevel": 3,
+      "riskScore": 10645200
+    },
+    {
+      "id": 54,
+      "year": 2018,
+      "region": "경상남도",
+      "totalIncidents": 745,
+      "totalDamage": 8013594,
+      "riskLevel": 2,
+      "riskScore": 1603240
+    },
+    {
+      "id": 55,
+      "year": 2018,
+      "region": "경상북도",
+      "totalIncidents": 606,
+      "totalDamage": 4492844,
+      "riskLevel": 2,
+      "riskScore": 898993
+    },
+    {
+      "id": 56,
+      "year": 2018,
+      "region": "광주광역시",
+      "totalIncidents": 223,
+      "totalDamage": 1097940,
+      "riskLevel": 1,
+      "riskScore": 219744
+    },
+    {
+      "id": 57,
+      "year": 2018,
+      "region": "대구광역시",
+      "totalIncidents": 372,
+      "totalDamage": 1063166,
+      "riskLevel": 1,
+      "riskScore": 212894
+    },
+    {
+      "id": 58,
+      "year": 2018,
+      "region": "대전광역시",
+      "totalIncidents": 317,
+      "totalDamage": 1348047,
+      "riskLevel": 1,
+      "riskScore": 269831
+    },
+    {
+      "id": 59,
+      "year": 2018,
+      "region": "부산광역시",
+      "totalIncidents": 618,
+      "totalDamage": 1339426,
+      "riskLevel": 1,
+      "riskScore": 268318
+    },
+    {
+      "id": 60,
+      "year": 2018,
+      "region": "서울특별시",
+      "totalIncidents": 1524,
+      "totalDamage": 4240444,
+      "riskLevel": 1,
+      "riskScore": 849156
+    },
+    {
+      "id": 61,
+      "year": 2018,
+      "region": "세종특별자치시",
+      "totalIncidents": 62,
+      "totalDamage": 4898367,
+      "riskLevel": 2,
+      "riskScore": 979717
+    },
+    {
+      "id": 62,
+      "year": 2018,
+      "region": "울산광역시",
+      "totalIncidents": 175,
+      "totalDamage": 1290462,
+      "riskLevel": 1,
+      "riskScore": 258215
+    },
+    {
+      "id": 63,
+      "year": 2018,
+      "region": "인천광역시",
+      "totalIncidents": 542,
+      "totalDamage": 5428332,
+      "riskLevel": 2,
+      "riskScore": 1086050
+    },
+    {
+      "id": 64,
+      "year": 2018,
+      "region": "전라남도",
+      "totalIncidents": 561,
+      "totalDamage": 11557831,
+      "riskLevel": 3,
+      "riskScore": 2311960
+    },
+    {
+      "id": 65,
+      "year": 2018,
+      "region": "전라북도",
+      "totalIncidents": 497,
+      "totalDamage": 4360842,
+      "riskLevel": 1,
+      "riskScore": 872516
+    },
+    {
+      "id": 66,
+      "year": 2018,
+      "region": "제주특별자치도",
+      "totalIncidents": 190,
+      "totalDamage": 817809,
+      "riskLevel": 1,
+      "riskScore": 163695
+    },
+    {
+      "id": 67,
+      "year": 2018,
+      "region": "충청남도",
+      "totalIncidents": 564,
+      "totalDamage": 5104967,
+      "riskLevel": 2,
+      "riskScore": 1021390
+    },
+    {
+      "id": 68,
+      "year": 2018,
+      "region": "충청북도",
+      "totalIncidents": 287,
+      "totalDamage": 2964541,
+      "riskLevel": 1,
+      "riskScore": 593109
+    },
+    {
+      "id": 69,
+      "year": 2019,
+      "region": "강원도",
+      "totalIncidents": 377,
+      "totalDamage": 121189434,
+      "riskLevel": 3,
+      "riskScore": 24238200
+    },
+    {
+      "id": 70,
+      "year": 2019,
+      "region": "경기도",
+      "totalIncidents": 2418,
+      "totalDamage": 51910469,
+      "riskLevel": 3,
+      "riskScore": 10383800
+    },
+    {
+      "id": 71,
+      "year": 2019,
+      "region": "경상남도",
+      "totalIncidents": 734,
+      "totalDamage": 3574272,
+      "riskLevel": 1,
+      "riskScore": 715368
+    },
+    {
+      "id": 72,
+      "year": 2019,
+      "region": "경상북도",
+      "totalIncidents": 472,
+      "totalDamage": 7024788,
+      "riskLevel": 2,
+      "riskScore": 1405290
+    },
+    {
+      "id": 73,
+      "year": 2019,
+      "region": "광주광역시",
+      "totalIncidents": 210,
+      "totalDamage": 1107624,
+      "riskLevel": 1,
+      "riskScore": 221672
+    },
+    {
+      "id": 74,
+      "year": 2019,
+      "region": "대구광역시",
+      "totalIncidents": 329,
+      "totalDamage": 1557707,
+      "riskLevel": 1,
+      "riskScore": 311772
+    },
+    {
+      "id": 75,
+      "year": 2019,
+      "region": "대전광역시",
+      "totalIncidents": 274,
+      "totalDamage": 825168,
+      "riskLevel": 1,
+      "riskScore": 165225
+    },
+    {
+      "id": 76,
+      "year": 2019,
+      "region": "부산광역시",
+      "totalIncidents": 676,
+      "totalDamage": 1663537,
+      "riskLevel": 1,
+      "riskScore": 333181
+    },
+    {
+      "id": 77,
+      "year": 2019,
+      "region": "서울특별시",
+      "totalIncidents": 1322,
+      "totalDamage": 4771847,
+      "riskLevel": 2,
+      "riskScore": 955295
+    },
+    {
+      "id": 78,
+      "year": 2019,
+      "region": "세종특별자치시",
+      "totalIncidents": 50,
+      "totalDamage": 642673,
+      "riskLevel": 1,
+      "riskScore": 128570
+    },
+    {
+      "id": 79,
+      "year": 2019,
+      "region": "울산광역시",
+      "totalIncidents": 177,
+      "totalDamage": 6966882,
+      "riskLevel": 2,
+      "riskScore": 1393500
+    },
+    {
+      "id": 80,
+      "year": 2019,
+      "region": "인천광역시",
+      "totalIncidents": 416,
+      "totalDamage": 7845700,
+      "riskLevel": 3,
+      "riskScore": 1569430
+    },
+    {
+      "id": 81,
+      "year": 2019,
+      "region": "전라남도",
+      "totalIncidents": 535,
+      "totalDamage": 7679631,
+      "riskLevel": 2,
+      "riskScore": 1536300
+    },
+    {
+      "id": 82,
+      "year": 2019,
+      "region": "전라북도",
+      "totalIncidents": 434,
+      "totalDamage": 5080382,
+      "riskLevel": 2,
+      "riskScore": 1016380
+    },
+    {
+      "id": 83,
+      "year": 2019,
+      "region": "제주특별자치도",
+      "totalIncidents": 183,
+      "totalDamage": 1011839,
+      "riskLevel": 1,
+      "riskScore": 202496
+    },
+    {
+      "id": 84,
+      "year": 2019,
+      "region": "충청남도",
+      "totalIncidents": 534,
+      "totalDamage": 4678419,
+      "riskLevel": 1,
+      "riskScore": 936058
+    },
+    {
+      "id": 85,
+      "year": 2019,
+      "region": "충청북도",
+      "totalIncidents": 318,
+      "totalDamage": 3791072,
+      "riskLevel": 1,
+      "riskScore": 758437
+    },
+    {
+      "id": 86,
+      "year": 2020,
+      "region": "강원도",
+      "totalIncidents": 432,
+      "totalDamage": 4207688,
+      "riskLevel": 2,
+      "riskScore": 841840
+    },
+    {
+      "id": 87,
+      "year": 2020,
+      "region": "경기도",
+      "totalIncidents": 2489,
+      "totalDamage": 81687821,
+      "riskLevel": 3,
+      "riskScore": 16339300
+    },
+    {
+      "id": 88,
+      "year": 2020,
+      "region": "경상남도",
+      "totalIncidents": 646,
+      "totalDamage": 5805868,
+      "riskLevel": 3,
+      "riskScore": 1161630
+    },
+    {
+      "id": 89,
+      "year": 2020,
+      "region": "경상북도",
+      "totalIncidents": 539,
+      "totalDamage": 3530835,
+      "riskLevel": 1,
+      "riskScore": 706544
+    },
+    {
+      "id": 90,
+      "year": 2020,
+      "region": "광주광역시",
+      "totalIncidents": 181,
+      "totalDamage": 770900,
+      "riskLevel": 1,
+      "riskScore": 154307
+    },
+    {
+      "id": 91,
+      "year": 2020,
+      "region": "대구광역시",
+      "totalIncidents": 331,
+      "totalDamage": 2742772,
+      "riskLevel": 1,
+      "riskScore": 548786
+    },
+    {
+      "id": 92,
+      "year": 2020,
+      "region": "대전광역시",
+      "totalIncidents": 234,
+      "totalDamage": 818947,
+      "riskLevel": 1,
+      "riskScore": 163953
+    },
+    {
+      "id": 93,
+      "year": 2020,
+      "region": "부산광역시",
+      "totalIncidents": 589,
+      "totalDamage": 1695624,
+      "riskLevel": 1,
+      "riskScore": 339537
+    },
+    {
+      "id": 94,
+      "year": 2020,
+      "region": "서울특별시",
+      "totalIncidents": 1265,
+      "totalDamage": 4683712,
+      "riskLevel": 2,
+      "riskScore": 937628
+    },
+    {
+      "id": 95,
+      "year": 2020,
+      "region": "세종특별자치시",
+      "totalIncidents": 54,
+      "totalDamage": 2005250,
+      "riskLevel": 1,
+      "riskScore": 401088
+    },
+    {
+      "id": 96,
+      "year": 2020,
+      "region": "울산광역시",
+      "totalIncidents": 178,
+      "totalDamage": 996132,
+      "riskLevel": 1,
+      "riskScore": 199351
+    },
+    {
+      "id": 97,
+      "year": 2020,
+      "region": "인천광역시",
+      "totalIncidents": 426,
+      "totalDamage": 3935593,
+      "riskLevel": 2,
+      "riskScore": 787417
+    },
+    {
+      "id": 98,
+      "year": 2020,
+      "region": "전라남도",
+      "totalIncidents": 524,
+      "totalDamage": 5725023,
+      "riskLevel": 3,
+      "riskScore": 1145370
+    },
+    {
+      "id": 99,
+      "year": 2020,
+      "region": "전라북도",
+      "totalIncidents": 400,
+      "totalDamage": 3463591,
+      "riskLevel": 1,
+      "riskScore": 692998
+    },
+    {
+      "id": 100,
+      "year": 2020,
+      "region": "제주특별자치도",
+      "totalIncidents": 157,
+      "totalDamage": 1225304,
+      "riskLevel": 1,
+      "riskScore": 245171
+    },
+    {
+      "id": 101,
+      "year": 2020,
+      "region": "충청남도",
+      "totalIncidents": 538,
+      "totalDamage": 5452287,
+      "riskLevel": 2,
+      "riskScore": 1090830
+    },
+    {
+      "id": 102,
+      "year": 2020,
+      "region": "충청북도",
+      "totalIncidents": 346,
+      "totalDamage": 4853150,
+      "riskLevel": 2,
+      "riskScore": 970872
+    },
+    {
+      "id": 103,
+      "year": 2021,
+      "region": "강원도",
+      "totalIncidents": 446,
+      "totalDamage": 10879577,
+      "riskLevel": 3,
+      "riskScore": 2176230
+    },
+    {
+      "id": 104,
+      "year": 2021,
+      "region": "경기도",
+      "totalIncidents": 2514,
+      "totalDamage": 541002455,
+      "riskLevel": 3,
+      "riskScore": 108202000
+    },
+    {
+      "id": 105,
+      "year": 2021,
+      "region": "경상남도",
+      "totalIncidents": 681,
+      "totalDamage": 6680577,
+      "riskLevel": 1,
+      "riskScore": 1336590
+    },
+    {
+      "id": 106,
+      "year": 2021,
+      "region": "경상북도",
+      "totalIncidents": 509,
+      "totalDamage": 8991033,
+      "riskLevel": 2,
+      "riskScore": 1798560
+    },
+    {
+      "id": 107,
+      "year": 2021,
+      "region": "광주광역시",
+      "totalIncidents": 198,
+      "totalDamage": 1080851,
+      "riskLevel": 1,
+      "riskScore": 216309
+    },
+    {
+      "id": 108,
+      "year": 2021,
+      "region": "대구광역시",
+      "totalIncidents": 302,
+      "totalDamage": 2824294,
+      "riskLevel": 1,
+      "riskScore": 565070
+    },
+    {
+      "id": 109,
+      "year": 2021,
+      "region": "대전광역시",
+      "totalIncidents": 230,
+      "totalDamage": 1507208,
+      "riskLevel": 1,
+      "riskScore": 301603
+    },
+    {
+      "id": 110,
+      "year": 2021,
+      "region": "부산광역시",
+      "totalIncidents": 504,
+      "totalDamage": 1030276,
+      "riskLevel": 1,
+      "riskScore": 206408
+    },
+    {
+      "id": 111,
+      "year": 2021,
+      "region": "서울특별시",
+      "totalIncidents": 1362,
+      "totalDamage": 6916779,
+      "riskLevel": 2,
+      "riskScore": 1384310
+    },
+    {
+      "id": 112,
+      "year": 2021,
+      "region": "세종특별자치시",
+      "totalIncidents": 66,
+      "totalDamage": 406607,
+      "riskLevel": 1,
+      "riskScore": 81367.6
+    },
+    {
+      "id": 113,
+      "year": 2021,
+      "region": "울산광역시",
+      "totalIncidents": 172,
+      "totalDamage": 3436151,
+      "riskLevel": 1,
+      "riskScore": 687351
+    },
+    {
+      "id": 114,
+      "year": 2021,
+      "region": "인천광역시",
+      "totalIncidents": 440,
+      "totalDamage": 7210899,
+      "riskLevel": 2,
+      "riskScore": 1442490
+    },
+    {
+      "id": 115,
+      "year": 2021,
+      "region": "전라남도",
+      "totalIncidents": 554,
+      "totalDamage": 7860607,
+      "riskLevel": 2,
+      "riskScore": 1572510
+    },
+    {
+      "id": 116,
+      "year": 2021,
+      "region": "전라북도",
+      "totalIncidents": 421,
+      "totalDamage": 2647334,
+      "riskLevel": 1,
+      "riskScore": 529762
+    },
+    {
+      "id": 117,
+      "year": 2021,
+      "region": "제주특별자치도",
+      "totalIncidents": 173,
+      "totalDamage": 1818467,
+      "riskLevel": 1,
+      "riskScore": 363814
+    },
+    {
+      "id": 118,
+      "year": 2021,
+      "region": "충청남도",
+      "totalIncidents": 574,
+      "totalDamage": 10068807,
+      "riskLevel": 3,
+      "riskScore": 2014160
+    },
+    {
+      "id": 119,
+      "year": 2021,
+      "region": "충청북도",
+      "totalIncidents": 326,
+      "totalDamage": 8030589,
+      "riskLevel": 2,
+      "riskScore": 1606350
+    },
+    {
+      "id": 120,
+      "year": 2022,
+      "region": "강원특별자치도",
+      "totalIncidents": 511,
+      "totalDamage": 8269935,
+      "riskLevel": 2,
+      "riskScore": 1654340
+    },
+    {
+      "id": 121,
+      "year": 2022,
+      "region": "경기도",
+      "totalIncidents": 2731,
+      "totalDamage": 75620856,
+      "riskLevel": 3,
+      "riskScore": 15126100
+    },
+    {
+      "id": 122,
+      "year": 2022,
+      "region": "경상남도",
+      "totalIncidents": 702,
+      "totalDamage": 6628994,
+      "riskLevel": 2,
+      "riskScore": 1326290
+    },
+    {
+      "id": 123,
+      "year": 2022,
+      "region": "경상북도",
+      "totalIncidents": 588,
+      "totalDamage": 5475704,
+      "riskLevel": 2,
+      "riskScore": 1095550
+    },
+    {
+      "id": 124,
+      "year": 2022,
+      "region": "광주광역시",
+      "totalIncidents": 165,
+      "totalDamage": 838882,
+      "riskLevel": 1,
+      "riskScore": 167892
+    },
+    {
+      "id": 125,
+      "year": 2022,
+      "region": "대구광역시",
+      "totalIncidents": 293,
+      "totalDamage": 3078954,
+      "riskLevel": 1,
+      "riskScore": 615996
+    },
+    {
+      "id": 126,
+      "year": 2022,
+      "region": "대전광역시",
+      "totalIncidents": 228,
+      "totalDamage": 995901,
+      "riskLevel": 1,
+      "riskScore": 199340
+    },
+    {
+      "id": 127,
+      "year": 2022,
+      "region": "부산광역시",
+      "totalIncidents": 519,
+      "totalDamage": 2200694,
+      "riskLevel": 1,
+      "riskScore": 440502
+    },
+    {
+      "id": 128,
+      "year": 2022,
+      "region": "서울특별시",
+      "totalIncidents": 1456,
+      "totalDamage": 4927786,
+      "riskLevel": 1,
+      "riskScore": 986576
+    },
+    {
+      "id": 129,
+      "year": 2022,
+      "region": "세종특별자치시",
+      "totalIncidents": 63,
+      "totalDamage": 913067,
+      "riskLevel": 1,
+      "riskScore": 182658
+    },
+    {
+      "id": 130,
+      "year": 2022,
+      "region": "울산광역시",
+      "totalIncidents": 197,
+      "totalDamage": 924425,
+      "riskLevel": 1,
+      "riskScore": 185023
+    },
+    {
+      "id": 131,
+      "year": 2022,
+      "region": "인천광역시",
+      "totalIncidents": 436,
+      "totalDamage": 8000144,
+      "riskLevel": 2,
+      "riskScore": 1600330
+    },
+    {
+      "id": 132,
+      "year": 2022,
+      "region": "전라남도",
+      "totalIncidents": 573,
+      "totalDamage": 11139278,
+      "riskLevel": 3,
+      "riskScore": 2228260
+    },
+    {
+      "id": 133,
+      "year": 2022,
+      "region": "전북특별자치도",
+      "totalIncidents": 406,
+      "totalDamage": 3812960,
+      "riskLevel": 1,
+      "riskScore": 762876
+    },
+    {
+      "id": 134,
+      "year": 2022,
+      "region": "제주특별자치도",
+      "totalIncidents": 186,
+      "totalDamage": 3228971,
+      "riskLevel": 1,
+      "riskScore": 645924
+    },
+    {
+      "id": 135,
+      "year": 2022,
+      "region": "충청남도",
+      "totalIncidents": 555,
+      "totalDamage": 8748882,
+      "riskLevel": 2,
+      "riskScore": 1750160
+    },
+    {
+      "id": 136,
+      "year": 2022,
+      "region": "충청북도",
+      "totalIncidents": 403,
+      "totalDamage": 13920270,
+      "riskLevel": 3,
+      "riskScore": 2784340
+    },
+    {
+      "id": 137,
+      "year": 2023,
+      "region": "강원특별자치도",
+      "totalIncidents": 579,
+      "totalDamage": 15400903,
+      "riskLevel": 2,
+      "riskScore": 3080590
+    },
+    {
+      "id": 138,
+      "year": 2023,
+      "region": "경기도",
+      "totalIncidents": 2673,
+      "totalDamage": 92558606,
+      "riskLevel": 3,
+      "riskScore": 18513600
+    },
+    {
+      "id": 139,
+      "year": 2023,
+      "region": "경상남도",
+      "totalIncidents": 806,
+      "totalDamage": 21597093,
+      "riskLevel": 3,
+      "riskScore": 4319980
+    },
+    {
+      "id": 140,
+      "year": 2023,
+      "region": "경상북도",
+      "totalIncidents": 570,
+      "totalDamage": 6668069,
+      "riskLevel": 2,
+      "riskScore": 1334010
+    },
+    {
+      "id": 141,
+      "year": 2023,
+      "region": "광주광역시",
+      "totalIncidents": 144,
+      "totalDamage": 1218854,
+      "riskLevel": 1,
+      "riskScore": 243872
+    },
+    {
+      "id": 142,
+      "year": 2023,
+      "region": "대구광역시",
+      "totalIncidents": 332,
+      "totalDamage": 1599457,
+      "riskLevel": 1,
+      "riskScore": 320124
+    },
+    {
+      "id": 143,
+      "year": 2023,
+      "region": "대전광역시",
+      "totalIncidents": 229,
+      "totalDamage": 2126277,
+      "riskLevel": 1,
+      "riskScore": 425416
+    },
+    {
+      "id": 144,
+      "year": 2023,
+      "region": "부산광역시",
+      "totalIncidents": 588,
+      "totalDamage": 2074075,
+      "riskLevel": 1,
+      "riskScore": 415227
+    },
+    {
+      "id": 145,
+      "year": 2023,
+      "region": "서울특별시",
+      "totalIncidents": 1408,
+      "totalDamage": 6077466,
+      "riskLevel": 1,
+      "riskScore": 1216480
+    },
+    {
+      "id": 146,
+      "year": 2023,
+      "region": "세종특별자치시",
+      "totalIncidents": 61,
+      "totalDamage": 1681723,
+      "riskLevel": 1,
+      "riskScore": 336387
+    },
+    {
+      "id": 147,
+      "year": 2023,
+      "region": "울산광역시",
+      "totalIncidents": 178,
+      "totalDamage": 1128051,
+      "riskLevel": 1,
+      "riskScore": 225735
+    },
+    {
+      "id": 148,
+      "year": 2023,
+      "region": "인천광역시",
+      "totalIncidents": 519,
+      "totalDamage": 5166868,
+      "riskLevel": 1,
+      "riskScore": 1033740
+    },
+    {
+      "id": 149,
+      "year": 2023,
+      "region": "전라남도",
+      "totalIncidents": 619,
+      "totalDamage": 9180588,
+      "riskLevel": 2,
+      "riskScore": 1836550
+    },
+    {
+      "id": 150,
+      "year": 2023,
+      "region": "전북특별자치도",
+      "totalIncidents": 465,
+      "totalDamage": 16131425,
+      "riskLevel": 3,
+      "riskScore": 3226610
+    },
+    {
+      "id": 151,
+      "year": 2023,
+      "region": "제주특별자치도",
+      "totalIncidents": 193,
+      "totalDamage": 1441117,
+      "riskLevel": 1,
+      "riskScore": 288358
+    },
+    {
+      "id": 152,
+      "year": 2023,
+      "region": "충청남도",
+      "totalIncidents": 564,
+      "totalDamage": 7712527,
+      "riskLevel": 2,
+      "riskScore": 1542900
+    },
+    {
+      "id": 153,
+      "year": 2023,
+      "region": "충청북도",
+      "totalIncidents": 399,
+      "totalDamage": 6105079,
+      "riskLevel": 2,
+      "riskScore": 1221300
+    }
+  ]

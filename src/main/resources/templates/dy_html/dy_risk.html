@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dy Risk Data</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .bar { fill: steelblue; }
+        .axis { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Risk Data Visualization</h1>
+    <svg id="chart" width="800" height="400"></svg>
+
+    <script>
+        // Fetch API data and visualize with D3.js
+        fetch('/api/dy-risk')
+            .then(response => response.json())
+            .then(data => {
+                const svg = d3.select("#chart"),
+                      margin = { top: 20, right: 30, bottom: 40, left: 40 },
+                      width = +svg.attr("width") - margin.left - margin.right,
+                      height = +svg.attr("height") - margin.top - margin.bottom;
+
+                const x = d3.scaleBand()
+                            .domain(data.map(d => d.region))
+                            .range([margin.left, width - margin.right])
+                            .padding(0.1);
+
+                const y = d3.scaleLinear()
+                            .domain([0, d3.max(data, d => d.riskScore)])
+                            .nice()
+                            .range([height - margin.bottom, margin.top]);
+
+                const g = svg.append("g");
+
+                g.selectAll(".bar")
+                 .data(data)
+                 .join("rect")
+                 .attr("class", "bar")
+                 .attr("x", d => x(d.region))
+                 .attr("y", d => y(d.riskScore))
+                 .attr("height", d => y(0) - y(d.riskScore))
+                 .attr("width", x.bandwidth());
+
+                g.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", `translate(0,${height - margin.bottom})`)
+                 .call(d3.axisBottom(x))
+                 .selectAll("text")
+                 .attr("transform", "rotate(-45)")
+                 .style("text-anchor", "end");
+
+                g.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", `translate(${margin.left},0)`)
+                 .call(d3.axisLeft(y));
+            });
+    </script>
+</body>
+</html>
