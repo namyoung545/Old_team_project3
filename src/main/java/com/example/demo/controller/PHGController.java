@@ -17,11 +17,6 @@ import com.example.demo.service.PHG_AsReceptionService;
 import com.example.demo.service.PHG_MemberService;
 import com.example.demo.utils.PHG_PythonExecutor;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class PHGController {
 
