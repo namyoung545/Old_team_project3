@@ -83,7 +83,6 @@ input[type="text"] {
     width: 100%;
     box-sizing: border-box; /* 패딩 포함 */
 }
-/* 샘 */
 textarea { 
     width: 100%; /* 너비를 테이블 셀에 맞춤 */ 
     box-sizing: border-box; /* 패딩 포함 */

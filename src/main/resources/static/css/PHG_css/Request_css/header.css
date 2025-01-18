@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+header.header {
+	position: sticky;
+	top: 0;
+	z-index: 1000; /* 다른 요소 위에 표시 */
+	height: 5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #f8f9fa; /* 헤더 배경색 */
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 살짝 그림자 효과 */
+	border-bottom: 1px solid #e0e0e0;
+	padding: 0.5rem 1rem;
+}
+
+/* 제목 스타일 */
+.header_title {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.header_title a {
+	text-decoration: none;
+	color: #333; /* 제목 텍스트 색 */
+	transition: color 0.3s;
+}
+
+.header_title a:hover {
+	color: #f68e3e; /* 호버 시 강조색 */
+}
+
+/* 내비게이션 버튼 스타일 */
+nav ul {
+	display: flex;
+	gap: 15px; /* 메뉴 간격 */
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+nav li {
+	display: inline;
+}
+
+nav a.button-link {
+	display: inline-block;
+	background-color: #f68e3e; /* 기본 배경색 */
+	color: #f0f0f0; /* 텍스트 색상 */
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	font-weight: 600;
+	border-radius: 5px;
+	text-decoration: none;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
+	transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+nav a.button-link:hover {
+	background-color: #e57a31; /* 호버 시 배경색 */
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 */
+}
+
+nav a.button-link:active {
+	background-color: #d06b26; /* 클릭 시 배경색 */
+	box-shadow: none; /* 클릭 시 그림자 제거 */
+}

@@ -1,0 +1,10 @@
+환경변수에 예: C:\Program Files\MySQL\MySQL Server 8.0\bin 추가
+
+cmd에서 mysql --version 혹은 mysqldump --version 명령어로 환경변수 설정 완료여부 확인함
+
+
+회사 컴퓨터에서 데이터 백업
+mysqldump -u root -p --host=192.168.30.89 --databases old_team_project3 > backup.sql
+
+집에서 백업된 데이터 복원
+mysql -u root -p --host=127.0.0.1 < backup.sql

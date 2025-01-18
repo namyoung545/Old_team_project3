@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AS 접수하기</title>
+    <!-- Head Requires // 헤더 공통 스크립트 -->
+    <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
+
+    <!-- Post Code Script // 다음 주소 API -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .box {
+            text-align: center;
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
+
+    <main>
+        <div class="box">
+            <h1>A/S 처리 현황</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>접수번호</th>
+                        <th>접수일자</th>
+                        <th>고객명</th>
+                        <th>처리현황</th>
+                        <th>완료 예정일시</th>
+                        <th>처리 버튼</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+</body>
+</html>

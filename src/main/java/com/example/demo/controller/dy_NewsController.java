@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class dy_NewsController {
-    @GetMapping("/news")
+    @GetMapping("/dy_news")
     public String showNewsPage(Model model) {
         // 가짜 데이터: 실제로는 Service에서 데이터를 가져와야 함
         List<Map<String, Object>> events = new ArrayList<>();

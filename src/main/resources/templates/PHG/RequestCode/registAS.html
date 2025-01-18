@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>시설 A/S 접수</title>
+  <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/PHG_css/Request_css/registAS.css">
+</head>
+<body>
+  <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
+
+  <main>
+    <div class="maintenance-report">
+      <h1>시설 A/S 접수</h1>
+      <hr>
+      
+      <div class="report-form">
+        <form action="/schedule/registAS/insert" method="post">
+          <!-- 신고자 정보 섹션 -->
+          <table class="info-table">
+            <caption>
+              <span class="caption-icon">👤</span>
+              신고자 정보
+              <span class="required-note">* 필수 입력 항목</span>
+            </caption>
+            <tbody>
+              <tr>
+                <th><label for="name">이름 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <input type="text" name="name" id="name" placeholder="신고자 성명을 입력하세요" required>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="phoneNumber">연락처 *</label></th>
+                <td>
+                  <div class="phone-group">
+                    <input type="text" id="phoneNumber1" value="010" readonly style="width:100px; text-align:center;">
+                    <span class="phone-separator">-</span>
+                    <input type="tel" id="phoneNumber2" class="phone" minlength="3" maxlength="4" placeholder="xxxx" required>
+                    <span class="phone-separator">-</span>
+                    <input type="tel" id="phoneNumber3" class="phone" minlength="4" maxlength="4" placeholder="xxxx" required>
+                    <input type="hidden" name="phoneNumber" id="phoneNumber">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="email">이메일</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <input type="email" name="email" id="email" placeholder="example@domain.com">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 시설물 정보 섹션 -->
+          <table class="info-table">
+            <caption>
+              <span class="caption-icon">🏢</span>
+              시설물 정보
+            </caption>
+            <tbody>
+              <tr>
+                <th><label for="address">시설물 위치 *</label></th>
+                <td>
+                  <div class="address-group">
+                    <button type="button" onclick="searchAddress()" class="address-search-btn">주소 검색</button>
+                    <input type="text" id="postcode" name="postcode" placeholder="우편번호" readonly required>
+                    <input type="text" id="address" name="address" placeholder="주소" readonly required>
+                    <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소를 입력하세요">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="facilityType">시설물 분류 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <select name="facilityType" id="facilityType" required>
+                      <option value="">시설물 선택</option>
+                      <optgroup label="전기 시설">
+                        <option value="lighting">조명</option>
+                        <option value="power">전원</option>
+                        <option value="communication">통신</option>
+                      </optgroup>
+                      <optgroup label="설비 시설">
+                        <option value="plumbing">배관</option>
+                        <option value="hvac">공조</option>
+                        <option value="elevator">승강기</option>
+                      </optgroup>
+                      <optgroup label="안전 시설">
+                        <option value="fire">소방</option>
+                        <option value="security">보안</option>
+                        <option value="emergency">비상</option>
+                      </optgroup>
+                      <optgroup label="기타 시설">
+                        <option value="interior">내부시설</option>
+                        <option value="exterior">외부시설</option>
+                        <option value="other">기타</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 상세 정보 섹션 -->
+          <table class="info-table">
+            <caption>
+              <span class="caption-icon">📝</span>
+              상세 정보
+            </caption>
+            <tbody>
+              <tr>
+                <th><label for="issueTitle">제목 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <input type="text" name="issueTitle" id="issueTitle" placeholder="문제를 간단히 설명해주세요" required>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="issueDetails">상세설명 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <textarea name="issueDetails" id="issueDetails" placeholder="발생한 문제에 대해 자세히 설명해주세요" required></textarea>
+                    <div class="textarea-footer">
+                      <span class="char-count">0/2000</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="preferredDate">방문 가능 일자 *</label></th>
+                <td>
+                  <div class="visit-time-wrapper">
+                    <div class="date-select">
+                      <input type="date" name="preferredDate" id="preferredDate" required>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="preferredTime">방문 가능 시간 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <select name="preferredTime" id="preferredTime" required>
+                      <option value="">시간 선택</option>
+                      <option value="09:00:00">09시</option>
+                      <option value="10:00:00">10시</option>
+                      <option value="11:00:00">11시</option>
+                      <option value="12:00:00">12시</option>
+                      <option value="14:00:00">14시</option>
+                      <option value="15:00:00">15시</option>
+                      <option value="16:00:00">16시</option>
+                      <option value="17:00:00">17시</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 개인정보 동의 섹션 -->
+          <div class="privacy-agreement">
+            <h3>개인정보 수집 및 이용 동의</h3>
+            <div class="agreement-content">
+              <p>1. 수집하는 개인정보 항목: 성명, 연락처, 이메일</p>
+              <p>2. 수집 목적: A/S 신청 처리 및 결과 회신</p>
+              <p>3. 보유 기간: 신청일로부터 1년</p>
+            </div>
+            <div class="agreement-checkbox">
+              <input type="checkbox" name="privacyAgreement" id="privacyAgreement" required>
+              <label for="privacyAgreement">위 개인정보 수집 및 이용에 동의합니다. *</label>
+            </div>
+          </div>
+
+          <!-- 버튼 그룹 -->
+          <div class="button-group">
+            <button type="submit" class="submit-btn">신고서 제출</button>
+            <button type="reset" class="reset-btn">초기화</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+
+  <script>
+    // 주소 검색 함수
+    function searchAddress() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+          document.getElementById('postcode').value = data.zonecode;
+          document.getElementById('address').value = data.address;
+          document.getElementById('detailAddress').focus();
+        }
+      }).open();
+    }
+
+    // 폼 제출 시 전화번호 조합
+    document.querySelector('form').addEventListener('submit', function(event) {
+      const phoneNumber1 = document.getElementById('phoneNumber1').value;
+      const phoneNumber2 = document.getElementById('phoneNumber2').value;
+      const phoneNumber3 = document.getElementById('phoneNumber3').value;
+
+      const fullPhoneNumber = phoneNumber1 + '-' + phoneNumber2 + '-' + phoneNumber3;
+      document.getElementById('phoneNumber').value = fullPhoneNumber;
+    });
+  </script>
+</body>
+</html>

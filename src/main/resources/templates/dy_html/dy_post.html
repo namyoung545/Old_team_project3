@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'공지사항 - ' + ${board.title}">공지사항</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/dy_css/post.css}" />
+</head>
+<body>
+    <!-- 헤더 (추후 필요 시 활성화) -->
+    <!-- <header th:replace="includes/header :: header"></header> -->
+    <main>
+        <div class="boardPost">
+            <h1>공지사항</h1>
+            <hr>
+            <div class="post">
+                <input type="hidden" name="bnum" th:value="${board.bnum}" />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <td colspan="5" th:text="${board.bnum}">1</td>
+                        </tr>
+                        <tr>
+                            <th>제목</th>
+                            <td colspan="5" th:text="${board.title}">Sample Title</td>
+                        </tr>
+                        <tr>
+                            <th>작성자</th>
+                            <td>
+                                <input class="form-control" type="text" name="ename" th:value="${board.ename}" required />
+                            </td>
+                            <th>작성일</th>
+                            <td colspan="3" th:text="${#temporals.format(board.postdate, 'yyyy-MM-dd')}">2025-01-13</td>
+                            <th>조회수</th>
+                            <td th:text="${board.visitcount}">0</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" th:text="${board.content}">게시글 내용이 여기에 표시됩니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="postButton">
+                <button th:onclick="|location.href='/dy_update?bnum=' + ${board.bnum}|">수정</button>
+                <button th:onclick="|location.href='/dy_list'|">목록</button>
+                <form th:action="@{/dy_delete}" method="post">
+                    <input type="hidden" name="bnum" th:value="${board.bnum}">
+                    <button type="submit">삭제</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <!-- 푸터 (추후 필요 시 활성화) -->
+    <!-- <footer th:replace="includes/footer :: footer"></footer> -->
+</body>
+</html>

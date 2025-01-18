@@ -1,0 +1,25 @@
+:root {
+    --widget-bg: #fff;
+    --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+}
+/* body와 canvas 스타일 추가 */
+body {
+    margin: 0;
+    overflow: hidden; /* 스크롤바 제거 */
+}
+
+canvas {
+    display: block; /* 캔버스를 화면에 꽉 채움 */
+}
+
+.dashboard {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - 7rem);
+    overflow: hidden;
+    margin: auto;
+}

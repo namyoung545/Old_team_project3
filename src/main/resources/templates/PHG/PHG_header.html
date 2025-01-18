@@ -1,0 +1,15 @@
+<header th:fragment="header">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- 사이트 로고 혹은 메인으로 이동하는 링크 -->
+            <a href="/PHG_index" class="OLD">Old Team</a>
+            
+            <!-- 로그인/로그아웃/MyPage 버튼을 감싸는 컨테이너 -->
+            <div class="header-link-group">
+                <a th:if="${session.userId == null}" href="/PHG_login" class="login-link">로그인</a>
+                <a th:if="${session.userId != null}" href="/PHG_logout" class="login-link">로그아웃</a>
+                <a th:if="${session.userId != null}" href="/PHG_memberModify" class="login-link">MyPage</a>
+            </div>
+        </div>
+    </div>
+</header>

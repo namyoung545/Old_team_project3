@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AS 접수하기</title>
+    <!-- Head Requires // 헤더 공통 스크립트 -->
+    <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
+
+    <!-- Page Style & Script // 개별 페이지 스타일 및 스크립트 -->
+    <link rel="stylesheet" type="text/css" href="/css/PHG_css/Request_css/registResult.css">
+</head>
+<body>
+    <!-- Header -->
+    <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
+
+    <main>
+        <div class="registResult">
+            <h1>AS 접수결과</h1>
+            <hr>
+            <div class="result">
+                <div class="check_icon">
+                    <i class="bi bi-check-circle bi-lg"></i>
+                </div>
+                <div class="resultMessage"></div>
+                <hr>
+                <div class="cname">고객</div>
+                <div class="visitdate">방문일</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 레이아웃</title>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="css/PHG_css/PHG_header.css">
+    <link rel="stylesheet" href="css/PHG_css/PHG_footer.css">
+    <link rel="stylesheet" href="css/PHG_css/PHG_index.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="PHG/PHG_header :: header"></div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="main">
+        <div class="content">
+            <a href="/PHG_ElectricalDisaster" class="box">
+                <h2>전기 재해 모니터링</h2>
+            </a>
+            <a href="/PHG_managementPage" class="box">
+                <h2>노후 시설 A/S 신고 관리 시스템</h2>
+            </a>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div th:replace="PHG/PHG_footer.html :: footer"></div>
+</body>
+</html>

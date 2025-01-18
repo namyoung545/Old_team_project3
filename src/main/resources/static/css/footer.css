@@ -1,0 +1,9 @@
+        /* 푸터 스타일 */
+        footer {
+            background-color: #f5f6f7; /* 남색 */
+            color: #000000;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9em;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
