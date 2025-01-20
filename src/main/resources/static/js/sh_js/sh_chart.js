@@ -11,9 +11,11 @@ $(document).ready(() => {
         Promise.all([
             getFiresDataByStatName("화재발생건수"),
             getFiresDataByStatName("화재발생건수(원인) 전기적 요인"),
-            getFiresDataByYearAndStatName('2023', '화재발생건수(원인)')
-        ]).then(([firesData, firesCauseED, firesCause2023]) => {
-            initChart(firesData, firesCauseED, firesCause2023);
+            getFiresDataByYearAndStatName('2023', '화재발생건수(원인)'),
+            getFiresDataByStatName("사망자 수(원인) 전기적 요인"),
+            getFiresDataByStatName("부상자 수(원인) 전기적 요인"),
+        ]).then(([firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries]) => {
+            initChart(firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries);
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -21,10 +23,10 @@ $(document).ready(() => {
         });
     }
 
-    function initChart(firesData, firesCauseED, firesCause2023) {
+    function initChart(firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries) {
         callFiresChart(firesData, firesCauseED);
         callFireCauseChart(firesCause2023);
-        console.log(firesCause2023);
+        callFireCasualtiesChart(fireDeaths, fireInjuries);
     }
 
     // 연도별 화재발생건수 차트
@@ -83,18 +85,104 @@ $(document).ready(() => {
                 {
                     label: firesCauseTitle,
                     data: firesCauseData,
-                    // backgroundColor: 'rgba()',
+                    backgroundColor: [
+                        '#FFCE56', '#FF6384', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40',
+                        '#C9DE00', '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360',
+                        '#00A2E8', '#76A1E5', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F',
+                        '#B276B2', '#DECF3F', '#F15854', '#5DA5DA'
+                    ]
                     // borderColor: 'rgb()',
                     // borderWidth: 1
                 }
             ]
         }
+
+        let chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false, // 기본 라벨 숨기기
+                },
+                tooltip: {
+                    callbacks: {
+                        // 툴팁에 % 표시 추가
+                        label: (tooltipItem) => {
+                            const value = firesCauseData[tooltipItem.dataIndex];
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${labels[tooltipItem.dataIndex]}: ${value}건 (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+
+        }
+
         let $chartCause = $('#chartCause');
-        createChartGraph($chartCause, chartData, 'doughnut');
+        createChartGraph($chartCause, chartData, 'doughnut', chartOptions);
+
+        let $labelCause = $('#labelCause');
+        $labelCause.empty(); // 기존 내용 초기화
+
+        // 전체 데이터 합산 계산
+        const total = firesCauseData.reduce((sum, value) => sum + value, 0);
+
+        // 라벨과 비율을 div에 추가
+        firesCauseData.forEach((value, index) => {
+            const percentage = ((value / total) * 100).toFixed(1);
+            const labelHtml = `
+            <div class="label-item">
+                <span class="label-name" style="color: ${chartData.datasets[0].backgroundColor[index]}">
+                    ● ${labels[index]}
+                </span>
+                <span class="label-value">
+                    ${value}건 (${percentage}%)
+                </span>
+            </div>
+        `;
+            $labelCause.append(labelHtml);
+        });
+    }
+
+
+    // 인명피해 차트
+    function callFireCasualtiesChart(fireDeaths, fireInjuries) {
+        const labels = [];
+        const firesChartTitle = fireDeaths[0].statName;
+        const deathsData = [];
+        const injuriesData = [];
+        fireDeaths.forEach(item => {
+            labels.push(item.year);
+            deathsData.push(item.statValue);
+        });
+        fireInjuries.forEach(item => {
+            injuriesData.push(item.statValue);
+        });
+
+        let chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: fireDeaths[0].statName,
+                    data: deathsData,
+                    backgroundColor: 'rgba(255, 100, 100, 0.5)',
+                    borderColor: 'rgb(255, 100, 100)',
+                    borderWidth: 1,
+                }, {
+                    label: fireInjuries[0].statName,
+                    data: injuriesData,
+                    backgroundColor: 'rgb(255, 200, 100)',
+                    borderColor: 'rgb(255,200,100)',
+                    borderWidth: 1
+                }
+            ]
+        }
+
+        let chartCasualties = $('#chartInjuries');
+        createChartGraph(chartCasualties, chartData, 'line');
     }
 
     // Chartjs Graph
-    function createChartGraph($target, chartData, chartType = 'line') {
+    function createChartGraph($target, chartData, chartType = 'line', chartOptions = '') {
         // jQuery로 캔버스 요소를 가져옵니다.
         const ctx = $($target)[0].getContext('2d');
         const scales = {};
@@ -110,6 +198,14 @@ $(document).ready(() => {
             });
         }
 
+        if (!chartOptions) {
+            chartOptions = {
+                responsive: true,
+                scales: scales
+            }
+        }
+        console.log(chartOptions)
+
         // Chart.js로 그래프를 생성합니다.
         new Chart(ctx, {
             type: chartType,
@@ -117,10 +213,7 @@ $(document).ready(() => {
                 labels: chartData.labels, // x축 레이블 (datetime)
                 datasets: chartData.datasets // 데이터셋
             },
-            options: {
-                responsive: true,
-                scales: scales
-            }
+            options: chartOptions
         });
     }
 

@@ -10,6 +10,7 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
     <script th:src="@{/js/sh_js/sh_chart.js}"></script>
     <link rel="stylesheet" th:href="@{/css/sh_css/sh_chart.css}">
@@ -22,7 +23,13 @@
                 <canvas id="chartFires"></canvas>
             </div>
             <div class="chartBox chartCause">
-                <canvas id="chartCause"></canvas>
+                <div class="chartCanvas">
+                    <canvas id="chartCause"></canvas>
+                </div>
+                <div id="labelCause"></div>
+            </div>
+            <div class="chartBox chartInjuries">
+                <canvas id="chartInjuries"></canvas>
             </div>
         </div>
     </main>
