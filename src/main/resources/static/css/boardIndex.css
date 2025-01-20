@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-#management_container{
+#boardIndex_container{
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -14,7 +14,7 @@
 }
 
 /* 메인 콘텐츠 */
-#mainContent {
+#boardIndex_mp_container {
     flex:1;
     display: flex;
     overflow-y: auto; /* 세로 스크롤 추가 */
@@ -25,7 +25,7 @@
     /* height: 100vh;            화면 전체 높이를 사용 */
 }
 
-#mp_index_container{
+#boardIndex_mp_subContainer{
     flex:1;
     align-content: center;
 }

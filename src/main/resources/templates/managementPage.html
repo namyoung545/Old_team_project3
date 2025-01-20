@@ -3,13 +3,42 @@
 
 <head>
     <title>난방기사 A/S 스케쥴 관리 서비스</title>
-    <head th:replace="managementPage_headscript.html :: managementPage_headscript"></head>
+
+    <head th:replace="common_headscript.html :: common_headscript"></head>
+    <link rel="stylesheet" href="/css/managementPage.css" />
+    <script src="/js/managementPage.js" defer></script>
 </head>
 
 <body>
     <div id="management_container">
         <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
-        <div id="mainContent" th:insert="mp_index.html :: mp_main"></div> <!-- main 삽입 -->
+
+        <main id="mp_index_container">
+            <div class="mp_home">
+                <h1>노후 시설 AS 신고 관리 시스템</h1>
+                <hr>
+                <div class="mp_homeMenu">
+                    <a href="managementPage/boardIndex" id="menuBoardIndexLink">
+                        <div class="mp_menuBox menuRegist">
+                            <i class="bi bi-info-square"></i><span>게시판</span>
+                        </div>
+                    </a> <a href="managementPage/fullCalendar" id="menuCalendarLink">
+                        <div class="mp_menuBox menuCalendar">
+                            <i class="bi bi-calendar-check"></i><span>AS 스케줄</span>
+                        </div>
+                    </a> <a href="managementPage/registAS" id="menuAsRegistLink">
+                        <div class="mp_menuBox menuRegist">
+                            <i class="bi bi-file-earmark-plus"></i><span>AS 접수</span>
+                        </div>
+                    </a> </a> <a href="managementPage/ASprocessStatus" id="menuASprocessStatusLink">
+                        <div class="mp_menuBox menuRegist">
+                            <i class="bi bi-file-earmark-bar-graph"></i><span>AS 현황</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+
         <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
     </div>
 </body>
