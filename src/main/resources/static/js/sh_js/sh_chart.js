@@ -73,10 +73,12 @@ $(document).ready(() => {
         const labels = [];
         const firesCauseTitle = firesCauseYear[0].statName;
         const firesCauseData = [];
+        const total = 0;
         firesCauseYear.forEach(item => {
             let labelString = item.statName.replace("화재발생건수(원인) ", "");
             labels.push(labelString);
             firesCauseData.push(item.statValue);
+            total += parseInt(item.statValue);
         });
 
         let chartData = {
@@ -96,6 +98,8 @@ $(document).ready(() => {
                 }
             ]
         }
+
+
 
         let chartOptions = {
             responsive: true,
@@ -122,9 +126,6 @@ $(document).ready(() => {
 
         let $labelCause = $('#labelCause');
         $labelCause.empty(); // 기존 내용 초기화
-
-        // 전체 데이터 합산 계산
-        const total = firesCauseData.reduce((sum, value) => sum + value, 0);
 
         // 라벨과 비율을 div에 추가
         firesCauseData.forEach((value, index) => {
@@ -204,7 +205,6 @@ $(document).ready(() => {
                 scales: scales
             }
         }
-        console.log(chartOptions)
 
         // Chart.js로 그래프를 생성합니다.
         new Chart(ctx, {
