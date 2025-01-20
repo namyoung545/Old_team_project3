@@ -10,23 +10,25 @@ $(document).ready(() => {
         console.log('initAPI')
         Promise.all([
             getFiresDataByStatName("화재발생건수"),
-            getFiresDataByStatName("화재발생건수(원인) 전기적 요인")
-        ]).then(([firesData, firesCauseED]) => {
-            initChart(firesData, firesCauseED);
-        }).catch(() => {
-
+            getFiresDataByStatName("화재발생건수(원인) 전기적 요인"),
+            getFiresDataByYearAndStatName('2023', '화재발생건수(원인)')
+        ]).then(([firesData, firesCauseED, firesCause2023]) => {
+            initChart(firesData, firesCauseED, firesCause2023);
+        }).catch((error) => {
+            console.log(error);
         }).finally(() => {
-
+            console.log('initAPI Promise Finally');
         });
     }
 
-    function initChart(firesData, firesCauseED) {
-        callfiresChart(firesData, firesCauseED);
-        console.log(firesCauseED);
+    function initChart(firesData, firesCauseED, firesCause2023) {
+        callFiresChart(firesData, firesCauseED);
+        callFireCauseChart(firesCause2023);
+        console.log(firesCause2023);
     }
 
     // 연도별 화재발생건수 차트
-    function callfiresChart(firesData, firesCauseED) {
+    function callFiresChart(firesData, firesCauseED) {
         const labels = [];
         const firesChartTitle = firesData[0].statName;
         const firesChartData = [];
@@ -40,7 +42,7 @@ $(document).ready(() => {
             edChartData.push(item.statValue);
         });
 
-        let $chartData = {
+        let chartData = {
             labels: labels,
             datasets: [
                 {
@@ -61,11 +63,35 @@ $(document).ready(() => {
         }
 
         let $chartFires = $('#chartFires');
-        createChartGraph($chartFires, $chartData, 'bar');
+        createChartGraph($chartFires, chartData, 'bar');
     }
 
     // 원인별 화재 차트
+    function callFireCauseChart(firesCauseYear) {
+        const labels = [];
+        const firesCauseTitle = firesCauseYear[0].statName;
+        const firesCauseData = [];
+        firesCauseYear.forEach(item => {
+            let labelString = item.statName.replace("화재발생건수(원인) ", "");
+            labels.push(labelString);
+            firesCauseData.push(item.statValue);
+        });
 
+        let chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: firesCauseTitle,
+                    data: firesCauseData,
+                    // backgroundColor: 'rgba()',
+                    // borderColor: 'rgb()',
+                    // borderWidth: 1
+                }
+            ]
+        }
+        let $chartCause = $('#chartCause');
+        createChartGraph($chartCause, chartData, 'doughnut');
+    }
 
     // Chartjs Graph
     function createChartGraph($target, chartData, chartType = 'line') {
@@ -98,7 +124,26 @@ $(document).ready(() => {
         });
     }
 
-    // Get Fires Data
+    // Get Fires Data By StatName
+    function getFiresDataByYear(year) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/sh_api/fires',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ year: year }),
+                success: (data) => {
+                    resolve(data)
+                },
+                error: (error) => {
+                    console.error("[ERROR] : ", error);
+                    reject(error);
+                }
+            })
+        });
+    }
+
+    // Get Fires Data By StatName
     function getFiresDataByStatName(statName) {
         return new Promise(function (resolve, reject) {
             $.ajax({
@@ -111,6 +156,25 @@ $(document).ready(() => {
                 },
                 error: function (error) {
                     console.error("Error:", error);
+                    reject(error);
+                }
+            })
+        })
+    }
+
+    // Get Fires Data By Year And StatName
+    function getFiresDataByYearAndStatName(year, statName) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/sh_api/firesByYearAndStatName',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ year: year, statName: statName }),
+                success: (data) => {
+                    resolve(data);
+                },
+                error: (error) => {
+                    console.error('[ERROR] : ', error);
                     reject(error);
                 }
             })

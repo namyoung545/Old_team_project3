@@ -26,6 +26,11 @@ public class SHAPIService {
         return fireStatisticsRepository.findByStatName(statName);
     }
 
+    public List<FireStatistics> getFiresDataByYearAndStatNameLike(String year, String statName) {
+        System.out.println("API Service - getFiresDataByYearAndStatNameLike");
+        return fireStatisticsRepository.findByYearAndStatNameLike(year, statName);
+    }
+
     public List<FireStatistics> getFiresDataByStatNameLike(String statName) {
         System.out.println("API Service - getFiresDataByStatNameLike");
         return fireStatisticsRepository.findByStatNameLike(statName);

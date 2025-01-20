@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,24 @@ public class SHAPIController {
         return shAPIService.getFiresDataByStatName(statName);
     }
 
+    @PostMapping("/firesByYearAndStatName")
+    public List<FireStatistics> firesDataByYearAndStatName(@RequestBody APIFiresDTO apiFiresDTO) {
+        System.out.println("SHAPI - FiresDataByYearAndStatName");
+        String year = apiFiresDTO.getYear();
+        String statName = apiFiresDTO.getStatName();
+        return shAPIService.getFiresDataByYearAndStatNameLike(year, statName);
+    }
+    
+    // 사용안함 검색 부정확
+    @PostMapping("/firesByStatNameLike")
+    public List<FireStatistics> firesDataByStatNameLike(@RequestBody APIFiresDTO
+    apiFiresDTO) {
+    System.out.println("SHAPI - FiresByStatNameLike");
+    String statName = apiFiresDTO.getStatName();
+    return shAPIService.getFiresDataByStatNameLike(statName);
+    }
+
+    // 브이월드 기능
     @PostMapping("vworldWFS")
     public ResponseEntity<String> vworldWFS(@RequestParam Map<String, String> params) {
         RestTemplate restTemplate = new RestTemplate();
@@ -53,22 +72,6 @@ public class SHAPIController {
         return ResponseEntity.ok(response.getBody());
     }
 
-    // 사용안함 검색 부정확
-    // @PostMapping("/firesByStatNameLike")
-    // public List<FireStatistics> firesDataByStatNameLike(@RequestBody APIFiresDTO
-    // apiFiresDTO) {
-    // System.out.println("SHAPI - FiresByStatNameLike");
-    // String statName = apiFiresDTO.getStatName();
-    // return shAPIService.getFiresDataByStatNameLike(statName);
-    // }
 
-    // @PostMapping("/firesByYearAndStatName")
-    // public Optional<FireStatistics> firesDataByYearAndStatName(@RequestBody
-    // APIFiresDTO apiFiresDTO) {
-    // System.out.println("SHAPI - FiresByYearAndStatName");
-    // String year = apiFiresDTO.getYear();
-    // String statName = apiFiresDTO.getStatName();
-    // return shAPIService.getFiresDataByYearAndStatName(year, statName);
-    // }
 
 }
