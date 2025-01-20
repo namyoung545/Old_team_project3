@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
+    <link rel="stylesheet" href="/css/fullCalendar.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/ko.global.js"></script>
+</head>
+<body>
+    <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
+    
+    <div id="fullCalendar_container">
+        <div id="fullCalendar_subContainer">
+            <h1>AS 스케줄</h1>
+            <div id="fullCalendar"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+
+    <!-- fullCalendar -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById("fullCalendar");
+        if (!calendarEl) {
+            console.error("fullCalendar 요소를 찾을 수 없습니다!");
+            return;
+        }
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth",
+            locale: "ko",
+            events: [] // 여기에 실제 이벤트 데이터를 넣으세요
+        });
+
+        calendar.render();
+    });
+    </script>
+</body>
+</html>
