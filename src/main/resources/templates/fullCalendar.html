@@ -1,10 +1,35 @@
 <!-- <script>
         var jsonData = /*[[${events}]]*/[]; // Thymeleaf를 통해 Controller에서 전달받은 데이터
     </script> -->
+<!DOCTYPE html>
+<html lang="ko">
 
-<div id="fullCalendar_container">
-    <div id="fullCalendar_subContainer">
-        <h1>AS 스케줄</h1>
-        <div id="fullCalendar"></div>
+<head>
+    <title>난방기사 A/S 스케쥴 관리 서비스</title>
+
+    <head th:replace="common_headscript.html :: common_headscript"></head>
+
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="/css/fullCalendar.css">
+    <script src="/js/fullCalendar.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/ko.global.js" defer></script>
+
+</head>
+
+<body>
+    <div id="fullCalendar_container">
+        <div th:replace="boardHeader.html :: board_header"></div> <!-- Header 삽입 -->
+
+        <div id="fullCalendar_sub_border_container">
+            <div id="fullCalendar_sub_Container">
+                <h1>AS 스케줄</h1>
+                <div id="fullCalendar"></div>
+            </div>
+        </div>
+
+        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
     </div>
-</div>
+</body>
+
+</html>

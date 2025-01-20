@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <head th:replace="common_headscript.html :: common_headscript"></head>
+
     <link rel="stylesheet" href="css/index.css" />
-    <link rel="stylesheet" href="css/header.css" />
-    <link rel="stylesheet" href="css/footer.css" />
-    <script src="js/header.js" defer></script>
+    
 </head>
 
 <body>
     <div id="index_container">
         <!-- 헤더 -->
-        <div th:replace="indexHeader.html :: index_header"></div> <!-- Header 삽입 -->
+        <!-- <div th:replace="indexHeader.html :: index_header"></div> Header 삽입 -->
 
         <!-- 메인 컨텐츠 -->
         <div class="main">

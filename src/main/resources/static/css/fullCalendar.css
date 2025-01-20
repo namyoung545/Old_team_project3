@@ -1,16 +1,19 @@
-@charset "UTF-8";
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-#fullCalendar_container{
+#fullCalendar_sub_border_container{
 	display: flex;
 	flex-direction: column; /* 세로 방향 정렬 */
 	justify-content: center;
     align-items: center;
 	background-color: #fff;
-	max-width: 1000px;
 	width:100%;
 	padding:40px 20px;
 }
-#fullCalendar_subContainer{
+#fullCalendar_sub_Container{
 	display: flex;
 	background-color: #fff;
 	max-width: 1000px;
