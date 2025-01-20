@@ -48,4 +48,10 @@ public class FireCauseData {
     public void setCauseSubcategory(String causeSubcategory) {
         this.causeSubcategory = causeSubcategory;
     }
+
+    @Override
+    public String toString() {
+        return "FireCauseData [id=" + id + ", causeCategory=" + causeCategory + ", causeSubcategory=" + causeSubcategory
+                + "]";
+    }
 }

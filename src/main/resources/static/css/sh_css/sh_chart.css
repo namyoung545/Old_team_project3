@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+main {
+    width: 100%;
+    height: auto;
+    background-color: #d0d0d050;
+}
+
+.mainContainer {
+    padding: 1rem;
+}
+
+.chartBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fefefe;
+    width: 50%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 5px 5px 10px rgb(0 0 0 / 20%);
+    padding: 1rem;
+    margin: 1rem auto;
+}
+
+.chartCause .chartCanvas {
+    width: 50%;
+}
+
+.chartCause #labelCause {
+    font-size: 0.9rem;
+    line-height: 1.5rem;
+    padding: 1rem;
+}
