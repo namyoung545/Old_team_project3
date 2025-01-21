@@ -18,6 +18,7 @@
       
       <div class="report-form">
         <form action="/schedule/registAS/insert" method="post">
+          <input type="hidden" name="userId" th:value="${session.userId}">
           <!-- 신고자 정보 섹션 -->
           <table class="info-table">
             <caption>

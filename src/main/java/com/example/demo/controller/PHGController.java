@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,11 +99,15 @@ public class PHGController {
             return "/PHG/PHG_alertPrint";
         }
 
+        // 로그인 성공 시 사용자 정보를 새로 조회
+        PHG_MemberDTO userInfo = memberService.getUserById(memberDTO.getUserId());
+
         // 세션 생성 및 사용자 ID 저장
         HttpSession session = request.getSession();
-        session.setAttribute("userId", memberDTO.getUserId());
-        System.out.println("세션 생성 완료 - 사용자 ID: " + memberDTO.getUserId());
-
+        session.setAttribute("userId", userInfo.getUserId());
+        session.setAttribute("authorityId", userInfo.getAuthorityId());
+        System.out.println("세션 생성 완료 - 사용자 ID: " + userInfo.getUserId());
+        System.out.println("세션 생성 완료 - 사용자 권한: " + userInfo.getAuthorityId());
         // 아이디 저장 쿠키 처리
         if (rememberId) {
             Cookie cookie = new Cookie("userId", memberDTO.getUserId());
@@ -207,7 +212,12 @@ public class PHGController {
 
     // --------------------------------------------------------------------------------------------------
     @GetMapping("/schedule/registAS")
-    public String scheduleRegistAS() {
+    public String scheduleRegistAS(HttpSession session, Model model) {
+        if (session.getAttribute("userId") == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
         return "/PHG/RequestCode/registAS";
     }
 
@@ -240,7 +250,22 @@ public class PHGController {
 
     // --------------------------------------------------------------------------------------------------
     @GetMapping("/schedule/processStatus")
-    public String scheduleRegistResult() {
+    public String scheduleRegistResult(HttpSession session, Model model, PHG_AsReceptionDTO dto) throws Exception {
+        String userId = (String) session.getAttribute("userId");
+        int authorityId = (int) session.getAttribute("authorityId");
+
+        if (userId == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
+
+        dto.setUserId(userId);
+        dto.setAuthorityId(authorityId);
+
+        List<PHG_AsReceptionDTO> asReceptionList = asReceptionService.AS_Status(dto);
+        model.addAttribute("asReceptionList", asReceptionList);
+
         return "/PHG/RequestCode/registProcessStatus";
     }
 

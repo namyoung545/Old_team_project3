@@ -45,6 +45,7 @@ public class PHG_MemberServiceImpl implements PHG_MemberService {
 			System.out.println("   - 암호화된 PW: " + storedUser.getUserPw());
 			System.out.println("   - 이메일: " + storedUser.getEmail());
 			System.out.println("   - 이름: " + storedUser.getName());
+			System.out.println("   - 권한: " + storedUser.getAuthorityId());
 		} else {
 			System.out.println("   - 사용자 정보 없음");
 		}

@@ -8,7 +8,44 @@
 
 	<!-- 시설 A/S 접수 -->
 	<insert id="AS_Reception" parameterType="com.example.demo.dto.PHG_AsReceptionDTO">
-		INSERT INTO as_reception (name, phoneNumber, email, postcode, address, detailAddress, facilityType, issueTitle, issueDetails, preferredDate, preferredTime)
-		VALUES (#{name}, #{phoneNumber}, #{email}, #{postcode}, #{address}, #{detailAddress}, #{facilityType}, #{issueTitle}, #{issueDetails}, #{preferredDate}, #{preferredTime})
+		INSERT INTO as_reception (
+			userId,
+			authorityId,
+			name, 
+			phoneNumber, 
+			email, 
+			postcode, 
+			address, 
+			detailAddress, 
+			facilityType, 
+			issueTitle, 
+			issueDetails, 
+			preferredDate, 
+			preferredTime
+		)
+		SELECT 
+			m.userId,
+			m.authorityId,
+			#{name}, 
+			#{phoneNumber}, 
+			#{email}, 
+			#{postcode}, 
+			#{address}, 
+			#{detailAddress}, 
+			#{facilityType}, 
+			#{issueTitle}, 
+			#{issueDetails}, 
+			#{preferredDate}, 
+			#{preferredTime}
+		FROM member m
+		WHERE m.userId = #{userId}
 	</insert>
+	
+	<select id="AS_Status" parameterType="com.example.demo.dto.PHG_AsReceptionDTO" resultType="com.example.demo.dto.PHG_AsReceptionDTO">
+		SELECT requestId, userId, authorityId, receptionDate, name, preferredDate, preferredTime, receptionStatus
+		FROM as_reception
+		<if test="authorityId != 1">
+			WHERE userId = #{userId}
+		</if>
+	</select>
 </mapper>
