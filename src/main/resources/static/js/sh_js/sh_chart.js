@@ -1,21 +1,19 @@
 $(document).ready(() => {
-    console.log('sh_chart.js');
-
     function initialize() {
-
         initAPIData();
     }
 
     function initAPIData() {
-        console.log('initAPI')
         Promise.all([
             getFiresDataByStatName("화재발생건수"),
             getFiresDataByStatName("화재발생건수(원인) 전기적 요인"),
             getFiresDataByYearAndStatName('2023', '화재발생건수(원인)'),
             getFiresDataByStatName("사망자 수(원인) 전기적 요인"),
             getFiresDataByStatName("부상자 수(원인) 전기적 요인"),
-        ]).then(([firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries]) => {
-            initChart(firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries);
+            getFiresDataByStatName("재산피해합계"),
+            getFiresDataByStatName("재산피해합계(원인) 전기적 요인"),
+        ]).then(([firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries, fireDamageProperty, fireDamageByED]) => {
+            initChart(firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries, fireDamageProperty, fireDamageByED);
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -23,10 +21,79 @@ $(document).ready(() => {
         });
     }
 
-    function initChart(firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries) {
+    function initChart(firesData, firesCauseED, firesCause2023, fireDeaths, fireInjuries, fireDamageProperty, fireDamageByED) {
         callFiresChart(firesData, firesCauseED);
         callFireCauseChart(firesCause2023);
         callFireCasualtiesChart(fireDeaths, fireInjuries);
+        callFireDamagePropertyChart(fireDamageProperty, fireDamageByED);
+    }
+
+    // 연도별 재산피해 차트
+    function callFireDamagePropertyChart(fireDamageProperty, fireDamageByED) {
+        const labels = [];
+        const fireDamageTitle = fireDamageProperty[0].statName + " (십억)";
+        const fireDamageData = [];
+        const fireEDDamageTitle = fireDamageByED[0].statName.replace("재산피해합계(원인) ", "") + " (십억)";
+        const fireEDDamageData = [];
+        fireDamageProperty.forEach(item => {
+            labels.push(item.year);
+            fireDamageData.push((parseInt(item.statValue) / 1000000).toFixed(0));
+        });
+        fireDamageByED.forEach(item => {
+            fireEDDamageData.push((parseInt(item.statValue) / 1000000).toFixed(0));
+        });
+
+        let chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: fireDamageTitle,
+                    data: fireDamageData,
+                    backgroundColor: 'rgba(255,100, 100, 0.5)',
+                    borderColor: 'rgb(255, 100, 100)',
+                    borderWidth: 1,
+                    pointStyle: 'circle',
+                    pointRadius: 8,
+                    pointHoverRadius: 15
+                },
+                {
+                    label: fireEDDamageTitle,
+                    data: fireEDDamageData,
+                    backgroundColor: 'rgba(255,200,100, 0.8)',
+                    borderColor: 'rgb(255,200,100)',
+                    borderWidth: 1,
+                    pointStyle: 'circle',
+                    pointRadius: 8,
+                    pointHoverRadius: 15
+                }
+            ]
+        }
+
+        let chartOptions = {
+            plugins: {
+                // title: {
+                //     display: true,
+                //     text: '재산피해합계'
+                // },
+            },
+            responsive: true,
+            scales: {
+                x: {
+                    // stacked: true
+                    title: {
+                        display: true,
+                        text: '재산피해합계(십억)'
+                    },
+                },
+                y: {
+                    // stacked: true
+                }
+            }
+        }
+
+        let $chartDamage = $('#chartDamage');
+        createChartGraph($chartDamage, chartData, 'line');
+
     }
 
     // 연도별 화재발생건수 차트
@@ -34,7 +101,7 @@ $(document).ready(() => {
         const labels = [];
         const firesChartTitle = firesData[0].statName;
         const firesChartData = [];
-        const edChartTitle = firesCauseED[0].statName;
+        const edChartTitle = firesCauseED[0].statName.replace("화재발생건수(원인) ", "");
         const edChartData = [];
         firesData.forEach(item => {
             labels.push(item.year);
@@ -50,15 +117,15 @@ $(document).ready(() => {
                 {
                     label: firesChartTitle,
                     data: firesChartData,
-                    backgroundColor: 'rgba(243, 84, 97, 0.2)',
-                    borderColor: 'rgb(243, 84, 97)',
+                    backgroundColor: 'rgba(255, 50, 50, 0.5)',
+                    borderColor: 'rgb(255, 50, 50)',
                     borderWidth: 1,
                 },
                 {
                     label: edChartTitle,
                     data: edChartData,
-                    backgroundColor: 'rgba(255, 230, 89, 0.83)',
-                    borderColor: 'rgb(255, 230, 89)',
+                    backgroundColor: 'rgba(255, 200, 100, 0.8)',
+                    borderColor: 'rgb(255, 200, 100)',
                     borderWidth: 1,
                 }
             ]
@@ -73,7 +140,7 @@ $(document).ready(() => {
         const labels = [];
         const firesCauseTitle = firesCauseYear[0].statName;
         const firesCauseData = [];
-        const total = 0;
+        let total = 0;
         firesCauseYear.forEach(item => {
             let labelString = item.statName.replace("화재발생건수(원인) ", "");
             labels.push(labelString);
@@ -98,8 +165,6 @@ $(document).ready(() => {
                 }
             ]
         }
-
-
 
         let chartOptions = {
             responsive: true,
@@ -130,16 +195,13 @@ $(document).ready(() => {
         // 라벨과 비율을 div에 추가
         firesCauseData.forEach((value, index) => {
             const percentage = ((value / total) * 100).toFixed(1);
+            const labelValue = Number(value).toLocaleString();
             const labelHtml = `
             <div class="label-item">
-                <span class="label-name" style="color: ${chartData.datasets[0].backgroundColor[index]}">
-                    ● ${labels[index]}
-                </span>
-                <span class="label-value">
-                    ${value}건 (${percentage}%)
-                </span>
+                <span class="label-name" style="background-color: ${chartData.datasets[0].backgroundColor[index]}; color:#fefefe; font-weight:600; border-radius: 10px; padding: 0.25rem 0.5rem; margin: 0">${labels[index]}</span>
+                <span class="label-value">${labelValue}건 (${percentage}%)</span>
             </div>
-        `;
+            `;
             $labelCause.append(labelHtml);
         });
     }
@@ -168,12 +230,15 @@ $(document).ready(() => {
                     backgroundColor: 'rgba(255, 100, 100, 0.5)',
                     borderColor: 'rgb(255, 100, 100)',
                     borderWidth: 1,
-                }, {
+                    fill: true,
+                },
+                {
                     label: fireInjuries[0].statName,
                     data: injuriesData,
                     backgroundColor: 'rgb(255, 200, 100)',
                     borderColor: 'rgb(255,200,100)',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    fill: true,
                 }
             ]
         }

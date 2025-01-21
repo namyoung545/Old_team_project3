@@ -20,7 +20,7 @@ main {
 .chartBox {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     background-color: #fefefe;
     width: 50%;
     height: auto;
@@ -36,6 +36,6 @@ main {
 
 .chartCause #labelCause {
     font-size: 0.9rem;
-    line-height: 1.5rem;
+    line-height: 2rem;
     padding: 1rem;
 }
