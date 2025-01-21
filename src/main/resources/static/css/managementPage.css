@@ -28,4 +28,18 @@
 #mp_index_container{
     flex:1;
     align-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 30px;
+    height: 100%;
+    padding: 20px 160px;
+}
+
+.mp_homeMenu{
+    /* display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 20px;
+    height: 100%; */
 }

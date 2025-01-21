@@ -13,10 +13,11 @@
 
 <body>
     <div id="ASprocessStatus_container">
-        <div th:replace="boardHeader.html :: board_header"></div> <!-- Header 삽입 -->
+        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
         <div id="ASprocessStatus_sub_border_Container">
             <div id="ASprocessStatus_sub_Container">
+                <div th:insert="sidebar.html :: sidebar"></div>
                 <h1>A/S 처리현황</h1>
                 <hr>
                 <table>

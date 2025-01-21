@@ -1,7 +1,17 @@
 :root {
     --widget-bg: #fff;
     --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    --primary-color: #81C784;
+    --secondary-color: #333;
+    --color-dashboard-main: #212121;
+    --text-color: #f1f1f1;
 
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 /* body와 canvas 스타일 추가 */
 body {
@@ -9,17 +19,57 @@ body {
     overflow: hidden; /* 스크롤바 제거 */
 }
 
+.dashboard_container{
+    background-color: var(--color-dashboard-main);
+    color: var(--text-color);
+}
+
 canvas {
     display: block; /* 캔버스를 화면에 꽉 채움 */
 }
 
-.dashboard {
+.dashboard_container {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - 7rem);
+    height: calc(100vh);
     overflow: hidden;
     margin: auto;
+}
+
+.dashboard_sub_container{
+    background-color: var(--color-dashboard-main);
+    width: 100%;
+    height: 100%;
+    padding:20px;
+}
+
+.first_page{
+    position: absolute;
+    top: 0;
+    /* left: 100%; */
+    /* flex: 0 0 100%; */
+    width: 100%;
+    height: 100%;
+    /* max-width: 1600px; */
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+    grid-template-rows: repeat(6, 1fr);
+    /* grid-template-rows: auto; */
+    grid-gap: 20px;
+    /* animation: fadeIn 1s ease-in-out; */
+    /* transition: transform 0.6s ease-in-out, opacity 0.3s ease; */
+    /* opacity: 1; */
+    overflow: hidden;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+.widget {
+    width: 100%; /* 그리드 셀에 맞게 확장 */
+    min-width: 0; /* 기본 최소 크기 제한 해제 */
+    overflow: hidden; /* 콘텐츠 넘침 방지 */
 }
