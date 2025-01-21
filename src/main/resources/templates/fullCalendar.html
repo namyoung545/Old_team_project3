@@ -19,10 +19,11 @@
 
 <body>
     <div id="fullCalendar_container">
-        <div th:replace="boardHeader.html :: board_header"></div> <!-- Header 삽입 -->
+        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
         <div id="fullCalendar_sub_border_container">
             <div id="fullCalendar_sub_Container">
+                <div th:insert="sidebar.html :: sidebar"></div>
                 <h1>AS 스케줄</h1>
                 <div id="fullCalendar"></div>
             </div>

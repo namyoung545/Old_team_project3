@@ -4,10 +4,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.dao.PHG_AsReceptionDAO">
+<mapper namespace="com.example.demo.dao.asReceptionDAO">
 
 	<!-- 시설 A/S 접수 -->
-	<insert id="AS_Reception" parameterType="com.example.demo.dto.PHG_AsReceptionDTO">
+	<insert id="AS_Reception" parameterType="com.example.demo.dto.asReceptionDTO">
 		INSERT INTO as_reception (
 			userId,
 			authorityId,
@@ -41,7 +41,7 @@
 		WHERE m.userId = #{userId}
 	</insert>
 	
-	<select id="AS_Status" parameterType="com.example.demo.dto.PHG_AsReceptionDTO" resultType="com.example.demo.dto.PHG_AsReceptionDTO">
+	<select id="AS_Status" parameterType="com.example.demo.dto.asReceptionDTO" resultType="com.example.demo.dto.asReceptionDTO">
 		SELECT requestId, userId, authorityId, receptionDate, name, preferredDate, preferredTime, receptionStatus
 		FROM as_reception
 		<if test="authorityId != 1">

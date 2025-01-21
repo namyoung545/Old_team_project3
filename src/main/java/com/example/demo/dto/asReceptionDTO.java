@@ -5,7 +5,7 @@ import java.sql.Time;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class PHG_AsReceptionDTO {
+public class asReceptionDTO {
 	private Integer requestId; // 자동 증가 값
 
 	private String userId;
@@ -161,7 +161,7 @@ public class PHG_AsReceptionDTO {
 
 	@Override
 	public String toString() {
-		return "PHG_AsReceptionDTO [requestId=" + requestId + ", userId=" + userId + ", authorityId=" + authorityId
+		return "asReceptionDTO [requestId=" + requestId + ", userId=" + userId + ", authorityId=" + authorityId
 				+ ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + ", postcode=" + postcode
 				+ ", address=" + address + ", detailAddress=" + detailAddress + ", facilityType=" + facilityType
 				+ ", issueTitle=" + issueTitle + ", issueDetails=" + issueDetails + ", preferredDate=" + preferredDate

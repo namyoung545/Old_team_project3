@@ -26,7 +26,7 @@
 
 	<!-- 사용자 정보 조회 -->
     <select id="getUserById" resultType="com.example.demo.dto.PHG_MemberDTO">
-		SELECT userId, userPw, email, name, phoneNumber, address
+		SELECT userId, userPw, email, name, phoneNumber, address, authorityId
 		FROM member
 		WHERE userId = #{userId}
 	</select>

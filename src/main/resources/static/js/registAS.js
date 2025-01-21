@@ -6,7 +6,7 @@ $(document).ready(() => {
 	}
 
 	function eventHandler() {
-		$(document).on('click', '.searchAddress', function(event) {
+		$(document).on('click', '.searchAddress', function (event) {
 			callPostCodeAPI($(this), event);
 		});
 	}
@@ -18,7 +18,7 @@ $(document).ready(() => {
 		let addressBname = targetParent.find('.addressBname');
 
 		new daum.Postcode({
-			oncomplete: function(data) {
+			oncomplete: function (data) {
 				let roadAddr = data.roadAddress;
 				let extraRoadAddr = '';
 
@@ -116,4 +116,25 @@ $(document).ready(() => {
 	}
 
 	initialize();
+});
+
+// 주소 검색 함수
+function searchAddress() {
+	new daum.Postcode({
+		oncomplete: function (data) {
+			document.getElementById('postcode').value = data.zonecode;
+			document.getElementById('address').value = data.address;
+			document.getElementById('detailAddress').focus();
+		}
+	}).open();
+}
+
+// 폼 제출 시 전화번호 조합
+document.querySelector('form').addEventListener('submit', function (event) {
+	const phoneNumber1 = document.getElementById('phoneNumber1').value;
+	const phoneNumber2 = document.getElementById('phoneNumber2').value;
+	const phoneNumber3 = document.getElementById('phoneNumber3').value;
+
+	const fullPhoneNumber = phoneNumber1 + '-' + phoneNumber2 + '-' + phoneNumber3;
+	document.getElementById('phoneNumber').value = fullPhoneNumber;
 });

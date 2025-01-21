@@ -11,18 +11,19 @@
 
 <body>
     <div id="boardIndex_container">
-        <div th:replace="boardHeader.html :: board_header"></div> <!-- Header 삽입 -->
+        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
         <main id="boardIndex_mp_container">
             <div id="boardIndex_mp_home">
+                <div th:insert="sidebar.html :: sidebar"></div>
                 <h1>board인덱스 페이지 입니다.</h1>
                 <hr>
                 <div class="mp_homeMenu">
-                    <a href="#" id="menuNoticeBoardLink">
+                    <a href="/managementPage/noticeBoard" id="menuNoticeBoardLink">
                         <div class="mp_menuBox menuRegist">
                             <i class="bi bi-info-square"></i><span>공지사항</span>
                         </div>
-                    </a> <a href="#" id="menuQnaBoardLink">
+                    </a> <a href="/managementPage/qnaBoard" id="menuQnaBoardLink">
                         <div class="mp_menuBox menuCalendar">
                             <i class="bi bi-calendar-check"></i><span>QnA</span>
                         </div>
