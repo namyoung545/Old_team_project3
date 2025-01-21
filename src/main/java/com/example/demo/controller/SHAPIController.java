@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +16,35 @@ import org.springframework.web.client.RestTemplate;
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.entity.FireStatistics;
 import com.example.demo.service.SHAPIService;
+import com.example.demo.service.SHVMapService;
 
 @RestController
 @RequestMapping("/sh_api")
 public class SHAPIController {
-    private final String VWORLD_WFS_URL = "https://api.vworld.kr/req/wfs";
 
     // API Service
     @Autowired
     SHAPIService shAPIService;
 
+    @Autowired
+    SHVMapService shVMapService;
+
+    // 브이월드 기능
+    @PostMapping("/vworldWFS")
+    public ResponseEntity<String> vworldWFS(@RequestParam Map<String, String> params) {
+        System.out.println("SHAPI - VWorldWFS");
+        String response = shVMapService.fetchVWorldWFS(params);
+        // RestTemplate restTemplate = new RestTemplate();
+        // String queryString = params.entrySet().stream()
+        //         .map(entry -> entry.getKey() + "=" + entry.getValue())
+        //         .collect(Collectors.joining("&"));
+        // String url = VWORLD_WFS_URL + "?" + queryString;
+
+        // ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        return ResponseEntity.ok(response);
+    }
+
+    // 연도별 화재 데이터
     @PostMapping("/fires")
     public List<FireStatistics> firesData(@RequestBody APIFiresDTO apiFiresDTO) {
         System.out.println("SHAPI - Fires");
@@ -34,6 +52,7 @@ public class SHAPIController {
         return shAPIService.getFiresData(year);
     }
 
+    // 통계명 화재 데이터
     @PostMapping("/firesByStatName")
     public List<FireStatistics> firesDataByStatName(@RequestBody APIFiresDTO apiFiresDTO) {
         System.out.println("SHAPI - FiresByStatName");
@@ -41,6 +60,7 @@ public class SHAPIController {
         return shAPIService.getFiresDataByStatName(statName);
     }
 
+    // 년도 통계명 화재 데이터
     @PostMapping("/firesByYearAndStatName")
     public List<FireStatistics> firesDataByYearAndStatName(@RequestBody APIFiresDTO apiFiresDTO) {
         System.out.println("SHAPI - FiresDataByYearAndStatName");
@@ -48,30 +68,12 @@ public class SHAPIController {
         String statName = apiFiresDTO.getStatName();
         return shAPIService.getFiresDataByYearAndStatNameLike(year, statName);
     }
-    
-    // 사용안함 검색 부정확
+
+    // 통계명 유사 검색
     @PostMapping("/firesByStatNameLike")
-    public List<FireStatistics> firesDataByStatNameLike(@RequestBody APIFiresDTO
-    apiFiresDTO) {
-    System.out.println("SHAPI - FiresByStatNameLike");
-    String statName = apiFiresDTO.getStatName();
-    return shAPIService.getFiresDataByStatNameLike(statName);
+    public List<FireStatistics> firesDataByStatNameLike(@RequestBody APIFiresDTO apiFiresDTO) {
+        System.out.println("SHAPI - FiresByStatNameLike");
+        String statName = apiFiresDTO.getStatName();
+        return shAPIService.getFiresDataByStatNameLike(statName);
     }
-
-    // 브이월드 기능
-    @PostMapping("vworldWFS")
-    public ResponseEntity<String> vworldWFS(@RequestParam Map<String, String> params) {
-        RestTemplate restTemplate = new RestTemplate();
-        String queryString = params.entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue())
-                .collect(Collectors.joining("&"));
-        String url = VWORLD_WFS_URL + "?" + queryString;
-
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
-        return ResponseEntity.ok(response.getBody());
-    }
-
-
-
 }

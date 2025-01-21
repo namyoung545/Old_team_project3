@@ -20,8 +20,13 @@ public class SHController {
     }
     
     @GetMapping("/sh_chart")
-    public String getMethodName(Model model) {
+    public String getSHChart(Model model) {
         return "/sh_html/sh_chart";
+    }
+    
+    @GetMapping("/sh_wms")
+    public String getSHWMS(Model model) {
+        return "/sh_html/sh_wms";
     }
     
 }
