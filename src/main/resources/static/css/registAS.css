@@ -93,16 +93,16 @@ label {
 	cursor: pointer;
 	transition: background-color 0.3s ease;
 	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-	background-color: #f68e3e; /* 버튼 기본 배경색 */
+	background-color: #343a40; /* 버튼 기본 배경색 */
 	color: #fff; /* 텍스트 색상 */
 }
 
 .registAS button:hover {
-	background-color: #e67e2d; /* 호버 시 배경색 */
+	background-color: #DAB800; /* 호버 시 배경색 */
 }
 
 .registAS button:active {
-	background-color: #d06b26; /* 클릭 시 배경색 */
+	background-color: #FFD700; /* 클릭 시 배경색 */
 }
 
 .registAS table .phone {
@@ -195,4 +195,17 @@ label {
 	td input, td select, td textarea {
 		width: 100%;
 	}
+}
+
+.privacy_container{
+	display: flex;
+	justify-content: center;
+}
+
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+	margin-top: 10px;
 }
