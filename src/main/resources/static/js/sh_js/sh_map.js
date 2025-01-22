@@ -1,25 +1,54 @@
+// import * as vw from "https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC&domain=localhost";
+
+
 $(document).ready(() => {
     console.log('sj_map.js');
+    let map;
 
     function initialize() {
-        callVWorldWFSData().then(
-            (data) => {
-                console.log('Promise - then')
-                console.log(data)
-            }
-        );
+        // callVWorldWFSData().then(
+        //     (data) => {
+        //         console.log('Promise - then')
+        //         console.log(data)
+        //     }
+        // );
 
 
-        // loadVmap();
+        loadVmap();
+        let $faclityButton = $(document).find('.facilityButton')
+        $faclityButton.on('click', (e, f) => {
+            checkLayer(e, 'facility_build');
+        });
+        let $cityNameButton = $(document).find('.cityNameButton')
+        $cityNameButton.on('click', (e, f) => {
+            checkLayer(e, 'poi_bound');
+        });
+        let $cityBoundButton = $(document).find('.cityBoundButton')
+        $cityBoundButton.on('click', (e, f) => {
+            checkLayer(e, 'hybrid_bound');
+        });
+        let $geoJsonButton = $(document).find('.geoJsonButton')
+        $geoJsonButton.on('click', (e) => {
+            geojson();
+        });
+
+    }
+
+    let checkLayer = function (c, name) { //레이어 제어
+        console.log($(c).is(":checked"));
+        if ($(c.currentTarget).is(":checked") == false) {
+            map.getLayerElement(name).hide() //레이어 숨김
+        } else {
+            map.getLayerElement(name).show() // 레이어 보여주기
+        }
     }
 
     function loadVmap() {
-
         Promise.all([
-            callVWorldWFSData()
+            // callGeoJson()
+            // callVWorldWFSData()
         ]).then(([wfsData]) => {
             console.log('loadVMap - then')
-            let map;
 
             // 브이월드 지도 초기화
             map = new vw.Map("vworldMap", {
@@ -44,39 +73,205 @@ $(document).ready(() => {
             map.setOption(options); //3D지도 초기 옵션 설정
             map.setMapId("vworldMap"); //지도가 탑재될 컨테이너 설정 가능
             map.start(); // 지도 생성
+
             // map.addLayer(wfsData); // 레이어 추가
 
-            // GeoJSON 데이터 가져오기
-            $.ajax({
-                url: 'http://localhost:8080/sh_api/vworldWFS?service=WFS&version=2.0.0&request=GetFeature&typeName=lt_c_adsido_info,lt_c_adsido_3d&output=json&key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&domain=localhost',
-                type: 'POST',
-                dataType: 'json',
-                success: function (data) {
-                    console.log("데이터 로드 성공:", data);
 
-                    // GeoJsonLayer 생성
-                    const geoJsonLayer = new vw.layer.GeoJsonLayer({
-                        geoJson: data,
-                        style: {
-                            strokeColor: '#ff0000', // 경계선 색상
-                            strokeWidth: 2, // 경계선 두께
-                            fillColor: 'rgba(255, 0, 0, 0.1)' // 영역 채우기 색상 (투명도 포함)
-                        }
-                    });
-                    console.log(geoJsonLayer);
-                    // 레이어를 지도에 추가
-                    map.addLayer(geoJsonLayer);
-                },
-                error: function (error) {
-                    console.error("데이터 로드 실패:", error);
-                }
-            });
+
+
+            // GeoJSON 데이터 가져오기
+            // $.ajax({
+            //     url: 'http://localhost:8080/sh_api/vworldWFS?service=WFS&version=2.0.0&request=GetFeature&typeName=lt_c_adsido_info,lt_c_adsido_3d&output=json&key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&domain=localhost',
+            //     type: 'POST',
+            //     dataType: 'json',
+            //     success: function (data) {
+            //         console.log("데이터 로드 성공:", data);
+
+            //         // GeoJsonLayer 생성
+            //         const geoJsonLayer = new vw.layer.GeoJsonLayer({
+            //             geoJson: data,
+            //             style: {
+            //                 strokeColor: '#ff0000', // 경계선 색상
+            //                 strokeWidth: 2, // 경계선 두께
+            //                 fillColor: 'rgba(255, 0, 0, 0.1)' // 영역 채우기 색상 (투명도 포함)
+            //             }
+            //         });
+            //         console.log(geoJsonLayer);
+            //         // 레이어를 지도에 추가
+            //         map.addLayer(geoJsonLayer);
+            //     },
+            //     error: function (error) {
+            //         console.error("데이터 로드 실패:", error);
+            //     }
+            // });
         }).catch((error) => {
 
         }).finally(() => {
             console.log('loadVMap - Finally');
+            geojson();
+
+            // map.getLayerElement('poi_bound').hide();
+            // map.getLayerElement('hybrid_bound').hide();
+            // map.getLayerElement('facility_build').hide();
         })
 
+    }
+
+    function geojson() {
+        let url = "http://localhost:8080/sh_api/vworldWFS?key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&SERVICE=WFS&version=1.1.0&request=GetFeature&TYPENAME=lt_c_adsido_info&OUTPUT=application/json&SRSNAME=EPSG:4326&domain=localhost";
+
+        // GMLParser 생성
+        var parser = new vw.GMLParser();
+        parser.setId("sample"); // 고유 ID 설정
+
+        // GeoJSON 데이터를 파싱
+        var featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
+
+        // 옵션 설정
+        var options = {
+            isTerrain: false,
+            width: 50,
+            material: new vw.Color(255, 255, 0, 255).ws3dColor.withAlpha(0.2),
+            outline: true,
+            outlineWidth: 1,
+            outlineColor: vw.Color.YELLOW.ws3dColor,
+            height: 1600.0
+        };
+        featureInfos.setOption(options);
+        console.log(featureInfos);
+
+        // 좌표 데이터 생성
+        featureInfos.makeCoords();
+        console.log(featureInfos);
+
+        // 데이터 출력 (콘솔 로그로 확인 가능)
+        featureInfos.objCollection.collectionProp.forEach(function (item) {
+            console.log("Feature Name:", item.properties.ctp_kor_nm);
+        });
+
+        // 클릭 이벤트 핸들러 정의
+        var featureEventHandler = function (windowPosition, ecefPosition, cartographic, featureInfo) {
+            console.log(windowPosition)
+            console.log(ecefPosition)
+            console.log(cartographic)
+            console.log(featureInfo)
+            if (featureInfo) {
+                var feature = featureInfos.getById(featureInfo.groupId);
+                console.log("Clicked Feature Properties:", feature.getProperties());
+
+                // 사용자 지정 코드 실행
+                console.log("You clicked on: " + feature.getProperties().ctp_kor_nm);
+
+                // 피처 숨기기 (필요 시)
+                // feature.hide();
+            }
+        };
+
+        // 이벤트 리스너 추가
+        featureInfos.addEventListener(featureEventHandler);
+
+        // 지도에 레이어 출력
+        featureInfos.show();
+        console.log("GeoJSON layer added to the map.");
+    }
+
+    // function geojson() {
+
+    //     // var url = "https://map.vworld.kr/proxy.do?url=http%3A%2F%2Fapi.vworld.kr%2Freq%2Fwfs%3Fkey%3D@{apikey}%26SERVICE%3DWFS%26version%3D1.1.0%26request%3DGetFeature%26TYPENAME%3Dlt_c_adsigg%26OUTPUT%3Dapplication%2Fjson%26SRSNAME%3DEPSG%3A4326%26maxfeatures%3D100%26domain%3Dmap.vworld.kr";
+    //     //var url = "http://localhost:8082/example/web2/geojson_sample2.json"; // 로컬 파일 호출 시
+    //     let url = "http://localhost:8080/sh_api/vworldWFS?key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&SERVICE=WFS&version=1.1.0&request=GetFeature&TYPENAME=lt_c_adsigg&OUTPUT=application/json&SRSNAME=EPSG:4326&maxfeatures=100&domain=localhost";
+
+    //     // parser 설명.
+    //     // parser 생성자.
+    //     var parser = new vw.GMLParser();
+    //     // 아이디 지정. --> parser에 지정이 되면, Feature객체에게도 상속 "sample-0,1,..." 형태로 아이디가 부여됩니다.
+    //     parser.setId("sample");
+    //     //var featureInfos = parser.readTemp(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
+    //     // data 읽기. parser.read( 데이터타입, 데이터경로, 데이터좌표계)
+    //     // 전달되는 좌표계를 의미하며, 이 좌표를 웹지엘에서는 EPSG:4326으로 변환하여 사용합니다.
+    //     // 데이터타입. vw.GMLParserType { GEOJSON, GML1, GML2, GML2 } 
+    //     var featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
+    //     console.log(featureInfos);
+    //     var options = {
+    //         isTerrain: false,		// 지형 따라 출력시 true, 지면에서 위로 출력시 false
+    //         width: 50,			// 선의 경우 크기지정.
+    //         material: new vw.Color(255, 0, 0, 255).ws3dColor.withAlpha(0.2),	// RGBA A값만 255이하로 주면 투명 또는 withAlpha(1.0~0.1)로 설정.
+    //         outline: true,			// 아웃라인지정시 true, 아웃라인 미지정 false
+    //         outlineWidth: 5,		// 아웃라인 너비. 
+    //         outlineColor: vw.Color.YELLOW.ws3dColor,		// 아웃라인 색상. 
+    //         height: 1600.0			// 높이 지정값 meter.
+    //     };
+    //     // 출력 색상등 지정.
+    //     featureInfos.setOption(options);
+    //     // Point의 경우 이미지 설정. options 항목이 필요없음.
+    //     //featureInfos.setImage("https://map.vworld.kr/images/comm/symbol_05.png");
+    //     // 출력 좌표 설정.
+
+    //     const promise = new Promise((resolve, reject) => {
+    //         featureInfos.makeCoords();
+    //         resolve('promise');
+    //     });
+
+    //     promise.then((value) => {
+    //         console.log(value);
+
+    //         var result = "";
+    //         featureInfos.objCollection.collectionProp.forEach(function (i) { // objCollection.collectionProp 객체의 속성 값을 가지고 있음
+    //             result += i.properties.full_nm + " "
+    //             $("#features").html(result);
+    //         })
+    //     });
+
+
+
+
+
+    //     // 이벤트
+    //     var feafureEventHandler = function (windowPosition, ecefPosition, cartographic, featureInfo) {
+    //         //ws3d.viewer.map.clearAllHighlightedFeatures();
+    //         //featureInfo 가 존재 -> 3D 객체 클릭
+    //         //onsole.log("featureInfo :" , windowPosition, ecefPosition, cartographic, featureInfo);
+    //         if (featureInfo) {
+    //             var feature = featureInfos.getById(featureInfo.groupId);
+    //             console.log("after feature :", featureInfos.objCollection);
+    //             console.log("feature :", feature);
+    //             // 그래픽객체 미출력
+    //             // feature.hide();
+    //             // FeatureInfo 객체 삭제1.
+    //             //featureInfos.removeById(feature.id);
+    //             // FeatureInfo 객체 삭제2.
+    //             featureInfos.removeByObj(feature);
+    //             // feature 정보를 가지고 있는 properties
+    //             //console.log("feature properties:" , feature.getProperties());
+    //             console.log("after feature :", featureInfos.objCollection);
+    //         }
+    //     };
+    //     // 이벤트 설정.
+    //     featureInfos.addEventListener(feafureEventHandler);
+    //     // 출력.
+    //     featureInfos.show();
+    //     console.log('END - geojson')
+    // }
+
+    function callGeoJson() {
+        return new Promise((resolve, reject) => {
+
+            // http://api.vworld.kr/req/wfs?key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&SERVICE=WFS&version=1.1.0&request=GetFeature&TYPENAME=lt_c_adsigg&OUTPUT=application/json&SRSNAME=EPSG:4326&maxfeatures=100&domain=localhost
+            $.ajax({
+                url: 'http://localhost:8080/sh_api/vworldWFS?key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&SERVICE=WFS&version=1.1.0&request=GetFeature&TYPENAME=lt_c_adsigg&OUTPUT=application/json&SRSNAME=EPSG:4326&maxfeatures=100&domain=localhost',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    console.log("데이터 로드 성공:", data);
+                    resolve(data)
+                },
+                error: function (error) {
+                    console.error("데이터 로드 실패:", error);
+                    reject(error);
+                }
+            });
+        });
     }
 
     function callVWorldWFSData() {
@@ -90,18 +285,20 @@ $(document).ready(() => {
                 contentType: 'application/json',
                 success: function (data) {
                     console.log("데이터 로드 성공:", data);
-                    // GeoJsonLayer 생성
-                    const geoJsonLayer = new vw.layer.GeoJsonLayer({
-                        geoJson: data,
-                        style: {
-                            strokeColor: '#ff0000', // 경계선 색상
-                            strokeWidth: 2, // 경계선 두께
-                            fillColor: 'rgba(255, 0, 0, 0.1)' // 영역 채우기 색상 (투명도 포함)
-                        }
-                    });
-                    console.log(geoJsonLayer);
-
                     resolve(data)
+
+                    // GeoJsonLayer 생성
+                    // const geoJsonLayer = new vw.layer.GeoJsonLayer({
+                    //     geoJson: data,
+                    //     style: {
+                    //         strokeColor: '#ff0000', // 경계선 색상
+                    //         strokeWidth: 2, // 경계선 두께
+                    //         fillColor: 'rgba(255, 0, 0, 0.1)' // 영역 채우기 색상 (투명도 포함)
+                    //     }
+                    // });
+                    // console.log(geoJsonLayer);
+
+                    // resolve(data)
 
                     // // OpenLayers를 사용해 GeoJSON 데이터 렌더링
                     // const vectorSource = new ol.source.Vector({

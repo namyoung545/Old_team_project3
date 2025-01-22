@@ -2,16 +2,15 @@ package com.example.demo.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.entity.FireStatistics;
@@ -28,6 +27,22 @@ public class SHAPIController {
 
     @Autowired
     SHVMapService shVMapService;
+
+    // 브이월드 기능
+    @GetMapping("/vworldWFS")
+    public ResponseEntity<String> getvworldWFS(@RequestParam Map<String, String> params) {
+        System.out.println("SHAPI - VWorldWFS");
+        String response = shVMapService.fetchVWorldWFS(params);
+        // RestTemplate restTemplate = new RestTemplate();
+        // String queryString = params.entrySet().stream()
+        //         .map(entry -> entry.getKey() + "=" + entry.getValue())
+        //         .collect(Collectors.joining("&"));
+        // String url = VWORLD_WFS_URL + "?" + queryString;
+
+        // ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        return ResponseEntity.ok(response);
+    }
+
 
     // 브이월드 기능
     @PostMapping("/vworldWFS")
