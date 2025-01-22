@@ -41,4 +41,10 @@
 			address = #{address}
 		WHERE userId = #{userId}
 	</update>
+
+	<select id="deliverySelect" parameterType="int">
+		SELECT name 
+		FROM member
+		WHERE authorityId = 2; 
+	</select>
 </mapper>

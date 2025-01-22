@@ -42,10 +42,16 @@
 	</insert>
 	
 	<select id="AS_Status" parameterType="com.example.demo.dto.PHG_AsReceptionDTO" resultType="com.example.demo.dto.PHG_AsReceptionDTO">
-		SELECT requestId, userId, authorityId, receptionDate, name, preferredDate, preferredTime, receptionStatus
+		SELECT requestId, userId, authorityId, receptionDate, name, preferredDate, preferredTime, receptionStatus, receptionDelivery
 		FROM as_reception
 		<if test="authorityId != 1">
 			WHERE userId = #{userId}
 		</if>
+	</select>
+
+	<select id="deliveryArrangement" parameterType="com.example.demo.dto.PHG_AsReceptionDTO">
+		UPDATE as_reception 
+		SET receptionDelivery = #{receptionDelivery}, receptionStatus = #{receptionStatus}
+		WHERE requestId = #{requestId};
 	</select>
 </mapper>

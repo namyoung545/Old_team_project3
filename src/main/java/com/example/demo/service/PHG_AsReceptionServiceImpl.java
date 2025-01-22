@@ -24,4 +24,9 @@ public class PHG_AsReceptionServiceImpl implements PHG_AsReceptionService {
         return asReceptionDAO.AS_Status(dto);
     }
 
+    @Override
+    public void deliveryArrangement(int requestId, String receptionDelivery, String receptionStatus) {
+        asReceptionDAO.deliveryArrangement(requestId, receptionDelivery, receptionStatus);
+    }
+
 }
