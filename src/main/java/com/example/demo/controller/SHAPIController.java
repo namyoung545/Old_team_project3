@@ -48,14 +48,8 @@ public class SHAPIController {
     @PostMapping("/vworldWFS")
     public ResponseEntity<String> vworldWFS(@RequestParam Map<String, String> params) {
         System.out.println("SHAPI - VWorldWFS");
+        System.out.println(params);
         String response = shVMapService.fetchVWorldWFS(params);
-        // RestTemplate restTemplate = new RestTemplate();
-        // String queryString = params.entrySet().stream()
-        //         .map(entry -> entry.getKey() + "=" + entry.getValue())
-        //         .collect(Collectors.joining("&"));
-        // String url = VWORLD_WFS_URL + "?" + queryString;
-
-        // ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         return ResponseEntity.ok(response);
     }
 
