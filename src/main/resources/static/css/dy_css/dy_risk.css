@@ -32,11 +32,6 @@ h1 {
     background-color: #1e1e1e; /* 배경 색상 */
 }
 
-#chart3 {
-    margin-bottom: 0px;        /* 외부 여백 */
-    padding: 0px;       /* 내부 여백 */
-}
-
 .echarts-gl-axis-helper {
     display: none !important; /* 축 헬퍼 요소 숨기기 */
 }

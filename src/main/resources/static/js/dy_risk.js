@@ -21,12 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let direction = 1; // 회전 방향 (1: 오른쪽, -1: 왼쪽)
     let currentAngle = 0; // 현재 각도
-    const maxAngle = 60; // 최대 각도
-    const minAngle = -60; // 최소 각도
+    const maxAngle = 30; // 최대 각도
+    const minAngle = -30; // 최소 각도
     let isUserInteracting = false; // 사용자 입력 상태 감지
 
-    // 사용자 입력 감지
-    chart1.getZr().on('mousedown', () => {
+     // 사용자 입력 감지
+     chart1.getZr().on('mousedown', () => {
         isUserInteracting = true; // 사용자 입력 시작
     });
     chart1.getZr().on('mouseup', () => {
@@ -40,7 +40,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function oscillateView(chart) {
         if (isUserInteracting) return; // 사용자 입력 중에는 애니메이션 중지
-        
+
+        // 각도를 갱신 (방향에 따라 증가 또는 감소)
+        currentAngle += direction * 0.5; // 부드러운 움직임을 위해 각도를 천천히 변경
+
+        // 방향 전환 (최대/최소 각도에 도달했을 때)
+        if (currentAngle >= maxAngle || currentAngle <= minAngle) {
+            direction *= -1;
+        }
+
         // `setOption`을 사용하여 `viewControl`의 `beta` 값을 업데이트
         chart.setOption({
             grid3D: {
@@ -49,14 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
             },
         });
-
-        // 각도를 갱신 (방향에 따라 증가 또는 감소)
-        currentAngle += direction;
-
-        // 방향 전환 (최대/최소 각도에 도달했을 때)
-        if (currentAngle >= maxAngle || currentAngle <= minAngle) {
-            direction *= -1;
-        }
     }
 
     function updateCharts(selectedYear) {
@@ -88,116 +88,115 @@ document.addEventListener("DOMContentLoaded", function () {
         chart4.setOption(createDonutChartOption('연간 위험도 점수비율', riskScores));
     }
     
-    // 3D 막대그래프
+
+    //3D 막대차트
     function create3DBarOption(title, categories, data) {
-        // 데이터를 값 기준으로 내림차순 정렬
-        const sortedData = data
-            .map((item, index) => ({ index, value: item[2] })) // 인덱스와 Z축 값 분리
-            .sort((a, b) => b.value - a.value); // Z축 값 기준 내림차순 정렬
-    
-        // 정렬된 데이터를 기준으로 새 data와 categories 생성
-        const newData = sortedData.map((item, idx) => [idx, 0, item.value]);
-        const newCategories = sortedData.map(item => categories[item.index]);
-    
-        const firstValue = newData[0][2]; // 1위 값
-        const secondValue = newData[1][2]; // 2위 값
-    
-        console.log('정렬된 데이터:', newData);
-        console.log('정렬된 카테고리:', newCategories);
-    
-        return {
-            title: { text: title, textStyle: { color: '#ffffff' } },
-            backgroundColor: '#1e1e1e',
-            tooltip: {},
-            xAxis3D: {
-                type: 'category',
-                data: newCategories, // 정렬된 카테고리 적용
-                axisLabel: {
-                    show: false, // X축 레이블 숨기기
+    // 1위와 2위 데이터 값 계산
+    const maxIndex = data.reduce((maxIdx, item, idx, arr) => 
+        item[2] > arr[maxIdx][2] ? idx : maxIdx, 0); // 최대값 인덱스
+    const secondMaxIndex = data.reduce((maxIdx, item, idx, arr) => 
+        idx !== maxIndex && item[2] > arr[maxIdx][2] ? idx : maxIdx, 0); // 두 번째 최대값 인덱스
+
+    const firstValue = data[maxIndex][2]; // 1위 값
+    const secondValue = data[secondMaxIndex][2]; // 2위 값
+
+    console.log('원본 데이터:', data);
+    console.log('1위 값:', firstValue, '2위 값:', secondValue);
+
+    return {
+        title: { text: title, textStyle: { color: '#ffffff' } },
+        backgroundColor: '#1e1e1e',
+        tooltip: {},
+        xAxis3D: {
+            type: 'category',
+            data: categories, // 원래 카테고리 적용
+            axisLabel: {
+                show: false, // X축 레이블 숨기기
+            },
+        },
+        yAxis3D: {
+            type: 'category',
+            data: [''], // Y축 데이터 (고정된 단일 값)
+            axisLabel: { color: '#ffffff' },
+        },
+        zAxis3D: {
+            type: 'value',
+            axisLabel: { color: '#ffffff' },
+        },
+        grid3D: {
+            axisLine: {
+                lineStyle: {
+                    color: 'transparent', // X축 선 색상을 투명하게 설정
                 },
             },
-            yAxis3D: {
-                type: 'category',
-                data: [''], // Y축 데이터 (고정된 단일 값)
-                axisLabel: { color: '#ffffff' },
+            axisPointer: {
+                show: false, // 카메라 축 포인터 숨기기
             },
-            zAxis3D: {
-                type: 'value',
-                axisLabel: { color: '#ffffff' },
+            viewControl: {
+                projection: 'perspective',
+                autoRotate: false, // 자동 회전 비활성화
+                rotateSensitivity: 3, // 회전 비활성화
+                zoomSensitivity: 1, // 줌 비활성화
+                panSensitivity: 1, // 팬 비활성화
+                beta: currentAngle, // 초기 각도
+                alpha: 0, // 초기 각도
+                beta: 0,  // 초기 각도
+                minAlpha: 0,
+                maxAlpha: 0,
+                minBeta: 0,
+                maxBeta: 0,
             },
-            grid3D: {
-                axisLine: {
-                    lineStyle: {
-                        color: 'transparent', // X축 선 색상을 투명하게 설정
+            boxWidth: 300,
+            boxHeight: 120,
+            boxDepth: 10,
+            light: {
+                main: { intensity: 1 }, // 메인 라이트
+                ambient: { intensity: 0.3 }, // 환경 라이트
+            },
+        },
+        series: [
+            {
+                type: 'bar3D',
+                data: data, // 원래 데이터 배열 적용
+                shading: 'realistic',
+                label: {
+                    show: true, // 레이블 표시
+                    position: 'top', // 막대 상단에 레이블 위치
+                    formatter: (params) => {
+                        return categories[params.value[0]]; // 원래 카테고리 표시
+                    },
+                    textStyle: {
+                        color: '#ffffff', // 텍스트 색상
+                        fontSize: 10,
+                        fontWeight: 'bold',
                     },
                 },
-                axisPointer: {
-                    show: false, // 카메라 축 포인터 숨기기
-                },
-                viewControl: {
-                    projection: 'perspective',
-                    autoRotate: false, // 자동 회전 비활성화
-                    rotateSensitivity: 3, // 회전 비활성화
-                    zoomSensitivity: 1, // 줌 비활성화
-                    panSensitivity: 1, // 팬 비활성화
-                    alpha: 0, // 초기 각도
-                    beta: 0,  // 초기 각도
-                    minAlpha: 0,
-                    maxAlpha: 0,
-                    minBeta: 0,
-                    maxBeta: 0,
-                },
-                boxWidth: 300,
-                boxHeight: 120,
-                boxDepth: 10,
-                light: {
-                    main: { intensity: 1 }, //메인 라이트
-                    ambient: { intensity: 0.3 }, //환경 라이트
+                itemStyle: {
+                    color: (params) => {
+                        const value = params.value[2];
+                        if (params.dataIndex === maxIndex) return '#FFD700'; // 1위 진노랑
+                        if (params.dataIndex === secondMaxIndex) return '#FFEC8B'; // 2위 중간 노랑
+                        return '#FFFACD'; // 나머지 옅은 노랑
+                    },
                 },
             },
-            series: [
-                {
-                    type: 'bar3D',
-                    data: newData, // 정렬된 데이터 배열 적용
-                    shading: 'realistic',
-                    label: {
-                        show: true, // 레이블 표시
-                        position: 'top', // 막대 상단에 레이블 위치
-                        formatter: (params) => {
-                            return newCategories[params.value[0]]; // 정렬된 카테고리 표시
-                        },
-                        textStyle: {
-                            color: '#ffffff', // 텍스트 색상
-                            fontSize: 10,
-                            fontWeight: 'bold',
-                        },
-                    },
-                    itemStyle: {
-                        color: (params) => {
-                            const value = params.value[2];
-                            if (value === firstValue) return '#FFD700'; // 1위 진노랑
-                            if (value === secondValue) return '#FFEC8B'; // 2위 중간 노랑
-                            return '#FFFACD'; // 나머지 옅은 노랑
-                        },
-                    },
-                },
-            ],
-        };
-    }
+        ],
+    };
+}
     
 
     function createLineChartOption(title, categories, data) {
-        // 데이터와 카테고리를 함께 내림차순으로 정렬
-        const sortedData = data
-            .map((value, index) => ({ value, category: categories[index] })) // 데이터와 카테고리를 매핑
-            .sort((a, b) => b.value - a.value); // 데이터 값 기준으로 내림차순 정렬
+        // 데이터와 카테고리를 원래 순서대로 사용
+        const newCategories = [...categories]; // 기존 카테고리 그대로 사용
+        const newData = data.map(value => Math.round(value)); // 데이터 소수점 제거
     
-        // 정렬된 데이터와 카테고리를 분리
-        const newCategories = sortedData.map(item => item.category);
-        const newData = sortedData.map(item => Math.round(item.value)); // 데이터 소수점 제거
+        const firstValue = Math.max(...newData); // 1위 값
+        const firstIndex = newData.indexOf(firstValue); // 1위 값의 인덱스
     
-        const firstValue = newData[0]; // 1위 값
-        const secondValue = newData[1]; // 2위 값
+        const secondValue = [...newData]
+            .filter(value => value !== firstValue) // 1위 값 제외
+            .reduce((max, value) => Math.max(max, value), -Infinity); // 2위 값
+        const secondIndex = newData.indexOf(secondValue); // 2위 값의 인덱스
     
         return {
             title: { text: title, textStyle: { color: '#ffffff' } },
@@ -211,13 +210,11 @@ document.addEventListener("DOMContentLoaded", function () {
             grid: {
                 top: '15%',    // 위쪽 여백
                 bottom: '5%', // 아래쪽 여백 (적절히 조정)
-                // left: '5%',    // 왼쪽 여백
-                // right: '5%',   // 오른쪽 여백
                 containLabel: true, // 레이블이 잘리지 않도록 설정
             },
             xAxis: {
                 type: 'category',
-                data: newCategories, // 정렬된 카테고리 적용
+                data: newCategories, // 기존 카테고리 그대로 사용
                 axisLabel: {
                     color: '#ffffff',
                     fontSize: 10,
@@ -234,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 {
                     name: title,
                     type: 'line',
-                    data: newData, // 정렬된 데이터 적용
+                    data: newData, // 기존 데이터 그대로 사용
                     lineStyle: {
                         type: 'dashed',
                     },
@@ -245,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         data: [
                             {
                                 name: '1위',
-                                xAxis: 0, // 정렬된 데이터의 첫 번째 값의 인덱스
+                                xAxis: firstIndex, // 1위 값의 인덱스
                                 yAxis: firstValue, // 1위 값
                                 itemStyle: {
                                     color: '#FFD700', // 진한 노랑
@@ -254,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             },
                             {
                                 name: '2위',
-                                xAxis: 1, // 정렬된 데이터의 두 번째 값의 인덱스
+                                xAxis: secondIndex, // 2위 값의 인덱스
                                 yAxis: secondValue, // 2위 값
                                 itemStyle: {
                                     color: '#FFEC8B', // 중간 노랑
@@ -271,20 +268,14 @@ document.addEventListener("DOMContentLoaded", function () {
             ],
         };
     }
+    
 
     
-    // 기존 차트3: 3D 위험레벨
     function createRiskLevelChartOption(title, categories, data) {
-         // 데이터와 카테고리를 함께 내림차순으로 정렬
-        const sortedData = data
-        .map((value, index) => ({ value, category: categories[index] })) // 데이터와 카테고리를 매핑
-        .sort((a, b) => b.value - a.value); // 데이터 값 기준으로 내림차순 정렬
-
-        // 정렬된 데이터와 카테고리를 분리
-        const newCategories = sortedData.map(item => item.category);
-        const newData = sortedData.map(item => item.value);
-
-        
+        // 데이터를 정렬하지 않고 그대로 사용
+        const newCategories = [...categories]; // 기존 카테고리 그대로 사용
+        const newData = [...data]; // 기존 데이터 그대로 사용
+    
         return {
             title: { 
                 text: title, 
@@ -299,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             xAxis: {
                 type: 'category',
-                data: newCategories, //정렬된 카테고리 적용
+                data: newCategories, // 기존 카테고리 그대로 사용
                 axisLabel: { color: '#ffffff' },
             },
             yAxis: {
@@ -316,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 {
                     name: title,
                     type: 'bar',
-                    data: newData, // 정렬된 데이터 적용
+                    data: newData, // 기존 데이터 그대로 사용
                     itemStyle: {
                         color: (params) => {
                             const value = params.value; // 데이터 값 (레벨)
@@ -329,12 +320,18 @@ document.addEventListener("DOMContentLoaded", function () {
             ],
         };
     }
+    
 
-    // 기존 차트4: 도넛형 차트
     function createDonutChartOption(title, data) {
-        // 데이터를 내림차순 정렬
-        const sortedData = data.sort((a, b) => b.value - a.value);
-
+        // 데이터를 정렬하지 않고 그대로 사용
+        const originalData = [...data]; // 기존 데이터를 그대로 사용
+    
+        // 1위와 2위 데이터 값 확인
+        const maxIndex = originalData.reduce((maxIdx, item, idx, arr) => 
+            item.value > arr[maxIdx].value ? idx : maxIdx, 0); // 최대값 인덱스
+        const secondMaxIndex = originalData.reduce((maxIdx, item, idx, arr) => 
+            idx !== maxIndex && item.value > arr[maxIdx].value ? idx : maxIdx, 0); // 두 번째 최대값 인덱스
+    
         return {
             title: { 
                 text: title,
@@ -342,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             backgroundColor: '#1e1e1e',
             tooltip: { 
-                trigger: 'item' ,
+                trigger: 'item',
                 formatter: '{b}: {d}%' // {d}는 비율 표시, 소숫점 제외
             },
             series: [
@@ -356,7 +353,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         formatter: '{b}\n{d}%', // 지역 이름과 퍼센트 표시
                         color: '#ffffff',
                         fontSize: 12,
-                        // position: 'center',
                     },
                     emphasis: {
                         label: {
@@ -371,12 +367,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         length: 10,
                         length2: 10,
                     },
-                    data: sortedData,
+                    data: originalData, // 기존 데이터 그대로 사용
                     itemStyle: {
                         color: (params) => {
                             const index = params.dataIndex;
-                            if (index === 0) return '#FFD700'; // 1위: 진한 빨간색
-                            if (index === 1) return '#FFEC8B'; // 2위: 덜 진한 빨간색
+                            if (index === maxIndex) return '#FFD700'; // 1위: 진한 빨간색
+                            if (index === secondMaxIndex) return '#FFEC8B'; // 2위: 덜 진한 빨간색
                             return '#FFFACD'; // 나머지: 연한 빨간색
                         },
                     },
@@ -384,7 +380,10 @@ document.addEventListener("DOMContentLoaded", function () {
             ],
         };
     }
+    
+    
     updateCharts('2023');
-    setInterval(() => oscillateView(chart1), 50);
+    setInterval(() => oscillateView(chart1), 100);
     console.log("ECharts Version:", echarts.version);
 });
+//
