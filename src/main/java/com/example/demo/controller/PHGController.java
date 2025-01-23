@@ -250,7 +250,9 @@ public class PHGController {
 
     // --------------------------------------------------------------------------------------------------
     @GetMapping("/schedule/processStatus")
-    public String scheduleRegistResult(HttpSession session, Model model, PHG_AsReceptionDTO dto) throws Exception {
+    public String scheduleRegistResult(HttpSession session, Model model, PHG_AsReceptionDTO asReceptionDTO,
+            PHG_MemberDTO memberDTO)
+            throws Exception {
         String userId = (String) session.getAttribute("userId");
         int authorityId = (int) session.getAttribute("authorityId");
 
@@ -260,13 +262,34 @@ public class PHGController {
             return "/PHG/PHG_alertPrint";
         }
 
-        dto.setUserId(userId);
-        dto.setAuthorityId(authorityId);
+        asReceptionDTO.setUserId(userId);
+        asReceptionDTO.setAuthorityId(authorityId);
 
-        List<PHG_AsReceptionDTO> asReceptionList = asReceptionService.AS_Status(dto);
+        List<PHG_MemberDTO> deliverySelect = memberService.deliverySelect(memberDTO);
+        List<PHG_AsReceptionDTO> asReceptionList = asReceptionService.AS_Status(asReceptionDTO);
         model.addAttribute("asReceptionList", asReceptionList);
+        model.addAttribute("deliverySelect", deliverySelect);
 
         return "/PHG/RequestCode/registProcessStatus";
+    }
+
+    @PostMapping("/schedule/processStatus/deliveryArrangement")
+    public String deliveryArrangement(@RequestParam("selectedRequestId") String requestId,
+            @RequestParam("receptionDelivery") String receptionDelivery,
+            @RequestParam("receptionStatus") String receptionStatus,
+            Model model) {
+
+        asReceptionService.deliveryArrangement(Integer.parseInt(requestId), receptionDelivery, receptionStatus);
+        try {
+            model.addAttribute("msg", "배정 완료되었습니다.");
+            model.addAttribute("url", "/schedule/processStatus"); // 목록 페이지 URL
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "문제 발생");
+            model.addAttribute("url", "/schedule/processStatus"); // 접수 페이지 URL
+            e.printStackTrace();
+        }
+        return "/PHG/PHG_alertPrint";
     }
 
     // --------------------------------------------------------------------------------------------------
