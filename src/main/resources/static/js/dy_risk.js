@@ -388,3 +388,4 @@ document.addEventListener("DOMContentLoaded", function () {
     setInterval(() => oscillateView(chart1), 50);
     console.log("ECharts Version:", echarts.version);
 });
+//
