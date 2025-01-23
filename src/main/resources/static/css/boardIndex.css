@@ -29,3 +29,13 @@
     flex:1;
     align-content: center;
 }
+
+.boardMenuBox{
+    width:200px;
+    height:200px;
+}
+
+a, a:link, a:hover, a:visited {
+	text-decoration: none;
+	/* color: black; */
+}

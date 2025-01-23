@@ -43,3 +43,8 @@
     grid-gap: 20px;
     height: 100%; */
 }
+
+a, a:link, a:hover, a:visited {
+	text-decoration: none;
+	/* color: black; */
+}

@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +33,12 @@ public class IndexController {
     // localhost:8080 요청을 처리하는 메서드
     @GetMapping("/")
     public String getindex() {
-        return "index"; // resources/templates/index.html을 반환
+        return "index";
+    }
+
+    @GetMapping("/test")
+    public String gettest() {
+        return "test";
     }
 
     @GetMapping("/login")
@@ -124,14 +131,20 @@ public class IndexController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session, HttpServletResponse response) {
+    public String logout(HttpSession session, HttpServletResponse response, Model model) {
         // 세션 무효화 및 쿠키 삭제
         session.invalidate();
         Cookie idCookie = new Cookie("userId", "");
         idCookie.setPath("/");
         idCookie.setMaxAge(0);
         response.addCookie(idCookie);
-        return "redirect:/managementPage";
+
+        // 로그아웃 완료 메시지 설정
+        model.addAttribute("msg", "로그아웃되었습니다.");
+        model.addAttribute("url", "/managementPage"); // 로그아웃 후 이동할 페이지
+
+        // alertPrint로 이동
+        return "/alertPrint";
     }
 
     @GetMapping("/memberModify")
@@ -204,7 +217,26 @@ public class IndexController {
     }
 
     @GetMapping("/dashboard")
-    public String getDashboard() {
+    public String getDashboard(Model model) {
+        try {
+            // JSON 파일 경로
+            String filePath = "src/main/resources/static/json/dy_risk.json";
+
+            // JSON 파일 읽기 (UTF-8 인코딩)
+            String jsonContent = new String(Files.readAllBytes(Paths.get(filePath)), "UTF-8");
+
+            // JSON 데이터를 모델에 추가
+            model.addAttribute("jsonData", jsonContent);
+
+            // 기본 연도 설정
+            model.addAttribute("defaultYear", 2023);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Failed to load risk data: " + e.getMessage());
+            return "error"; // 오류 템플릿 반환
+        }
+        
         return "dashboard";
     }
 
