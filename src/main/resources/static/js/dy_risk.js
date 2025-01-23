@@ -88,74 +88,83 @@ document.addEventListener("DOMContentLoaded", function () {
         chart4.setOption(createDonutChartOption('연간 위험도 점수비율', riskScores));
     }
     
-
-    // 3D 막대 그래프 옵션 생성
+    // 3D 막대그래프
     function create3DBarOption(title, categories, data) {
-         // 데이터를 값 기준으로 정렬하여 1, 2위를 확인
-        const sortedData = [...data].sort((a, b) => b[2] - a[2]); // z축 값 기준 내림차순 정렬
-        const firstValue = sortedData[0][2]; // 1위 값
-        const secondValue = sortedData[1][2]; // 2위 값
-        
-        console.log('1위 값:', firstValue, '2위 값:', secondValue);
-
+        // 데이터를 값 기준으로 내림차순 정렬
+        const sortedData = data
+            .map((item, index) => ({ index, value: item[2] })) // 인덱스와 Z축 값 분리
+            .sort((a, b) => b.value - a.value); // Z축 값 기준 내림차순 정렬
+    
+        // 정렬된 데이터를 기준으로 새 data와 categories 생성
+        const newData = sortedData.map((item, idx) => [idx, 0, item.value]);
+        const newCategories = sortedData.map(item => categories[item.index]);
+    
+        const firstValue = newData[0][2]; // 1위 값
+        const secondValue = newData[1][2]; // 2위 값
+    
+        console.log('정렬된 데이터:', newData);
+        console.log('정렬된 카테고리:', newCategories);
+    
         return {
             title: { text: title, textStyle: { color: '#ffffff' } },
             backgroundColor: '#1e1e1e',
             tooltip: {},
             xAxis3D: {
                 type: 'category',
-                data: categories,
-                // axisLabel: {
-                //     color: '#ffffff',
-                //     fontSize: 10,
-                //     margin: 10,
-                //     interval: 0,
-                // },
+                data: newCategories, // 정렬된 카테고리 적용
+                axisLabel: {
+                    show: false, // X축 레이블 숨기기
+                },
             },
             yAxis3D: {
                 type: 'category',
-                data: [''],
+                data: [''], // Y축 데이터 (고정된 단일 값)
                 axisLabel: { color: '#ffffff' },
-
             },
             zAxis3D: {
                 type: 'value',
                 axisLabel: { color: '#ffffff' },
-                // axisLine: { show: false }, // z축 선 제거
-                // splitLine: { show: false }, // z축 격자선 제거
             },
             grid3D: {
+                axisLine: {
+                    lineStyle: {
+                        color: 'transparent', // X축 선 색상을 투명하게 설정
+                    },
+                },
+                axisPointer: {
+                    show: false, // 카메라 축 포인터 숨기기
+                },
                 viewControl: {
                     projection: 'perspective',
-                    autoRotate: false,
-                    rotateSensitivity: 1,
-                    zoomSensitivity: 1,
-                    panSensitivity: 1,
-                    alpha: 0,
-                    beta: 0,
-                    minAlpha: -90,
-                    maxAlpha: 90,
-                    minBeta: -180,
-                    maxBeta: 180,
+                    autoRotate: false, // 자동 회전 비활성화
+                    rotateSensitivity: 3, // 회전 비활성화
+                    zoomSensitivity: 1, // 줌 비활성화
+                    panSensitivity: 1, // 팬 비활성화
+                    alpha: 0, // 초기 각도
+                    beta: 0,  // 초기 각도
+                    minAlpha: 0,
+                    maxAlpha: 0,
+                    minBeta: 0,
+                    maxBeta: 0,
                 },
                 boxWidth: 300,
                 boxHeight: 120,
                 boxDepth: 10,
                 light: {
-                    main: { intensity: 1.5 },
-                    ambient: { intensity: 0.3 },
+                    main: { intensity: 1 }, //메인 라이트
+                    ambient: { intensity: 0.3 }, //환경 라이트
                 },
             },
             series: [
                 {
                     type: 'bar3D',
-                    data: data,
+                    data: newData, // 정렬된 데이터 배열 적용
                     shading: 'realistic',
                     label: {
                         show: true, // 레이블 표시
                         position: 'top', // 막대 상단에 레이블 위치
                         formatter: (params) => {
-                            return categories[params.value[0]]; // x축에 해당하는 지역(region) 정보 표시
+                            return newCategories[params.value[0]]; // 정렬된 카테고리 표시
                         },
                         textStyle: {
                             color: '#ffffff', // 텍스트 색상
@@ -171,33 +180,44 @@ document.addEventListener("DOMContentLoaded", function () {
                             return '#FFFACD'; // 나머지 옅은 노랑
                         },
                     },
-                 
                 },
-        ],
-    };
-}
+            ],
+        };
+    }
+    
 
-     // 기존 차트2: 점선그래프
-     function createLineChartOption(title, categories, data) {
-        const sortedData = [...data].sort((a, b) => b - a);
-        const firstValue = sortedData[0];
-        const secondValue = sortedData[1];
-
-        const firstIndex = data.indexOf(firstValue);
-        const secondIndex = data.indexOf(secondValue);
-
+    function createLineChartOption(title, categories, data) {
+        // 데이터와 카테고리를 함께 내림차순으로 정렬
+        const sortedData = data
+            .map((value, index) => ({ value, category: categories[index] })) // 데이터와 카테고리를 매핑
+            .sort((a, b) => b.value - a.value); // 데이터 값 기준으로 내림차순 정렬
+    
+        // 정렬된 데이터와 카테고리를 분리
+        const newCategories = sortedData.map(item => item.category);
+        const newData = sortedData.map(item => Math.round(item.value)); // 데이터 소수점 제거
+    
+        const firstValue = newData[0]; // 1위 값
+        const secondValue = newData[1]; // 2위 값
+    
         return {
             title: { text: title, textStyle: { color: '#ffffff' } },
             backgroundColor: '#1e1e1e',
             tooltip: { 
                 trigger: 'axis',
                 formatter: (params) => {
-                    return `${params[0].name}: ${Math.round(params[0].value)}`; // 소수점 제거
+                    return `${params[0].name}: ${params[0].value}`; // 소수점 제거된 값 표시
                 }
+            },
+            grid: {
+                top: '15%',    // 위쪽 여백
+                bottom: '5%', // 아래쪽 여백 (적절히 조정)
+                // left: '5%',    // 왼쪽 여백
+                // right: '5%',   // 오른쪽 여백
+                containLabel: true, // 레이블이 잘리지 않도록 설정
             },
             xAxis: {
                 type: 'category',
-                data: categories,
+                data: newCategories, // 정렬된 카테고리 적용
                 axisLabel: {
                     color: '#ffffff',
                     fontSize: 10,
@@ -214,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 {
                     name: title,
                     type: 'line',
-                    data: data.map(value => Math.round(value)), // 소수점 제거
+                    data: newData, // 정렬된 데이터 적용
                     lineStyle: {
                         type: 'dashed',
                     },
@@ -225,8 +245,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         data: [
                             {
                                 name: '1위',
-                                xAxis: firstIndex,
-                                yAxis: Math.round(firstValue), // 소수점 제거
+                                xAxis: 0, // 정렬된 데이터의 첫 번째 값의 인덱스
+                                yAxis: firstValue, // 1위 값
                                 itemStyle: {
                                     color: '#FFD700', // 진한 노랑
                                 },
@@ -234,8 +254,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             },
                             {
                                 name: '2위',
-                                xAxis: secondIndex,
-                                yAxis: Math.round(secondValue), // 소수점 제거
+                                xAxis: 1, // 정렬된 데이터의 두 번째 값의 인덱스
+                                yAxis: secondValue, // 2위 값
                                 itemStyle: {
                                     color: '#FFEC8B', // 중간 노랑
                                 },
@@ -251,8 +271,20 @@ document.addEventListener("DOMContentLoaded", function () {
             ],
         };
     }
+
+    
     // 기존 차트3: 3D 위험레벨
     function createRiskLevelChartOption(title, categories, data) {
+         // 데이터와 카테고리를 함께 내림차순으로 정렬
+        const sortedData = data
+        .map((value, index) => ({ value, category: categories[index] })) // 데이터와 카테고리를 매핑
+        .sort((a, b) => b.value - a.value); // 데이터 값 기준으로 내림차순 정렬
+
+        // 정렬된 데이터와 카테고리를 분리
+        const newCategories = sortedData.map(item => item.category);
+        const newData = sortedData.map(item => item.value);
+
+        
         return {
             title: { 
                 text: title, 
@@ -260,9 +292,14 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             backgroundColor: '#1e1e1e',
             tooltip: {},
+            grid: {
+                top: '15%',    // 위쪽 여백
+                bottom: '3%', // 아래쪽 여백
+                containLabel: true, // 레이블이 잘리지 않도록 설정
+            },
             xAxis: {
                 type: 'category',
-                data: categories,
+                data: newCategories, //정렬된 카테고리 적용
                 axisLabel: { color: '#ffffff' },
             },
             yAxis: {
@@ -272,14 +309,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 interval: 1, // 0, 1, 2, 3 단위로 표시
                 axisLabel: {
                     color: '#ffffff',
-                    fontSize: 10,
+                    fontSize: 15,
                 },
             },
             series: [
                 {
                     name: title,
                     type: 'bar',
-                    data: data,
+                    data: newData, // 정렬된 데이터 적용
                     itemStyle: {
                         color: (params) => {
                             const value = params.value; // 데이터 값 (레벨)
