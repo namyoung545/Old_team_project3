@@ -1,21 +1,9 @@
-// import * as vw from "https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC&domain=localhost";
-
-
 $(document).ready(() => {
     console.log('sj_map.js');
     let map;
 
     function initialize() {
-        // loadVWorldMap();
-
-        getVWorldWFSData('lt_c_adsigg').then(
-            (data) => {
-                console.log('Promise - then')
-                console.log(data)
-            }
-        );
-
-
+        loadVWorldMap();
     }
 
     function eventHandler() {
@@ -39,9 +27,8 @@ $(document).ready(() => {
 
     function loadVWorldMap() {
         Promise.all([
-            // callGeoJson()
-            // callVWorldWFSData()
-        ]).then(([wfsData]) => {
+            // getVWorldWFSData('lt_c_adsido_info')
+        ]).then(([wfsAdsigg]) => {
 
             map = new vw.Map();
             let options = {
@@ -63,7 +50,14 @@ $(document).ready(() => {
                 map.getLayerElement('poi_bound').hide();
                 map.getLayerElement('hybrid_bound').hide();
                 map.getLayerElement('facility_build').hide();
-                loadGeoJsonLayer();
+                loadGeoJsonLayer('lt_c_adsido_info');
+                // getVWorldWFSData('lt_c_adsido_info').then(
+                //     (data) => {
+                //         console.log('Promise - then')
+                //         console.log(data)
+                //         createLayerFromFeatures(data)
+                //     }
+                // );
             }
         }).catch((error) => {
             console.error("[ERROR] loadVWorldMap : ", error);
@@ -72,12 +66,12 @@ $(document).ready(() => {
         });
     }
 
-    function loadGeoJsonLayer(featureInfosData) {
-        let url = "http://localhost:8080/sh_api/vworldWFS?key=2D9BDADB-D581-3DB0-991E-11E5985B77CC&SERVICE=WFS&version=2.0.0&request=GetFeature&TYPENAME=lt_c_adsido_info&OUTPUT=application/json&SRSNAME=EPSG:4326&domain=localhost";
+    function loadGeoJsonLayer(dataType) {
+        let url = `http://localhost:8080/sh_api/vworldWFS?TYPENAME=${dataType}`;
 
         // GMLParser 생성
         var parser = new vw.GMLParser();
-        parser.setId("sampletest"); // 고유 ID 설정
+        parser.setId(`${dataType}_data`); // 고유 ID 설정
 
         // GeoJSON 데이터를 파싱
         var featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
@@ -93,11 +87,9 @@ $(document).ready(() => {
             height: 1600.0
         };
         featureInfos.setOption(options);
-        console.log(featureInfos);
 
         // 좌표 데이터 생성
         featureInfos.makeCoords();
-        console.log(featureInfos);
 
         // 데이터 출력 (콘솔 로그로 확인 가능)
         featureInfos.objCollection.collectionProp.forEach(function (item) {
@@ -138,7 +130,7 @@ $(document).ready(() => {
                 type: 'POST',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {
+                data: JSON.stringify({
                     key: '2D9BDADB-D581-3DB0-991E-11E5985B77CC',
                     SERVICE: 'WFS',
                     VERSION: '1.1.0',
@@ -147,7 +139,7 @@ $(document).ready(() => {
                     SRSNAME: 'EPSG:4326',
                     DOMAIN: 'localhost',
                     TYPENAME: dataType,
-                },
+                }),
                 success: function (data) {
                     console.log("데이터 로드 성공:", data);
                     resolve(data)
@@ -157,6 +149,69 @@ $(document).ready(() => {
                     reject(error);
                 }
             });
+        });
+    }
+
+    function createLayerFromFeatures(featureCollection) {
+        // 반환된 FeatureCollection에서 features를 가져옵니다.
+        const features = featureCollection.features;
+
+        features.forEach((feature, index) => {
+            const geometryType = feature.geometry.type; // Geometry 유형 (Point, LineString, Polygon 등)
+            const coordinates = feature.geometry.coordinates; // 좌표 데이터
+            console.log(feature)
+            console.log(index)
+            if (geometryType === 'LineString') {
+                // LineString 좌표 배열 생성
+                const lineCoords = coordinates.map(coord => new vw.Coord(coord[0], coord[1]));
+                const lineCollection = new vw.Collection(lineCoords);
+
+                // LineString 객체 생성 및 스타일 설정
+                const line = new vw.geom.LineString(lineCollection);
+                line.setFillColor(vw.Color.BLUE); // 파란색
+                line.setWidth(2); // 너비
+                line.setName(`라인 ${index + 1}`);
+                line.create();
+
+            } else if (geometryType === 'Polygon') {
+                // Polygon 좌표 배열 생성 (첫 번째 외곽선만 처리)
+                const polygonCoords = coordinates[0].map(coord => new vw.Coord(coord[0], coord[1]));
+                const polygonCollection = new vw.Collection(polygonCoords);
+
+                // Polygon 객체 생성 및 스타일 설정
+                const polygon = new vw.geom.Polygon(polygonCollection);
+                polygon.setFillColor(new vw.Color(255, 0, 0, 70)); // 반투명 빨간색
+                polygon.setWidth(1); // 테두리 두께
+                polygon.setName(`폴리곤 ${index + 1}`);
+                polygon.create();
+            } else if (geometryType === 'MultiPolygon') {
+                const multiPolygonCoords = new Array();
+
+                // MultiPolygon의 각 폴리곤을 순회
+                coordinates.forEach(polygon => {
+                    const exteriorRing = polygon[0].map(coord => new vw.Coord(coord[0], coord[1])); // 외곽선
+                    const interiorRings = polygon.slice(1).map(ring =>
+                        ring.map(coord => new vw.Coord(coord[0], coord[1]))
+                    ); // 내부 링들
+
+                    const exteriorCollection = new vw.Collection(exteriorRing); // 외곽선 좌표 컬렉션
+                    const interiorCollections = interiorRings.map(
+                        ring => new vw.Collection(ring)
+                    ); // 내부 링 컬렉션들
+
+                    multiPolygonCoords.push({ exterior: exteriorCollection, interiors: interiorCollections });
+                });
+
+                // MultiPolygon 생성 및 스타일 설정
+                const multiPolygon = new vw.geom.MultiPolygon(multiPolygonCoords);
+                multiPolygon.setFillColor(new vw.Color(0, 255, 0, 70)); // 반투명 초록색
+                multiPolygon.setWidth(2); // 테두리 두께
+                multiPolygon.setName(`멀티폴리곤 ${index + 1}`);
+                // multiPolygon.create();
+                // multiPolygon.makeCoords();
+            }
+
+            // 추가적인 Geometry 유형(Point, MultiPolygon 등)을 처리하려면 여기에 구현
         });
     }
 
