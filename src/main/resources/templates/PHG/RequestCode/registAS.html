@@ -19,7 +19,8 @@
       <div class="report-form">
         <form id="maintenanceForm" action="/schedule/registAS/insert" method="post">
           <input type="hidden" name="userId" th:value="${session.userId}">
-          <!-- 신고자 정보 섹션 -->
+
+          <!-- 신고자 정보 섹션 (기존 코드 동일) -->
           <table class="info-table">
             <caption>
               <span class="caption-icon">👤</span>
@@ -59,7 +60,7 @@
             </tbody>
           </table>
 
-          <!-- 시설물 정보 섹션 -->
+          <!-- 시설물 정보 섹션 (기존 코드 동일) -->
           <table class="info-table">
             <caption>
               <span class="caption-icon">🏢</span>
@@ -141,8 +142,7 @@
                 <td>
                   <div class="visit-time-wrapper">
                     <div class="date-select">
-                      <!-- 내일 이후 날짜만 선택 가능 -->
-                      <input type="date" name="preferredDate" id="preferredDate" required>
+                      <input type="date" id="preferredDate" required>
                     </div>
                   </div>
                 </td>
@@ -151,22 +151,16 @@
                 <th><label for="preferredTime">방문 가능 시간 *</label></th>
                 <td>
                   <div class="input-wrapper">
-                    <select name="preferredTime" id="preferredTime" required>
-                      <option value="">시간 선택</option>
-                      <option value="09:00:00">09시</option>
-                      <option value="10:00:00">10시</option>
-                      <option value="11:00:00">11시</option>
-                      <option value="12:00:00">12시</option>
-                      <option value="14:00:00">14시</option>
-                      <option value="15:00:00">15시</option>
-                      <option value="16:00:00">16시</option>
-                      <option value="17:00:00">17시</option>
+                    <select id="preferredTime" required>
+
                     </select>
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
+
+          <input type="hidden" name="preferredDateTime" id="preferredDateTime">
 
           <!-- 개인정보 동의 섹션 -->
           <div class="privacy-agreement">
@@ -181,7 +175,7 @@
               <label for="privacyAgreement" onchange="validateDateTime()">위 개인정보 수집 및 이용에 동의합니다. *</label>
             </div>
           </div>
-
+          
           <!-- 버튼 그룹 -->
           <div class="button-group">
             <button type="submit" class="submit-btn">신고서 제출</button>
@@ -222,6 +216,31 @@
         tomorrow.setDate(tomorrow.getDate() + 1); 
         const tomorrowString = tomorrow.toISOString().split('T')[0];
         preferredDate.setAttribute('min', tomorrowString);
+
+        // 날짜 선택 시 가능한 시간 슬롯 로드
+        preferredDate.addEventListener('change', function() {
+            const selectedDate = this.value;
+            const preferredTimeSelect = document.getElementById('preferredTime');
+            
+            // 모든 옵션 초기화
+            preferredTimeSelect.innerHTML = '<option value="">시간 선택</option>';
+            
+            // AJAX 요청
+            fetch(`/schedule/registAS/checkAvailableTimeSlots?selectedDate=${selectedDate}`)
+                .then(response => response.json())
+                .then(availableTimeSlots => {
+                    availableTimeSlots.forEach(timeSlot => {
+                        const option = document.createElement('option');
+                        option.value = timeSlot;
+                        option.textContent = `${timeSlot.split(':')[0]}시`;
+                        preferredTimeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('시간 정보를 불러오는 중 오류가 발생했습니다.');
+                });
+        });
 
         // 유틸리티 함수: 시간을 제외한 날짜 객체
         function getDateWithoutTime(date) {
@@ -296,6 +315,22 @@
                 document.getElementById('phoneNumber').value = 
                   `${phoneNumber1}-${phoneNumber2.value}-${phoneNumber3.value}`;
 
+                // 방문 일자와 시간 합치기
+                const selectedDate = preferredDate.value;
+                const selectedTime = preferredTime.value;
+                
+                
+                if (selectedDate && selectedTime) {
+                  // datetime 형식으로 정확히 합치기 (YYYY-MM-DD HH:mm:ss)
+                  const combinedDateTime = `${selectedDate} ${selectedTime}`;
+                  document.getElementById('preferredDateTime').value = combinedDateTime;
+                  
+                } else {
+                    // 날짜나 시간이 선택되지 않았을 경우 처리
+                    alert('방문 가능 일자와 시간을 모두 선택해주세요.');
+                    event.preventDefault(); // 폼 제출 방지
+                }
+                
                 // 모든 검증 통과 시 폼 제출
                 this.submit();
             } catch (error) {
