@@ -18,6 +18,7 @@ import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.dto.APIVWorldWFSDTO;
 import com.example.demo.entity.FireStatistics;
 import com.example.demo.service.SHAPIService;
+import com.example.demo.service.SHDisasterService;
 import com.example.demo.service.SHVMapService;
 
 import jakarta.validation.Valid;
@@ -33,12 +34,15 @@ public class SHAPIController {
     @Autowired
     SHVMapService shVMapService;
 
+    @Autowired
+    SHDisasterService shDisasterService;
+
     // 재난문자 기능
-    @PostMapping("/disaster/")
-    public String postDisaster(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
+    @PostMapping("/disaster")
+    public String postDisaster() {
+        System.out.println("SHAPI - getDisasterData");
+        String response = shDisasterService.getDisasterMessageData();
+        return response;
     }
     
 

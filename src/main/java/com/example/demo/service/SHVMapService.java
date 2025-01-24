@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,15 +17,32 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class SHVMapService {
 
     private final String VWORLD_API_KEY;
-
-    private final String VWORLD_WFS_URL = "https://api.vworld.kr/req/wfs";
+    private static final String VWORLD_WFS_URL = "https://api.vworld.kr/req/wfs";
 
     public SHVMapService() {
-        Dotenv dotenv = Dotenv.configure().load();
-        this.VWORLD_API_KEY = dotenv.get("VWORLD_API_KEY");
+        if (Files.exists(Paths.get(".env"))) {
+            Dotenv dotenv;
+            try {
+                dotenv = Dotenv.configure().load();
+            } catch (Exception e) {
+                dotenv = null;
+            }
+            this.VWORLD_API_KEY = dotenv != null ? dotenv.get("VWORLD_API_KEY") : null;
+
+            if (this.VWORLD_API_KEY == null || this.VWORLD_API_KEY.isEmpty()) {
+                System.err.println("VWORLD_API_KEY is missing!");
+            }
+        } else {
+            System.err.println("ENV file not found!");
+            this.VWORLD_API_KEY = null;
+        }
     }
 
     public String fetchVWorldWFS(Map<String, String> params) {
+        if (VWORLD_API_KEY == null || VWORLD_API_KEY.isEmpty()) {
+            return "API Key is missing! Check ENV!";
+        }
+
         RestTemplate restTemplate = new RestTemplate();
         params.put("key", VWORLD_API_KEY);
         params.put("SERVICE", "WFS");
@@ -41,6 +60,10 @@ public class SHVMapService {
     }
 
     public Object apiVWorldWFSData(APIVWorldWFSDTO requestDTO) {
+        if (VWORLD_API_KEY == null || VWORLD_API_KEY.isEmpty()) {
+            return "API Key is missing! Check ENV!";
+        }
+
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> params = new HashMap<>();
 
