@@ -116,7 +116,9 @@ SELECT * FROM fire_types WHERE fire_type LIKE "%건축%";
 --     fire_region TO fire_regions,
 --     fire_ignition TO fire_ignitions;
 
-DROP TABLE disasters;
+DESCRIBE disasters;
+SELECT * FROM disasters;
+-- DROP TABLE disasters; 
 DESCRIBE fires;
 SELECT * FROM fires;
 SELECT * FROM fire_causes;

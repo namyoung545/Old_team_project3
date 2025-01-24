@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.dto.APIVWorldWFSDTO;
 import com.example.demo.entity.FireStatistics;
+import com.example.demo.entity.SHDisasterMessageEntity;
 import com.example.demo.service.SHAPIService;
 import com.example.demo.service.SHDisasterService;
 import com.example.demo.service.SHVMapService;
@@ -37,7 +38,17 @@ public class SHAPIController {
     @Autowired
     SHDisasterService shDisasterService;
 
-    // 재난문자 기능
+    // 재난문자 기능 DB 호출
+    @PostMapping("/disasterMessage")
+    public ResponseEntity<?> postMethodName() {
+        System.out.println("SHAPI - getDisasterMessage");
+        List<SHDisasterMessageEntity> response = shDisasterService.getDisasterMessage();
+        return ResponseEntity.ok(response);
+    }
+    
+
+
+    // 재난문자 기능 API 호출
     @PostMapping("/disaster")
     public String postDisaster() {
         System.out.println("SHAPI - getDisasterData");

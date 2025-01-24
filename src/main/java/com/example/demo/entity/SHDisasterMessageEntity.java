@@ -17,13 +17,13 @@ public class SHDisasterMessageEntity {
     @Column(nullable = false)
     private Integer id;
 
-    @Column(nullable = false,length = 22)
-    private String sn;
+    @Column(nullable = false, length = 22)
+    private Integer sn;
 
     @Column(nullable = false)
     private LocalDateTime crt_dt;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String msg_cn;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -49,11 +49,11 @@ public class SHDisasterMessageEntity {
         this.id = id;
     }
 
-    public String getSn() {
+    public Integer getSn() {
         return sn;
     }
 
-    public void setSn(String sn) {
+    public void setSn(Integer sn) {
         this.sn = sn;
     }
 
