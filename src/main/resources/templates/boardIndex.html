@@ -16,17 +16,18 @@
         <main id="boardIndex_mp_container">
             <div id="boardIndex_mp_home">
                 <div th:insert="sidebar.html :: sidebar"></div>
-                <h1>board인덱스 페이지 입니다.</h1>
-                <hr>
+                <!-- <h1>board인덱스 페이지 입니다.</h1>
+                <hr> -->
                 <div class="mp_homeMenu">
-                    <a href="/managementPage/noticeBoard" id="menuNoticeBoardLink">
+                    <a href="/managementPage/noticeBoard" class="boardMenuBox" id="menuNoticeBoardLink">
                         <div class="mp_menuBox menuRegist">
                             <i class="bi bi-info-square"></i><span>공지사항</span>
                         </div>
-                    </a> <a href="/managementPage/qnaBoard" id="menuQnaBoardLink">
+                    </a> <a href="/managementPage/qnaBoard" class="boardMenuBox" id="menuQnaBoardLink">
                         <div class="mp_menuBox menuCalendar">
-                            <i class="bi bi-calendar-check"></i><span>QnA</span>
+                            <i class="bi bi-question-square"></i><span>QnA</span>
                         </div>
+                    </a>
                 </div>
             </div>
         </main>
