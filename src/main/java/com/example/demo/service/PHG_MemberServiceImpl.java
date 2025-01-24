@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,7 @@ public class PHG_MemberServiceImpl implements PHG_MemberService {
 			System.out.println("   - 암호화된 PW: " + storedUser.getUserPw());
 			System.out.println("   - 이메일: " + storedUser.getEmail());
 			System.out.println("   - 이름: " + storedUser.getName());
+			System.out.println("   - 권한: " + storedUser.getAuthorityId());
 		} else {
 			System.out.println("   - 사용자 정보 없음");
 		}
@@ -89,6 +92,12 @@ public class PHG_MemberServiceImpl implements PHG_MemberService {
 
 		// 4. 회원 정보 업데이트
 		return memberDAO.memberUpdate(currentUser);
+	}
+
+	// 배정할 기사 목록
+	@Override
+	public List<PHG_MemberDTO> deliverySelect(PHG_MemberDTO dto) throws Exception {
+		return memberDAO.deliverySelect(dto);
 	}
 
 }

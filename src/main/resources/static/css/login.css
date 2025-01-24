@@ -96,7 +96,7 @@
 
         .login-form button {
             padding: 10px;
-            background-color: #001f3f; /* 남색 */
+            background-color: #343a40;
             color: #ffffff;
             border: none;
             border-radius: 4px;
@@ -106,7 +106,7 @@
         }
 
         .login-form button:hover {
-            background-color: #003366; /* 더 어두운 남색 */
+            background-color: #ffc107; /* 더 어두운 남색 */
         }
 
         .login-form .signup-link {

@@ -1,4 +1,8 @@
-@charset "UTF-8";
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 .boardList {
 	width: 100%;
@@ -115,7 +119,7 @@ table tbody td a:hover {
 }
 
 .buttonBox i {
-	color: #f68e3e;
+	color: #000000;
 	font-weight: 600;
 	/* 	margin: 15px; */
 }

@@ -36,7 +36,7 @@ header {
 #boardHeader{
     display:grid;
     height: auto;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     gap: 10px;
 }
@@ -85,10 +85,10 @@ header {
 }
 
 .header_link_boardIndex, .header_link_memberModify{
-    background-color: #FFE000;
+    /* background-color: #FFE000; */
     color: #001f3f;
     padding: 8px 16px;
-    border-radius: 5px;
+    border-radius: 30px;
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
@@ -105,4 +105,36 @@ header {
 .header_link_default:active,.header_link_boardIndex:active, .header_link_memberModify:active {
 	background-color: #FFD700; /* 클릭 시 배경색 */
 	box-shadow: none; /* 클릭 시 그림자 제거 */
+}
+
+/* hoverText */
+.header_link_boardIndex, .header_link_memberModify {
+    position: relative;
+    border-bottom: 1px dotted black;
+}
+
+.header_link_boardIndex:before, .header_link_memberModify:before {
+    content: attr(data-hover);
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 5px;
+    transition: opacity 1s ease-in-out;
+
+    position: absolute;
+    z-index: 1;
+    left: 50%; /* 부모 요소의 가로 중심 */
+    top: 110%; /* 부모 요소의 아래쪽 */
+    transform: translateX(-50%); /* 가로 중심으로 이동 */
+    font-size: 0.7em; /* 텍스트 크기를 줄임 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.header_link_boardIndex:hover:before, .header_link_memberModify:hover:before {
+    opacity: 1;
+    visibility: visible;
 }

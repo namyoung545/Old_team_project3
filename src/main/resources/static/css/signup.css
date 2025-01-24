@@ -80,7 +80,7 @@
         .signup-form input[type="email"],
         .signup-form input[type="tel"] {
             padding: 10px;
-            margin-bottom: 15px;
+            /* margin-bottom: 15px; */
             border: 1px solid #cccccc;
             border-radius: 4px;
             font-size: 1em;
@@ -99,7 +99,7 @@
         .signup-form .input-group button {
             margin-left: 10px;
             padding: 10px 15px;
-            background-color: #001f3f;
+            background-color: #343a40;
             color: #ffffff;
             border: none;
             border-radius: 4px;
@@ -108,12 +108,12 @@
         }
 
         .signup-form .input-group button:hover {
-            background-color: #003366;
+            background-color: #ffc107;
         }
 
         .signup-form button[type="submit"] {
             padding: 10px;
-            background-color: #001f3f; /* 남색 */
+            background-color: #343a40; /* 남색 */
             color: #ffffff;
             border: none;
             border-radius: 4px;
@@ -123,7 +123,7 @@
         }
 
         .signup-form button[type="submit"]:hover {
-            background-color: #003366; /* 더 어두운 남색 */
+            background-color: #ffc107; /* 더 어두운 남색 */
         }
 
         .signup-form .message {

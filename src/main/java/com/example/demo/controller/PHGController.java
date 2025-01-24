@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,11 +99,15 @@ public class PHGController {
             return "/PHG/PHG_alertPrint";
         }
 
+        // 로그인 성공 시 사용자 정보를 새로 조회
+        PHG_MemberDTO userInfo = memberService.getUserById(memberDTO.getUserId());
+
         // 세션 생성 및 사용자 ID 저장
         HttpSession session = request.getSession();
-        session.setAttribute("userId", memberDTO.getUserId());
-        System.out.println("세션 생성 완료 - 사용자 ID: " + memberDTO.getUserId());
-
+        session.setAttribute("userId", userInfo.getUserId());
+        session.setAttribute("authorityId", userInfo.getAuthorityId());
+        System.out.println("세션 생성 완료 - 사용자 ID: " + userInfo.getUserId());
+        System.out.println("세션 생성 완료 - 사용자 권한: " + userInfo.getAuthorityId());
         // 아이디 저장 쿠키 처리
         if (rememberId) {
             Cookie cookie = new Cookie("userId", memberDTO.getUserId());
@@ -207,7 +212,12 @@ public class PHGController {
 
     // --------------------------------------------------------------------------------------------------
     @GetMapping("/schedule/registAS")
-    public String scheduleRegistAS() {
+    public String scheduleRegistAS(HttpSession session, Model model) {
+        if (session.getAttribute("userId") == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
         return "/PHG/RequestCode/registAS";
     }
 
@@ -240,8 +250,46 @@ public class PHGController {
 
     // --------------------------------------------------------------------------------------------------
     @GetMapping("/schedule/processStatus")
-    public String scheduleRegistResult() {
+    public String scheduleRegistResult(HttpSession session, Model model, PHG_AsReceptionDTO asReceptionDTO,
+            PHG_MemberDTO memberDTO)
+            throws Exception {
+        String userId = (String) session.getAttribute("userId");
+        int authorityId = (int) session.getAttribute("authorityId");
+
+        if (userId == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/PHG_login");
+            return "/PHG/PHG_alertPrint";
+        }
+
+        asReceptionDTO.setUserId(userId);
+        asReceptionDTO.setAuthorityId(authorityId);
+
+        List<PHG_MemberDTO> deliverySelect = memberService.deliverySelect(memberDTO);
+        List<PHG_AsReceptionDTO> asReceptionList = asReceptionService.AS_Status(asReceptionDTO);
+        model.addAttribute("asReceptionList", asReceptionList);
+        model.addAttribute("deliverySelect", deliverySelect);
+
         return "/PHG/RequestCode/registProcessStatus";
+    }
+
+    @PostMapping("/schedule/processStatus/deliveryArrangement")
+    public String deliveryArrangement(@RequestParam("selectedRequestId") String requestId,
+            @RequestParam("receptionDelivery") String receptionDelivery,
+            @RequestParam("receptionStatus") String receptionStatus,
+            Model model) {
+
+        asReceptionService.deliveryArrangement(Integer.parseInt(requestId), receptionDelivery, receptionStatus);
+        try {
+            model.addAttribute("msg", "배정 완료되었습니다.");
+            model.addAttribute("url", "/schedule/processStatus"); // 목록 페이지 URL
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "문제 발생");
+            model.addAttribute("url", "/schedule/processStatus"); // 접수 페이지 URL
+            e.printStackTrace();
+        }
+        return "/PHG/PHG_alertPrint";
     }
 
     // --------------------------------------------------------------------------------------------------

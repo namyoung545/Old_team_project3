@@ -8,10 +8,10 @@
             <span></span>
         </div>
         <div class="headerboardIndex_container">
-            <a th:if="${session.userId == null}" href="/login" class="header_link_boardIndex">로그인</a>
-            <a th:if="${session.userId == null}" href="/signup" class="header_link_boardIndex">회원가입</a>
-            <a th:if="${session.userId != null}" href="/logout" class="header_link_boardIndex">로그아웃</a>
-            <a th:if="${session.userId != null}" href="/memberModify" class="header_link_memberModify">MyPage</a>
+            <a th:if="${session.userId == null}" href="/login" class="header_link_boardIndex" data-hover="로그인"><i class="bi bi-person-circle"></i></a>
+            <a th:if="${session.userId == null}" href="/signup" class="header_link_boardIndex" data-hover="회원가입"><i class="bi bi-person-fill-add"></i></a>
+            <a th:if="${session.userId != null}" href="/logout" class="header_link_boardIndex" data-hover="로그아웃"><i class="bi bi-box-arrow-right"></i></a>
+            <a th:if="${session.userId != null}" href="/memberModify" class="header_link_memberModify" data-hover="마이페이지"><i class="bi bi-person-fill-gear"></i></a>
         </div>
     </div>
 </header>

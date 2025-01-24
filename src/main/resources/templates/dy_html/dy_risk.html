@@ -1,63 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dy Risk Data</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        .bar { fill: steelblue; }
-        .axis { font-size: 12px; }
-    </style>
+    <title>위험도 평가 데이터</title>
+    <link rel="stylesheet" href="/css/dy_css/dy_risk.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.9/dist/echarts-gl.min.js"></script>
 </head>
 <body>
-    <h1>Risk Data Visualization</h1>
-    <svg id="chart" width="800" height="400"></svg>
+    <h1>전기적 요인에 의한 화재 및 감전재해 현황</h1>
 
-    <script>
-        // Fetch API data and visualize with D3.js
-        fetch('/api/dy-risk')
-            .then(response => response.json())
-            .then(data => {
-                const svg = d3.select("#chart"),
-                      margin = { top: 20, right: 30, bottom: 40, left: 40 },
-                      width = +svg.attr("width") - margin.left - margin.right,
-                      height = +svg.attr("height") - margin.top - margin.bottom;
+    <!-- Select Dropdown -->
+    <div id="controls">
+        <label for="year-select">연도:</label>
+        <select id="year-select">
+            <option value="2023" th:selected="${defaultYear == 2023}">2023</option>
+            <option value="2022" th:selected="${defaultYear == 2022}">2022</option>
+            <option value="2021" th:selected="${defaultYear == 2021}">2021</option>
+            <option value="2020" th:selected="${defaultYear == 2020}">2020</option>
+            <option value="2019" th:selected="${defaultYear == 2019}">2019</option>
+            <option value="2018" th:selected="${defaultYear == 2018}">2018</option>
+        </select>
+    </div>
 
-                const x = d3.scaleBand()
-                            .domain(data.map(d => d.region))
-                            .range([margin.left, width - margin.right])
-                            .padding(0.1);
+    <!-- Hidden JSON Data -->
+    <div id="jsonData" th:text="${jsonData}" style="display: none;"></div>
 
-                const y = d3.scaleLinear()
-                            .domain([0, d3.max(data, d => d.riskScore)])
-                            .nice()
-                            .range([height - margin.bottom, margin.top]);
+    <!-- Charts Container -->
+    <div id="charts-container">
+        <div id="chart1" class="chart"></div>
+        <div id="chart2" class="chart"></div>
+        <div id="chart3" class="chart"></div>
+        <div id="chart4" class="chart"></div>
+    </div>
 
-                const g = svg.append("g");
-
-                g.selectAll(".bar")
-                 .data(data)
-                 .join("rect")
-                 .attr("class", "bar")
-                 .attr("x", d => x(d.region))
-                 .attr("y", d => y(d.riskScore))
-                 .attr("height", d => y(0) - y(d.riskScore))
-                 .attr("width", x.bandwidth());
-
-                g.append("g")
-                 .attr("class", "axis")
-                 .attr("transform", `translate(0,${height - margin.bottom})`)
-                 .call(d3.axisBottom(x))
-                 .selectAll("text")
-                 .attr("transform", "rotate(-45)")
-                 .style("text-anchor", "end");
-
-                g.append("g")
-                 .attr("class", "axis")
-                 .attr("transform", `translate(${margin.left},0)`)
-                 .call(d3.axisLeft(y));
-            });
-    </script>
+    <script src="/js/dy_risk.js"></script>
 </body>
 </html>

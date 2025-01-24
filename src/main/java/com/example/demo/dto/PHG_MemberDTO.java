@@ -3,12 +3,13 @@ package com.example.demo.dto;
 import java.util.Objects;
 
 public class PHG_MemberDTO {
-    private String userId;
-    private String userPw;
-    private String email;
-    private String name;
-    private String phoneNumber;
-    private String address;
+	private String userId;
+	private String userPw;
+	private String email;
+	private String name;
+	private String phoneNumber;
+	private String address;
+	private int authorityId;
 	public String getUserId() {
 		return userId;
 	}
@@ -45,14 +46,15 @@ public class PHG_MemberDTO {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	@Override
-	public String toString() {
-		return "PHG_MemberDTO [userId=" + userId + ", userPw=" + userPw + ", email=" + email + ", name=" + name
-				+ ", phoneNumber=" + phoneNumber + ", address=" + address + "]";
+	public int getAuthorityId() {
+		return authorityId;
+	}
+	public void setAuthorityId(int authorityId) {
+		this.authorityId = authorityId;
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, email, name, phoneNumber, userId, userPw);
+		return Objects.hash(address, authorityId, email, name, phoneNumber, userId, userPw);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -63,10 +65,17 @@ public class PHG_MemberDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		PHG_MemberDTO other = (PHG_MemberDTO) obj;
-		return Objects.equals(address, other.address) && Objects.equals(email, other.email)
-				&& Objects.equals(name, other.name) && Objects.equals(phoneNumber, other.phoneNumber)
-				&& Objects.equals(userId, other.userId) && Objects.equals(userPw, other.userPw);
+		return Objects.equals(address, other.address) && authorityId == other.authorityId
+				&& Objects.equals(email, other.email) && Objects.equals(name, other.name)
+				&& Objects.equals(phoneNumber, other.phoneNumber) && Objects.equals(userId, other.userId)
+				&& Objects.equals(userPw, other.userPw);
 	}
-    
-    
+	@Override
+	public String toString() {
+		return "PHG_MemberDTO [userId=" + userId + ", userPw=" + userPw + ", email=" + email + ", name=" + name
+				+ ", phoneNumber=" + phoneNumber + ", address=" + address + ", authorityId=" + authorityId + "]";
+	}
+
+	
+
 }

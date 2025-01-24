@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2D 대한민국 지도</title>
+    <style>
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        .region-label {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <canvas id="map-canvas"></canvas>
+    </div>
+    <script>
+        const canvas = document.getElementById('map-canvas');
+        const context = canvas.getContext('2d');
+        const mapContainer = document.getElementById('map-container');
+
+        // 캔버스 크기 설정
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const centerLng = 127.9; // 중심 경도
+        const centerLat = 36.0; // 중심 위도
+        const scale = 130; // 지도 확대/축소 배율
+
+        const regionsToDisplay = [
+            "강원도", "경기도", "경상남도", "경상북도", "광주광역시", "대구광역시", "대전광역시",
+            "부산광역시", "서울특별시", "세종특별자치시", "울산광역시", "인천광역시",
+            "전라남도", "전라북도", "제주특별자치도", "충청남도", "충청북도"
+        ];
+
+        // 특정 지역 위치 조정값
+        const manualAdjustments = {
+            "서울특별시": { x: 5, y: -10 },
+            "인천광역시": { x: 5, y: 0 },
+            "경기도": { x: -10, y: 30 },
+            "강원도": { x: -20, y:-70 },
+            "충청북도": { x: -30, y: 0 },
+            "충청남도": { x: -50, y: 40 },
+            "세종특별자치시": { x: -5, y: 2 },
+            "대전광역시": { x: 0, y: 10 },
+            "전라북도": { x: 20, y: -50 },
+            "전라남도": { x: 20, y: 50 },
+            "광주광역시": { x: 0, y: 0 },
+            "울산광역시": { x: 0, y: -10 },
+            "부산광역시": { x: 20, y: 10 },
+            "경상북도": { x: 0, y: 0 },
+            "경상남도": { x: -20, y: -10 }
+        };
+
+        let geoData = null;
+
+        fetch('/dy_map') // GeoJSON 데이터를 가져올 API 엔드포인트
+            .then(response => response.json())
+            .then(data => {
+                geoData = data;
+                drawMap(data);
+                addRegionLabels(data);
+
+                // 창 크기 변경 시 반응형 처리
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    drawMap(geoData);
+                    addRegionLabels(geoData);
+                });
+            })
+            .catch(error => console.error('Error fetching GeoJSON:', error));
+
+        function drawMap(data) {
+            const filteredFeatures = data.features.filter(feature => {
+                const regionName = feature.properties.CTP_KOR_NM?.trim();
+                return regionsToDisplay.includes(regionName);
+            });
+
+            context.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
+
+            filteredFeatures.forEach(feature => {
+                if (feature.geometry.type === "Polygon") {
+                    feature.geometry.coordinates.forEach(polygon => {
+                        drawPolygon(polygon);
+                    });
+                } else if (feature.geometry.type === "MultiPolygon") {
+                    feature.geometry.coordinates.forEach(multiPolygon => {
+                        multiPolygon.forEach(polygon => {
+                            drawPolygon(polygon);
+                        });
+                    });
+                }
+            });
+        }
+
+        function drawPolygon(polygon) {
+            context.beginPath();
+            let firstPoint = true;
+
+            polygon.forEach(([lng, lat]) => {
+                const x = (lng - centerLng) * scale + canvas.width / 2;
+                const y = -(lat - centerLat) * scale + canvas.height / 2;
+
+                if (firstPoint) {
+                    context.moveTo(x, y);
+                    firstPoint = false;
+                } else {
+                    context.lineTo(x, y);
+                }
+            });
+
+            context.closePath();
+            context.fillStyle = 'yellow';
+            context.fill();
+            context.strokeStyle = 'black';
+            context.lineWidth = 1;
+            context.stroke();
+        }
+
+        function addRegionLabels(data) {
+            const filteredFeatures = data.features.filter(feature => {
+                const regionName = feature.properties.CTP_KOR_NM?.trim();
+                return regionsToDisplay.includes(regionName);
+            });
+
+            // 기존 라벨 제거
+            document.querySelectorAll('.region-label').forEach(label => label.remove());
+
+            const labelPositions = [];
+
+            filteredFeatures.forEach(feature => {
+                const regionName = feature.properties.CTP_KOR_NM;
+                const center = calculateCentroid(feature.geometry.coordinates);
+
+                let x = (center[0] - centerLng) * scale + canvas.width / 2;
+                let y = -(center[1] - centerLat) * scale + canvas.height / 2;
+
+                // 특정 지역에 대한 수동 위치 조정
+                if (manualAdjustments[regionName]) {
+                    x += manualAdjustments[regionName].x;
+                    y += manualAdjustments[regionName].y;
+                }
+
+                const label = document.createElement('div');
+                label.className = 'region-label';
+                label.style.left = `${x}px`;
+                label.style.top = `${y}px`;
+                label.textContent = regionName;
+                mapContainer.appendChild(label);
+
+                labelPositions.push({ x, y, width: label.offsetWidth, height: label.offsetHeight });
+            });
+        }
+
+        function calculateCentroid(coordinates) {
+            let sumLng = 0;
+            let sumLat = 0;
+            let count = 0;
+
+            coordinates.forEach(polygon => {
+                polygon.forEach(([lng, lat]) => {
+                    sumLng += lng;
+                    sumLat += lat;
+                    count++;
+                });
+            });
+
+            return [sumLng / count, sumLat / count];
+        }
+    </script>
+</body>
+</html>

@@ -17,7 +17,8 @@
       <hr>
       
       <div class="report-form">
-        <form action="/schedule/registAS/insert" method="post">
+        <form id="maintenanceForm" action="/schedule/registAS/insert" method="post">
+          <input type="hidden" name="userId" th:value="${session.userId}">
           <!-- 신고자 정보 섹션 -->
           <table class="info-table">
             <caption>
@@ -140,6 +141,7 @@
                 <td>
                   <div class="visit-time-wrapper">
                     <div class="date-select">
+                      <!-- 내일 이후 날짜만 선택 가능 -->
                       <input type="date" name="preferredDate" id="preferredDate" required>
                     </div>
                   </div>
@@ -175,8 +177,8 @@
               <p>3. 보유 기간: 신청일로부터 1년</p>
             </div>
             <div class="agreement-checkbox">
-              <input type="checkbox" name="privacyAgreement" id="privacyAgreement" required>
-              <label for="privacyAgreement">위 개인정보 수집 및 이용에 동의합니다. *</label>
+              <input type="checkbox" name="privacyAgreement" id="privacyAgreement" required onchange="validateDateTime()">
+              <label for="privacyAgreement" onchange="validateDateTime()">위 개인정보 수집 및 이용에 동의합니다. *</label>
             </div>
           </div>
 
@@ -193,25 +195,126 @@
   <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
 
   <script>
-    // 주소 검색 함수
+    // 주소 검색 함수 - 전역 스코프에 정의
     function searchAddress() {
-      new daum.Postcode({
-        oncomplete: function(data) {
-          document.getElementById('postcode').value = data.zonecode;
-          document.getElementById('address').value = data.address;
-          document.getElementById('detailAddress').focus();
-        }
-      }).open();
+        new daum.Postcode({
+            oncomplete: function(data) {
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById('address').value = data.address;
+                document.getElementById('detailAddress').focus();
+            }
+        }).open();
     }
 
-    // 폼 제출 시 전화번호 조합
-    document.querySelector('form').addEventListener('submit', function(event) {
-      const phoneNumber1 = document.getElementById('phoneNumber1').value;
-      const phoneNumber2 = document.getElementById('phoneNumber2').value;
-      const phoneNumber3 = document.getElementById('phoneNumber3').value;
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM 요소 참조
+        const form = document.getElementById('maintenanceForm');
+        const phoneNumber2 = document.getElementById('phoneNumber2');
+        const phoneNumber3 = document.getElementById('phoneNumber3');
+        const textarea = document.getElementById('issueDetails');
+        const charCount = document.querySelector('.char-count');
+        const preferredDate = document.getElementById('preferredDate');
+        const preferredTime = document.getElementById('preferredTime');
+        const privacyCheckbox = document.getElementById('privacyAgreement');
+        
+        // 1) 내일 날짜(오늘 +1일)를 min으로 설정 -> 오늘까지는 선택 불가
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        const tomorrowString = tomorrow.toISOString().split('T')[0];
+        preferredDate.setAttribute('min', tomorrowString);
 
-      const fullPhoneNumber = phoneNumber1 + '-' + phoneNumber2 + '-' + phoneNumber3;
-      document.getElementById('phoneNumber').value = fullPhoneNumber;
+        // 유틸리티 함수: 시간을 제외한 날짜 객체
+        function getDateWithoutTime(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        }
+
+        // 방문 일자/시간 유효성 검사 (유효하지 않으면 체크박스 자동 해제)
+        function validateDateTime() {
+            if (!preferredDate.value || !preferredTime.value) {
+                // 둘 중 하나라도 선택되지 않은 경우 별도 처리하지 않음
+                return true;
+            }
+            
+            const selectedDate = new Date(preferredDate.value);
+            const selectedTime = preferredTime.value;
+            const now = new Date();
+            
+            const todayWithoutTime = getDateWithoutTime(now);
+            const selectedDateWithoutTime = getDateWithoutTime(selectedDate);
+            
+            // 과거 날짜인 경우
+            if (selectedDateWithoutTime < todayWithoutTime) {
+                alert("과거 날짜는 선택할 수 없습니다.");
+                preferredDate.value = '';
+                privacyCheckbox.checked = false;  // 체크박스 자동 해제
+                return false;
+            }
+
+            // 오늘 날짜인 경우 시간도 비교(만약 오늘 날짜를 막아두지 않는다면)
+            if (selectedDateWithoutTime.getTime() === todayWithoutTime.getTime()) {
+                const currentHour = now.getHours();
+                const selectedHour = parseInt(selectedTime.split(':')[0]);
+                
+                if (selectedHour <= currentHour) {
+                    alert("현재 시간 이후의 시간을 선택해주세요.");
+                    preferredTime.value = '';
+                    privacyCheckbox.checked = false;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 상세설명 글자수 카운팅
+        function updateCharCount() {
+            const currentLength = textarea.value.length;
+            charCount.textContent = `${currentLength}/2000`;
+            
+            if (currentLength > 2000) {
+                textarea.value = textarea.value.substring(0, 2000);
+                charCount.textContent = '2000/2000';
+            }
+        }
+
+        // 이벤트 리스너
+        textarea.addEventListener('input', updateCharCount);
+        preferredDate.addEventListener('change', validateDateTime);
+        preferredTime.addEventListener('change', validateDateTime);
+
+        // 폼 제출 이벤트
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 날짜/시간 유효성 검사
+            if (!validateDateTime()) {
+                return;
+            }
+
+            // 전화번호 조합
+            try {
+                const phoneNumber1 = document.getElementById('phoneNumber1').value;
+                document.getElementById('phoneNumber').value = 
+                  `${phoneNumber1}-${phoneNumber2.value}-${phoneNumber3.value}`;
+
+                // 모든 검증 통과 시 폼 제출
+                this.submit();
+            } catch (error) {
+                console.error('전화번호 처리 중 오류:', error);
+                alert('전화번호 정보를 확인해주세요.');
+            }
+        });
+
+        // 초기화 버튼 이벤트
+        const resetBtn = document.querySelector('.reset-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                setTimeout(() => {
+                    form.reset();
+                    charCount.textContent = '0/2000';
+                    privacyCheckbox.checked = false;
+                }, 0);
+            });
+        }
     });
   </script>
 </body>
