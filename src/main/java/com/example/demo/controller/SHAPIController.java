@@ -38,15 +38,21 @@ public class SHAPIController {
     @Autowired
     SHDisasterService shDisasterService;
 
+    @PostMapping("/fireInformation")
+    public String postFireInformation() {
+        //TODO: process POST request
+        
+        return "test";
+    }
+    
+
     // 재난문자 기능 DB 호출
     @PostMapping("/disasterMessage")
-    public ResponseEntity<?> postMethodName() {
+    public ResponseEntity<?> postDisasterMessage() {
         System.out.println("SHAPI - getDisasterMessage");
         List<SHDisasterMessageEntity> response = shDisasterService.getDisasterMessage();
         return ResponseEntity.ok(response);
     }
-    
-
 
     // 재난문자 기능 API 호출
     @PostMapping("/disaster")
@@ -55,7 +61,6 @@ public class SHAPIController {
         String response = shDisasterService.getDisasterMessageData();
         return response;
     }
-    
 
     // 브이월드 기능
     @GetMapping("/vworldWFS")
