@@ -116,13 +116,17 @@ SELECT * FROM fire_types WHERE fire_type LIKE "%건축%";
 --     fire_region TO fire_regions,
 --     fire_ignition TO fire_ignitions;
 
-
+DESCRIBE disasters;
+SELECT * FROM disasters;
+-- DROP TABLE disasters; 
+DESCRIBE fires;
 SELECT * FROM fires;
 SELECT * FROM fire_causes;
 
 -- DROP TABLE fire_statistics;
 DESCRIBE fire_statistics;
 SELECT * FROM fire_statistics ORDER BY id DESC;
+SELECT * FROM fire_statistics WHERE year = "2023";
 SELECT * FROM fire_statistics WHERE stat_name LIKE "%재산피해%" AND year = "2023" ORDER BY id DESC;
 
 -- DELETE FROM fire_statistics WHERE stat_name LIKE ("%인명피해 합계(원인)%") LIMIT 100; 
