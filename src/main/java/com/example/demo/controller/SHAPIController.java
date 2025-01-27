@@ -40,8 +40,7 @@ public class SHAPIController {
 
     @PostMapping("/fireInformation")
     public String postFireInformation() {
-        //TODO: process POST request
-        
+        System.out.println("SHAPI - fireInformation");
         return "test";
     }
     
