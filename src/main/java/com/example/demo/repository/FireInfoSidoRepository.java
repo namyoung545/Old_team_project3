@@ -13,7 +13,8 @@ import com.example.demo.entity.FireInfoSidoEntity;
 @Repository
 public interface FireInfoSidoRepository extends JpaRepository<FireInfoSidoEntity, Integer> {
     // 날짜별 검색
-    List<FireInfoSidoEntity> findByOcrn_ymd(LocalDate ocrn_ymd);
+    @Query ("SELECT f FROM FireInfoSidoEntity f WHERE f.ocrn_ymd = :ocrn_ymd")
+    List<FireInfoSidoEntity> findByOcrnYmd(LocalDate ocrn_ymd);
 
     // 시도 날짜 검색
     @Query("SELECT f FROM FireInfoSidoEntity f WHERE f.sido_nm = :sido_nm AND f.ocrn_ymd = :ocrn_ymd")
