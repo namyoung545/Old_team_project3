@@ -20,6 +20,7 @@ import com.example.demo.entity.FireStatistics;
 import com.example.demo.entity.SHDisasterMessageEntity;
 import com.example.demo.service.SHAPIService;
 import com.example.demo.service.SHDisasterService;
+import com.example.demo.service.SHFireInfoService;
 import com.example.demo.service.SHVMapService;
 
 import jakarta.validation.Valid;
@@ -38,9 +39,15 @@ public class SHAPIController {
     @Autowired
     SHDisasterService shDisasterService;
 
+    @Autowired
+    SHFireInfoService shFireInfoService;
+
     @PostMapping("/fireInformation")
     public String postFireInformation() {
         System.out.println("SHAPI - fireInformation");
+        String response = shFireInfoService.fetchFireInfoSidoData();
+        System.out.println("SHAPI - fireInformation / response");
+        System.out.println(response);
         return "test";
     }
     
