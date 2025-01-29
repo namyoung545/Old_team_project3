@@ -1,0 +1,132 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.boardList {
+	width: 100%;
+	max-width: 1000px;
+	text-align: center;
+	background-color: #fff;
+	border-radius: 12px;
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+	padding: 40px 30px;
+	margin: 0 auto;
+}
+
+.listTop {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+	margin: 1rem 0;
+}
+
+.listTop button {
+	background-color: #f68e3e;
+	font-size: 1rem;
+	font-weight: 600;
+	border: none;
+	border-radius: 5px;
+	color: #f0f0f0;
+	padding: 0.5rem 1rem;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
+}
+
+.listTop button:hover {
+	background-color: #e57a31;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 테이블 공통 스타일 */
+table {
+	width: 100%; /* 테이블 전체 너비 */
+	border-collapse: collapse; /* 경계선 중복 제거 */
+	margin: 20px 0;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff; /* 배경색 */
+	/* 	border: 1px solid #ddd; 테두리 */
+}
+
+/* 테이블 헤더 스타일 */
+table thead th {
+	background-color: #f4f4f4; /* 연한 회색 */
+	color: #333; /* 어두운 텍스트 */
+	padding: 10px 15px;
+	font-weight: bold;
+	border-bottom: 2px solid #ddd; /* 헤더 아래쪽 테두리 */
+}
+
+/* 테이블 본문 스타일 */
+table tbody td {
+	padding: 10px 15px;
+	border-bottom: 1px solid #ddd; /* 줄 간 구분선 */
+	color: #333; /* 기본 텍스트 */
+}
+
+/* 짝수 행 배경색 */
+table tbody tr:nth-child(even) {
+	background-color: #f9f9f9; /* 연한 회색 */
+}
+
+/* 홀수 행 배경색 */
+table tbody tr:nth-child(odd) {
+	background-color: #fff;
+}
+
+/* 테이블 행 hover 효과 */
+table tbody tr:hover {
+	background-color: #f1f1f1; /* hover 시 연한 배경 */
+}
+
+/* 링크 스타일 */
+table tbody td a {
+	/* 	color: #007bff; 기본 링크 색상 (파란색) */
+	text-decoration: none; /* 밑줄 제거 */
+}
+
+/* 링크 hover 효과 */
+table tbody td a:hover {
+	color: #0f0f0f; /* hover 시 어두운 파란색 */
+	text-decoration: underline; /* 밑줄 추가 */
+}
+
+/* Board Button */
+.boardList .listButton {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+	margin: 1rem 0;
+}
+
+.listButton .buttonBox {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: #fff;
+	border: none;
+	border-radius: 5px;
+	transition: all 0.3s ease; /* hover 효과 부드럽게 */
+	cursor: pointer;
+	padding: 0.25rem 0.5rem;
+}
+
+.buttonBox i {
+	color: #000000;
+	font-weight: 600;
+	/* 	margin: 15px; */
+}
+
+/* 메뉴 박스 hover 효과 */
+.buttonBox:hover {
+	/*     transform: translateY(-5px); 메뉴 박스 위로 살짝 떠오르게 */
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
+	/*     background-color: #fdf1e7; hover 시 배경색 변화 (연한 주황색) */
+}

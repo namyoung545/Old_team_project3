@@ -7,27 +7,44 @@
 <mapper namespace="com.example.demo.dao.PHG_MemberDAO">
 	<!-- 회원 가입 -->
 	<insert id="register" parameterType="com.example.demo.dto.PHG_MemberDTO">
-    	INSERT INTO member(user_id, user_pw, email, name, phone_number, address)
-    	VALUES(#{user_id}, #{user_pw}, #{email}, #{name}, #{phone_number}, #{address})
+    	INSERT INTO member(userId, userPw, email, name, phoneNumber, address)
+    	VALUES(#{userId}, #{userPw}, #{email}, #{name}, #{phoneNumber}, #{address})
 	</insert>
   
   	<!-- 아이디 중복 체크 -->
 	<select id="idOverlap" resultType="int">
 		SELECT COUNT(*)
 		FROM member
-		WHERE user_id = #{user_id}
-	</select>
-	
-	<!-- 로그인 -->
-	<select id="login" resultType="int">
-		SELECT COUNT(*)
-		FROM member
-		WHERE user_id = #{user_id} AND user_pw = #{user_pw}
+		WHERE userId = #{userId}
 	</select>
 	
 	<!-- 회원 탈퇴 -->
 	<delete id="delete" parameterType="com.example.demo.dto.PHG_MemberDTO">
 		DELETE FROM member
-		WHERE user_id = #{user_id}
+		WHERE userId = #{userId}
 	</delete>
+
+	<!-- 사용자 정보 조회 -->
+    <select id="getUserById" resultType="com.example.demo.dto.PHG_MemberDTO">
+		SELECT userId, userPw, email, name, phoneNumber, address, authorityId
+		FROM member
+		WHERE userId = #{userId}
+	</select>
+
+	<!-- 사용자 정보 수정 -->
+	<update id="memberUpdate" parameterType="com.example.demo.dto.PHG_MemberDTO">
+		UPDATE member 
+		SET userPw = #{userPw},
+			email = #{email},
+			name = #{name},
+			phoneNumber = #{phoneNumber},
+			address = #{address}
+		WHERE userId = #{userId}
+	</update>
+
+	<select id="deliverySelect" parameterType="int">
+		SELECT name 
+		FROM member
+		WHERE authorityId = 2; 
+	</select>
 </mapper>

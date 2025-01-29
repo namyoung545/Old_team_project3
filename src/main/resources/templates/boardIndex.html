@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <title>난방기사 A/S 스케쥴 관리 서비스</title>
+
+    <head th:replace="common_headscript.html :: common_headscript"></head>
+    <link rel="stylesheet" href="/css/boardIndex.css" />
+
+</head>
+
+<body>
+    <div id="boardIndex_container">
+        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
+
+        <main id="boardIndex_mp_container">
+            <div id="boardIndex_mp_home">
+                <div th:insert="sidebar.html :: sidebar"></div>
+                <!-- <h1>board인덱스 페이지 입니다.</h1>
+                <hr> -->
+                <div class="mp_homeMenu">
+                    <a href="/managementPage/noticeBoard" class="boardMenuBox" id="menuNoticeBoardLink">
+                        <div class="mp_menuBox menuRegist">
+                            <i class="bi bi-info-square"></i><span>공지사항</span>
+                        </div>
+                    </a> <a href="/managementPage/qnaBoard" class="boardMenuBox" id="menuQnaBoardLink">
+                        <div class="mp_menuBox menuCalendar">
+                            <i class="bi bi-question-square"></i><span>QnA</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AS 접수하기</title>
+    <!-- Head Requires // 헤더 공통 스크립트 -->
+    <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
+    <!-- Post Code Script // 다음 주소 API -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .box {
+            text-align: center;
+            width: 80%;
+            max-width: 1000px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        /* 모달 박스 스타일 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            width: 500px;
+            max-width: 95%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .modal-box h2 {
+            margin-top: 0;
+        }
+        .modal-close-btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
+    <main>
+        <div class="box">
+            <h1>A/S 처리 현황</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>접수번호</th>
+                        <th>접수일자</th>
+                        <th>고객명</th>
+                        <th>완료 예정일시</th>
+                        <th>배정된 기사</th>
+                        <th>처리현황</th>
+                        <!-- admin일때만 "처리하기" 열 노출 -->
+                        <th th:if="${session.authorityId == 1}">처리하기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reception : ${asReceptionList}">
+                        <td th:text="${reception.requestId}"></td>
+                        <td th:text="${reception.receptionDate}"></td>
+                        <td th:text="${reception.name}"></td>
+                        <td th:text="${reception.preferredDate} + ' ' + ${reception.preferredTime}"></td>
+                        <td th:text="${reception.receptionDelivery}"></td>
+                        <td th:text="${reception.receptionStatus}"></td>
+                        <!-- admin일 경우 "처리하기" 버튼 추가 -->
+                        <td th:if="${session.authorityId == 1}">
+                            <button type="button" 
+                                    th:attr="onclick=|openModal('${reception.requestId}')|">
+                                처리하기
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal 박스 (관리자 전용) -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <h2>기사 배정 및 처리</h2>
+            <!-- 선택된 요청의 접수번호를 저장 -->
+            <form action="/schedule/processStatus/deliveryArrangement" method="post">
+                <input type="hidden" id="selectedRequestId"  name="selectedRequestId"/>
+                <p>접수번호: <span id="displayRequestId"></span></p> <!--name 속성을 controller로 보내기-->
+                <p>여기에 기사 배정 등의 추가 정보를 입력하거나 선택할 수 있습니다.</p>
+                <label for="technician">기사 선택:</label>
+                <select id="technician" name="receptionDelivery">
+                    <option th:each="delivery : ${deliverySelect}" 
+                            th:value="${delivery.name}"
+                            th:text="${delivery.name}">
+                    </option>
+                </select>
+                <label for="receptionStatus">처리 상태:</label>
+                <select name="receptionStatus">
+                    <option value="처리 중">처리 중</option>
+                    <option value="처리 완료">처리 완료</option>
+                </select>
+                <br>
+                <button type="submit" style="margin-top: 10px;">배정하기</button>
+            </form>
+            <div class="modal-close-btn">
+                <button type="button" onclick="closeModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+
+    <script>
+        // 모달 박스 열기: 선택된 접수번호를 인자로 받음
+        function openModal(requestId) {
+            document.getElementById('selectedRequestId').value = requestId;
+            document.getElementById('displayRequestId').innerText = requestId;
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+        // 모달 박스 닫기
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+        
+    </script>
+</body>
+</html>

@@ -14,8 +14,9 @@
     border-radius: 12px;     /* 둥근 모서리 */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 */
     text-align: center;
-    max-width: 800px;        /* 최대 너비 */
-    width: 100%;             /* 100% 너비를 사용하되 최대 800px */
+    /* max-width: 800px;        최대 너비 */
+    width: 80%;             /* 100% 너비를 사용하되 최대 800px */
+    height: 80vh;            /* 높이를 화면 높이의 80%로 설정 */
     margin: 0 auto;          /* 좌우 마진을 자동으로 설정 */
 }
 
@@ -47,8 +48,8 @@
     background-color: #fff;
     border-radius: 12px;
     padding: 20px;
-    width: 160px;
-    height: 180px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,7 +62,7 @@
 
 .mp_menuBox i {
     font-size: 48px; /* 아이콘 크기 */
-    color: #f68e3e; /* 주황색 계열 (포인트 색상) */
+    color: #343a40; /* 주황색 계열 (포인트 색상) */
     margin-bottom: 15px;
 }
 
@@ -75,7 +76,7 @@
 .mp_menuBox:hover {
     transform: translateY(-5px); /* 메뉴 박스 위로 살짝 떠오르게 */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 그림자 강조 */
-    background-color: #fdf1e7; /* hover 시 배경색 변화 (연한 주황색) */
+    background-color: #DAB800; /* hover 시 배경색 변화 (연한 주황색) */
 }
 
 /* 작은 화면에서 메뉴 박스 크기 조정 */

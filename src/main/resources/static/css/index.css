@@ -9,9 +9,9 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #fdfdfe;
             color: #333333;
+            overflow: hidden; /* 전체 컨테이너는 스크롤을 막음 */
         }
 
         /* 로그인 링크 스타일 */
@@ -105,3 +105,11 @@
                 align-items: center;
             } */
         }
+
+        /* #menuMonitoringPageLink{
+            background-image: url(../images/모니터링\ 이미지.png);
+        }
+
+        #menuManagementPageLink{
+            background-image: url(../images/관리시스템\ 이미지.png);
+        } */

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WMS</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript"
+        src="http://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
+</head>
+
+<body>
+    <div id="vmap" style="width:100%;height:90%;left:0px;top:0px"></div>
+    <button onclick="setWMSLayer_CITYPLAN()">도시계획(공공문화체육시설)</button>
+    <button onclick="setWMSLayer_adsido()">도시행정구역</button>
+    
+    <script type="text/javascript">
+        var options = {
+            mapId: "vmap",
+            initPosition: new vw.CameraPosition(
+                new vw.CoordZ(127.425, 38.196, 1548700),
+                new vw.Direction(0, -90, 0)
+            ),
+            logo: true,
+            navigation: true
+        };
+
+        var map = new vw.Map();
+        map.setOption(options);
+        map.start();
+
+        // 도시계획(공공문화체육시설) WMS
+        function setWMSLayer_CITYPLAN() {
+
+            var wmsLayer = new vw.Layers();
+
+            wmsSource = new vw.source.TileWMS();
+            wmsSource.setParams("tilesize=256");
+            wmsSource.setLayers("lt_c_upisuq155");
+            wmsSource.setStyles("lt_c_upisuq155");
+            wmsSource.setFormat("image/png");
+            wmsSource.setUrl("http://2d.vworld.kr:8895/2DCache/gis/map/WMS?Key=@{apikey}&domain=localhost:8080&");
+            console.log(wmsSource);
+            var wmsTile = new vw.layer.Tile(wmsSource);
+            wmsLayer.add(wmsTile);
+        }
+
+        function setWMSLayer_adsido() {
+            let wmsLayer = new vw.Layers();
+            wmsSource = new vw.source.TileWMS();
+            wmsSource.setParams("tilesize=256");
+            wmsSource.setLayers("lt_c_adsido");
+            wmsSource.setStyles("lt_c_adsido");
+            wmsSource.setFormat("image/png");
+            wmsSource.setUrl("http://2d.vworld.kr:8895/2DCache/gis/map/WMS?Key=@{apikey}&domain=localhost:8080&");
+            console.log(wmsSource);
+            let wmsTile = new vw.layer.Tile(wmsSource);
+            wmsLayer.add(wmsTile);
+        }
+    </script>
+</body>
+
+</html>

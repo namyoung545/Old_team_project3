@@ -1,166 +1,321 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>AS 접수하기</title>
-    <!-- Head Requires // 헤더 공통 스크립트 -->
-    <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
-
-    <!-- Post Code Script // 다음 주소 API -->
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
-    <!-- Page Style & Script // 개별 페이지 스타일 및 스크립트 -->
-    <link rel="stylesheet" type="text/css" href="/css/PHG_css/Request_css/registAS.css">
-    <script type="text/javascript" src="/js/PHG/Request_JS/registAS.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>시설 A/S 접수</title>
+  <th:block th:replace="/PHG/RequestCode/headScript :: headScript"></th:block>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/PHG_css/Request_css/registAS.css">
 </head>
 <body>
-    <!-- Header -->
-    <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
+  <th:block th:replace="/PHG/RequestCode/header :: header"></th:block>
 
-    <main>
-        <div class="registAS">
-            <h1>AS 접수하기</h1>
-            <hr>
-            <div class="register">
-                <form action="/schedule/registProcess" method="post">
-                    <table>
-                        <caption>고객 정보 입력</caption>
-                        <tbody>
-                            <tr>
-                                <th><label for="customerName">성명</label></th>
-                                <td>
-                                    <input type="text" name="cname" id="customerName" placeholder="성명" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><label for="customerPhone1">전화번호</label></th>
-                                <td>
-                                    <select name="customerPhone1" id="customerPhone1" class="phone" required>
-                                        <option value="010">010</option>
-                                        <option value="011">011</option>
-                                        <option value="016">016</option>
-                                        <option value="017">017</option>
-                                        <option value="018">018</option>
-                                        <option value="019">019</option>
-                                    </select>
-                                    - 
-                                    <input type="tel" name="customerPhone2" id="customerPhone2" class="phone" minlength="3" maxlength="4" placeholder="전화번호" required>
-                                    - 
-                                    <input type="tel" name="customerPhone3" id="customerPhone3" class="phone" minlength="4" maxlength="4" placeholder="전화번호" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><label for="searchAddress">주 소</label></th>
-                                <td class="customerAddress">
-                                    <button type="button" id="searchAddress" class="searchAddress btn btn-danger float-left">주소검색</button>
-                                    <div>
-                                        <input type="text" name="addressPostcode" id="addressPostcode" class="address addressPostcode" placeholder="우편번호">
-                                        <input type="text" name="addressRoad" id="addressRoad" class="address addressRoad" placeholder="도로명 주소" required>
-                                        <input type="text" name="addressBname" id="addressBname" class="address addressBname" placeholder="동주소" required>
-                                        <input type="text" name="addressDetails" id="addressDetails" class="addressDetails" placeholder="상세주소" required>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+  <main>
+    <div class="maintenance-report">
+      <h1>시설 A/S 접수</h1>
+      <hr>
+      
+      <div class="report-form">
+        <form id="maintenanceForm" action="/schedule/registAS/insert" method="post">
+          <input type="hidden" name="userId" th:value="${session.userId}">
+          <!-- 신고자 정보 섹션 -->
+          <table class="info-table">
+            <caption>
+              <span class="caption-icon">👤</span>
+              신고자 정보
+              <span class="required-note">* 필수 입력 항목</span>
+            </caption>
+            <tbody>
+              <tr>
+                <th><label for="name">이름 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <input type="text" name="name" id="name" placeholder="신고자 성명을 입력하세요" required>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="phoneNumber">연락처 *</label></th>
+                <td>
+                  <div class="phone-group">
+                    <input type="text" id="phoneNumber1" value="010" readonly style="width:100px; text-align:center;">
+                    <span class="phone-separator">-</span>
+                    <input type="tel" id="phoneNumber2" class="phone" minlength="3" maxlength="4" placeholder="xxxx" required>
+                    <span class="phone-separator">-</span>
+                    <input type="tel" id="phoneNumber3" class="phone" minlength="4" maxlength="4" placeholder="xxxx" required>
+                    <input type="hidden" name="phoneNumber" id="phoneNumber">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="email">이메일</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <input type="email" name="email" id="email" placeholder="example@domain.com">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-                    <table class="table">
-                        <caption>제품 및 증상 입력</caption>
-                        <tbody>
-                            <tr>
-                                <th><label for="productType">제품 분류</label></th>
-                                <td>
-                                    <select name="category" id="productType" class="productType">
-                                        <option value="gas">가스 보일러</option>
-                                        <option value="oil">기름 보일러</option>
-                                        <option value="other">그 외</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><label for="productId">모델명</label></th>
-                                <td>
-                                    <input type="text" name="model" id="productId" class="productId" placeholder="모델명">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><label for="troubleType">고장 증상</label></th>
-                                <td>
-                                    <select name="issue" id="troubleType" class="troubleType">
-                                        <option value="e101">전원 고장</option>
-                                        <option value="e201">온수 고장</option>
-                                        <option value="e301">그 외</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><label for="troubleDetails">세부증상</label></th>
-                                <td>
-                                    <textarea name="detail" id="troubleDetails" rows="10" placeholder="세부증상"></textarea>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+          <!-- 시설물 정보 섹션 -->
+          <table class="info-table">
+            <caption>
+              <span class="caption-icon">🏢</span>
+              시설물 정보
+            </caption>
+            <tbody>
+              <tr>
+                <th><label for="address">시설물 위치 *</label></th>
+                <td>
+                  <div class="address-group">
+                    <button type="button" onclick="searchAddress()" class="address-search-btn">주소 검색</button>
+                    <input type="text" id="postcode" name="postcode" placeholder="우편번호" readonly required>
+                    <input type="text" id="address" name="address" placeholder="주소" readonly required>
+                    <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소를 입력하세요">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="facilityType">시설물 분류 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <select name="facilityType" id="facilityType" required>
+                      <option value="">시설물 선택</option>
+                      <optgroup label="전기 시설">
+                        <option value="lighting">조명</option>
+                        <option value="power">전원</option>
+                        <option value="communication">통신</option>
+                      </optgroup>
+                      <optgroup label="설비 시설">
+                        <option value="plumbing">배관</option>
+                        <option value="hvac">공조</option>
+                        <option value="elevator">승강기</option>
+                      </optgroup>
+                      <optgroup label="안전 시설">
+                        <option value="fire">소방</option>
+                        <option value="security">보안</option>
+                        <option value="emergency">비상</option>
+                      </optgroup>
+                      <optgroup label="기타 시설">
+                        <option value="interior">내부시설</option>
+                        <option value="exterior">외부시설</option>
+                        <option value="other">기타</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-                    <table class="table">
-                        <caption>희망 방문 일시</caption>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="calendar">
-                                        <input type="date" name="visitdate" value="2024-12-13" required />
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="calendarTime">
-                                        <div class="time-buttons">
-                                            <!-- 버튼 목록 -->
-                                        </div>
-                                        <input type="hidden" id="selectedTime" name="visittime" required>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table>
-                        <caption>AS 담당 기사 배정</caption>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="employee">
-                                        <div class="employeeButton"></div>
-                                        <input type="hidden" name="empno" id="selectedEmployee" class="selectedEmployee" required />
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table">
-                        <caption>이용약관</caption>
-                        <tbody>
-                            <tr>
-                                <th>개인정보 수집 이용</th>
-                                <td>
-                                    <input type="checkbox" name="pinformation" id="term" required>
-                                    <label for="term">개인정보 수집 이용 및 제3자 제공 동의서</label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class='d-flex justify-content-around'>
-                        <button type="submit" class="btn btn-danger">AS 접수하기</button>
+          <!-- 상세 정보 섹션 -->
+          <table class="info-table">
+            <caption>
+              <span class="caption-icon">📝</span>
+              상세 정보
+            </caption>
+            <tbody>
+              <tr>
+                <th><label for="issueTitle">제목 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <input type="text" name="issueTitle" id="issueTitle" placeholder="문제를 간단히 설명해주세요" required>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="issueDetails">상세설명 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <textarea name="issueDetails" id="issueDetails" placeholder="발생한 문제에 대해 자세히 설명해주세요" required></textarea>
+                    <div class="textarea-footer">
+                      <span class="char-count">0/2000</span>
                     </div>
-                </form>
-            </div>
-        </div>
-    </main>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="preferredDate">방문 가능 일자 *</label></th>
+                <td>
+                  <div class="visit-time-wrapper">
+                    <div class="date-select">
+                      <!-- 내일 이후 날짜만 선택 가능 -->
+                      <input type="date" name="preferredDate" id="preferredDate" required>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="preferredTime">방문 가능 시간 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <select name="preferredTime" id="preferredTime" required>
+                      <option value="">시간 선택</option>
+                      <option value="09:00:00">09시</option>
+                      <option value="10:00:00">10시</option>
+                      <option value="11:00:00">11시</option>
+                      <option value="12:00:00">12시</option>
+                      <option value="14:00:00">14시</option>
+                      <option value="15:00:00">15시</option>
+                      <option value="16:00:00">16시</option>
+                      <option value="17:00:00">17시</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-    <!-- Footer -->
-    <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+          <!-- 개인정보 동의 섹션 -->
+          <div class="privacy-agreement">
+            <h3>개인정보 수집 및 이용 동의</h3>
+            <div class="agreement-content">
+              <p>1. 수집하는 개인정보 항목: 성명, 연락처, 이메일</p>
+              <p>2. 수집 목적: A/S 신청 처리 및 결과 회신</p>
+              <p>3. 보유 기간: 신청일로부터 1년</p>
+            </div>
+            <div class="agreement-checkbox">
+              <input type="checkbox" name="privacyAgreement" id="privacyAgreement" required onchange="validateDateTime()">
+              <label for="privacyAgreement" onchange="validateDateTime()">위 개인정보 수집 및 이용에 동의합니다. *</label>
+            </div>
+          </div>
+
+          <!-- 버튼 그룹 -->
+          <div class="button-group">
+            <button type="submit" class="submit-btn">신고서 제출</button>
+            <button type="reset" class="reset-btn">초기화</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <th:block th:replace="/PHG/RequestCode/footer :: footer"></th:block>
+
+  <script>
+    // 주소 검색 함수 - 전역 스코프에 정의
+    function searchAddress() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById('address').value = data.address;
+                document.getElementById('detailAddress').focus();
+            }
+        }).open();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM 요소 참조
+        const form = document.getElementById('maintenanceForm');
+        const phoneNumber2 = document.getElementById('phoneNumber2');
+        const phoneNumber3 = document.getElementById('phoneNumber3');
+        const textarea = document.getElementById('issueDetails');
+        const charCount = document.querySelector('.char-count');
+        const preferredDate = document.getElementById('preferredDate');
+        const preferredTime = document.getElementById('preferredTime');
+        const privacyCheckbox = document.getElementById('privacyAgreement');
+        
+        // 1) 내일 날짜(오늘 +1일)를 min으로 설정 -> 오늘까지는 선택 불가
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        const tomorrowString = tomorrow.toISOString().split('T')[0];
+        preferredDate.setAttribute('min', tomorrowString);
+
+        // 유틸리티 함수: 시간을 제외한 날짜 객체
+        function getDateWithoutTime(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        }
+
+        // 방문 일자/시간 유효성 검사 (유효하지 않으면 체크박스 자동 해제)
+        function validateDateTime() {
+            if (!preferredDate.value || !preferredTime.value) {
+                // 둘 중 하나라도 선택되지 않은 경우 별도 처리하지 않음
+                return true;
+            }
+            
+            const selectedDate = new Date(preferredDate.value);
+            const selectedTime = preferredTime.value;
+            const now = new Date();
+            
+            const todayWithoutTime = getDateWithoutTime(now);
+            const selectedDateWithoutTime = getDateWithoutTime(selectedDate);
+            
+            // 과거 날짜인 경우
+            if (selectedDateWithoutTime < todayWithoutTime) {
+                alert("과거 날짜는 선택할 수 없습니다.");
+                preferredDate.value = '';
+                privacyCheckbox.checked = false;  // 체크박스 자동 해제
+                return false;
+            }
+
+            // 오늘 날짜인 경우 시간도 비교(만약 오늘 날짜를 막아두지 않는다면)
+            if (selectedDateWithoutTime.getTime() === todayWithoutTime.getTime()) {
+                const currentHour = now.getHours();
+                const selectedHour = parseInt(selectedTime.split(':')[0]);
+                
+                if (selectedHour <= currentHour) {
+                    alert("현재 시간 이후의 시간을 선택해주세요.");
+                    preferredTime.value = '';
+                    privacyCheckbox.checked = false;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 상세설명 글자수 카운팅
+        function updateCharCount() {
+            const currentLength = textarea.value.length;
+            charCount.textContent = `${currentLength}/2000`;
+            
+            if (currentLength > 2000) {
+                textarea.value = textarea.value.substring(0, 2000);
+                charCount.textContent = '2000/2000';
+            }
+        }
+
+        // 이벤트 리스너
+        textarea.addEventListener('input', updateCharCount);
+        preferredDate.addEventListener('change', validateDateTime);
+        preferredTime.addEventListener('change', validateDateTime);
+
+        // 폼 제출 이벤트
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 날짜/시간 유효성 검사
+            if (!validateDateTime()) {
+                return;
+            }
+
+            // 전화번호 조합
+            try {
+                const phoneNumber1 = document.getElementById('phoneNumber1').value;
+                document.getElementById('phoneNumber').value = 
+                  `${phoneNumber1}-${phoneNumber2.value}-${phoneNumber3.value}`;
+
+                // 모든 검증 통과 시 폼 제출
+                this.submit();
+            } catch (error) {
+                console.error('전화번호 처리 중 오류:', error);
+                alert('전화번호 정보를 확인해주세요.');
+            }
+        });
+
+        // 초기화 버튼 이벤트
+        const resetBtn = document.querySelector('.reset-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                setTimeout(() => {
+                    form.reset();
+                    charCount.textContent = '0/2000';
+                    privacyCheckbox.checked = false;
+                }, 0);
+            });
+        }
+    });
+  </script>
 </body>
 </html>

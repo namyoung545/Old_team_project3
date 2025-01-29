@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VWorld Map</title>
+    <!-- headScripts.html 파일 삽입 -->
+    <!-- <div th:replace="sh_html/fragments/headScripts :: headScripts"></div> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript"
+        src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
+    <script type="module" th:src="@{/js/sh_js/sh_map.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/sh_css/sh_map.css}">
+</head>
+
+<body>
+    <main>
+        <div class="mainContainer">
+            <div class="vworldContainer">
+                <div id="vworldMap"></div>
+                <div id="mapData">
+                    <div class="dataBox"></div>
+                    <div class="dataBox"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
