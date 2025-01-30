@@ -6,20 +6,20 @@
 }
 
 body {
-    background-color: #f0f8ff;
+    background-color: #f9f9f9;
     margin: 0;
     padding: 0;
 }
 .memberModify_container {
-    max-width: 800px;
+    max-width: 500px;
     margin: 20px auto;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    padding: 20px;
+    padding: 40px;
 }
-h1, h2 {
-    color: #000080;
+h1, h4 {
+    color: #333333;
     text-align: center;
 }
 .menu_container {
@@ -38,9 +38,9 @@ h1, h2 {
     background-color: #000050;
 }
 .content_container {
-    padding: 20px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
+    /* padding: 0px; */
+    /* border: 1px solid #cccccc; */
+    /* border-radius: 5px; */
 }
 .form-group {
     margin-bottom: 15px;
@@ -48,7 +48,8 @@ h1, h2 {
 label {
     display: block;
     margin-bottom: 5px;
-    color: #000080;
+    color: #333333;
+    font-weight: bold;
 }
 input[type="text"],
 input[type="email"],
@@ -61,18 +62,22 @@ input[type="password"] {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #4169e1;
+    background-color: #343a40;
     color: #ffffff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 .btn:hover {
-    background-color: #1e90ff;
+    background-color: #ffc107;
 }
 .btn-danger {
     background-color: #dc3545;
 }
 .btn-danger:hover {
     background-color: #c82333;
+}
+
+.button_menu{
+    text-align: center;
 }
