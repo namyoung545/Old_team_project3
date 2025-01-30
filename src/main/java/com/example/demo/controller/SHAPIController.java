@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.dto.APIVWorldWFSDTO;
+import com.example.demo.entity.FireInfoSidoEntity;
 import com.example.demo.entity.FireStatistics;
 import com.example.demo.entity.SHDisasterMessageEntity;
 import com.example.demo.service.SHAPIService;
@@ -43,12 +44,12 @@ public class SHAPIController {
     SHFireInfoService shFireInfoService;
 
     @PostMapping("/fireInformation")
-    public String postFireInformation() {
+    public ResponseEntity<?> postFireInformation() {
         System.out.println("SHAPI - fireInformation");
-        String response = shFireInfoService.fetchFireInfoSidoData();
+        List<FireInfoSidoEntity> response = shFireInfoService.getFireInfoSido();
         System.out.println("SHAPI - fireInformation / response");
         System.out.println(response);
-        return "test";
+        return ResponseEntity.ok(response);
     }
     
 
