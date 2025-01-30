@@ -7,7 +7,7 @@ $(document).ready(() => {
     function loadFireInfoSido() {
         const $fireInfo = $(".fireInfo");
         console.log($fireInfo)
-        // $fireInfo.emtpy();
+        $fireInfo.empty();
 
         fetchFireInfoSido().then((message) => {
             console.log(message);
