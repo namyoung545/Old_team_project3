@@ -116,6 +116,10 @@ SELECT * FROM fire_types WHERE fire_type LIKE "%건축%";
 --     fire_region TO fire_regions,
 --     fire_ignition TO fire_ignitions;
 
+DESCRIBE fire_info_sido;
+SELECT * FROM fire_info_sido;
+-- DROP TABLE fire_info_sido;
+
 DESCRIBE disasters;
 SELECT * FROM disasters;
 -- DROP TABLE disasters; 
@@ -123,7 +127,7 @@ DESCRIBE fires;
 SELECT * FROM fires;
 SELECT * FROM fire_causes;
 
--- DROP TABLE fire_statistics;
+DROP TABLE fire_statistics;
 DESCRIBE fire_statistics;
 SELECT * FROM fire_statistics ORDER BY id DESC;
 SELECT * FROM fire_statistics WHERE year = "2023";
