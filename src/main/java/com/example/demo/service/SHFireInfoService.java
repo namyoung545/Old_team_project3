@@ -3,14 +3,20 @@ package com.example.demo.service;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.demo.entity.FireInfoSidoEntity;
 import com.example.demo.repository.FireInfoSidoRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -20,7 +26,9 @@ public class SHFireInfoService {
     private static final String FIRE_INFO_URL = "http://apis.data.go.kr/1661000/FireInformationService";
 
     private final FireInfoSidoRepository fireInfoSidoRepository;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    // Constructor
     public SHFireInfoService(FireInfoSidoRepository fireInfoSidoRepository) {
         if (Files.exists(Paths.get(".env"))) {
             Dotenv dotenv;
@@ -45,6 +53,7 @@ public class SHFireInfoService {
         this.fireInfoSidoRepository = fireInfoSidoRepository;
     }
 
+    // Get data from DB
     public List<FireInfoSidoEntity> getFireInfoSido() {
         System.out.println("FireInfoService - getFireInfo");
         LocalDate today = LocalDate.now();
@@ -53,21 +62,24 @@ public class SHFireInfoService {
         return response;
     }
 
+    // Fetch data from API
     public String fetchFireInfoSidoData() {
         if (FIRE_INFO_API_KEY == null || FIRE_INFO_API_KEY.isEmpty()) {
             return "FireInfoService - API Key is missing! Check ENF!";
         }
 
         LocalDate localDate = LocalDate.now();
-        String today = localDate.toString().replace("=", "");
+        String today = localDate.toString().replace("-", "");
 
-        String url = UriComponentsBuilder.fromUriString(FIRE_INFO_URL)
-                .queryParam("ServiceKey", FIRE_INFO_API_KEY)
+        String url = UriComponentsBuilder.fromUriString(FIRE_INFO_URL + "/getOcBysidoFireSmrzPcnd")
+                .queryParam("serviceKey", FIRE_INFO_API_KEY)
                 .queryParam("pageNo", 1)
                 .queryParam("numOfRows", 100)
                 .queryParam("resultType", "json")
                 .queryParam("ocrn_ymd", today)
                 .build().toUriString();
+
+        // System.out.println("FireInfo - url : " + url);
 
         WebClient webClient = WebClient.create();
         try {
@@ -81,6 +93,68 @@ public class SHFireInfoService {
             System.err.println("[ERROR] FireInfoSerbice - Webclient / Fail to fetch fire information data!");
             return "Failed to fetch fire information data!";
         }
+    }
+
+
+    // Update data every hour
+    @Scheduled(fixedRate = 1000 * 60 * 60)
+    public void updateFireInfoSidoData() {
+        String response = fetchFireInfoSidoData();
+        // System.out.println("FireInfoService - updateFireInfoSidoData - response : " +
+        // response);
+
+        try {
+            List<FireInfoSidoEntity> fireInfoList = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response);
+            // JsonNode itemsNode = jsonNode.get("response").get("body").get("items");
+            JsonNode itemsNode = jsonNode.path("response").path("body").path("items").path("item");
+
+            // System.out.println("FireInfoService - updateFireInfoSidoData - itemsNode : " + itemsNode);
+            if (itemsNode.isArray()) {
+                for (JsonNode item : itemsNode) {
+                    // System.out.println("FireInfoService - updateFireInfoSidoData - item : " + item);
+                    FireInfoSidoEntity entity = new FireInfoSidoEntity();
+                    entity.setSido_nm(item.get("sidoNm").asText());
+                    entity.setFire_rcpt_mnb(item.get("fireRcptMnb").asInt());
+                    entity.setStn_end_mnb(item.get("stnEndMnb").asInt());
+                    entity.setSlf_extsh_mnb(item.get("slfExtshMnb").asInt());
+                    entity.setFlsrp_prcs_mnb(item.get("flsrpPrcsMnb").asInt());
+                    entity.setFals_dclr_mnb(item.get("falsDclrMnb").asInt());
+                    entity.setOcrn_ymd(LocalDate.parse(item.get("ocrnYmd").asText(), formatter));
+
+                    fireInfoList.add(entity);
+                }
+
+                saveFireInfoSidoData(fireInfoList);
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] FireInfoService - updateFireInfoSidoData / Fail to parse JSON!");
+        }
+    }
+
+
+    // Save data to DB
+    private void saveFireInfoSidoData(List<FireInfoSidoEntity> fireInfoList) {
+        List<FireInfoSidoEntity> entitiesToSave = new ArrayList<>();
+
+        for (FireInfoSidoEntity entity : fireInfoList) {
+            FireInfoSidoEntity fireInfoSidoEntity = fireInfoSidoRepository
+                    .findBySidoNmAndOcrnYmd(entity.getSido_nm(), entity.getOcrn_ymd())
+                    .orElse(new FireInfoSidoEntity());
+
+            fireInfoSidoEntity.setSido_nm(entity.getSido_nm());
+            fireInfoSidoEntity.setFire_rcpt_mnb(entity.getFire_rcpt_mnb());
+            fireInfoSidoEntity.setStn_end_mnb(entity.getStn_end_mnb());
+            fireInfoSidoEntity.setSlf_extsh_mnb(entity.getSlf_extsh_mnb());
+            fireInfoSidoEntity.setFlsrp_prcs_mnb(entity.getFlsrp_prcs_mnb());
+            fireInfoSidoEntity.setFals_dclr_mnb(entity.getFals_dclr_mnb());
+            fireInfoSidoEntity.setOcrn_ymd(entity.getOcrn_ymd());
+
+            entitiesToSave.add(fireInfoSidoEntity);
+        }
+        fireInfoSidoRepository.saveAll(entitiesToSave);
+        System.out.println("FireInfoService - saveFireInfoSidoData - Data saved!");
     }
 
 }

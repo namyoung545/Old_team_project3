@@ -107,7 +107,7 @@ public class SHDisasterService {
     @Scheduled(fixedRate = 1800000)
     public void updateDisasterMessageData() {
         String response = getDisasterMessageData();
-        System.out.println("Response : " + response);
+        // System.out.println("Response : " + response);
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -128,7 +128,7 @@ public class SHDisasterService {
 
                     // System.out.println(apiResponse);
                     SHDisasterMessageEntity savedEntity = saveDisasterMessageDB(apiResponse);
-                    System.out.println("Saved Data : " + savedEntity);
+                    // System.out.println("Saved Data : " + savedEntity);
                 }
             }
         } catch (Exception e) {

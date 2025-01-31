@@ -17,24 +17,31 @@ public class FireInfoSidoEntity {
     @Column(nullable = false)
     private Integer id;
 
+    // 시도명
     @Column(nullable = false)
     private String sido_nm;
 
+    // 화재접수건수
     @Column(nullable = false)
     private Integer fire_rcpt_mnb;
 
+    // 상황종료건수
     @Column(nullable = false)
     private Integer stn_end_mnb;
 
+    // 자체진화건수
     @Column(nullable = false)
     private Integer slf_extsh_mnb;
 
+    // 오보처리건수
     @Column(nullable = false)
     private Integer flsrp_prcs_mnb;
 
+    // 허위신고건수
     @Column(nullable = false)
     private Integer fals_dclr_mnb;
 
+    // 발생일자
     @Column(nullable = false)
     private LocalDate ocrn_ymd;
 

@@ -1,5 +1,21 @@
 .fireInfoContainer {
     width: 100%;
     height: 100%;
-    background-color: red;
+    /* background-color: red; */
+}
+
+.fireInfoContainer .fireInfo{
+    width: 100%;
+    height: 100%;
+    /* background-color: blue; */
+    margin: 1rem;
+}
+
+.sidoData {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+    margin: 1rem;
 }
