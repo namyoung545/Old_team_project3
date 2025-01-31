@@ -27,16 +27,7 @@ h1, h4 {
     justify-content: space-around;
     margin-bottom: 20px;
 }
-.menu-item {
-    padding: 10px 20px;
-    background-color: #000080;
-    color: #ffffff;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.menu-item:hover {
-    background-color: #000050;
-}
+
 .content_container {
     /* padding: 0px; */
     /* border: 1px solid #cccccc; */
@@ -62,14 +53,14 @@ input[type="password"] {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #343a40;
+    background-color: var(--button-color);
     color: #ffffff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 .btn:hover {
-    background-color: #ffc107;
+    background-color: var(--button-hover-color);
 }
 .btn-danger {
     background-color: #dc3545;

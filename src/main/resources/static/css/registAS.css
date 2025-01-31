@@ -93,16 +93,16 @@ label {
 	cursor: pointer;
 	transition: background-color 0.3s ease;
 	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-	background-color: #343a40; /* 버튼 기본 배경색 */
+	background-color: var(--button-color);
 	color: #fff; /* 텍스트 색상 */
 }
 
 .registAS button:hover {
-	background-color: #DAB800; /* 호버 시 배경색 */
+	background-color: var(--button-hover-color);
 }
 
 .registAS button:active {
-	background-color: #FFD700; /* 클릭 시 배경색 */
+	background-color: var(--button-active-color);
 }
 
 .registAS table .phone {

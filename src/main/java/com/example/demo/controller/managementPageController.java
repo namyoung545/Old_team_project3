@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.asReceptionDTO;
-import com.example.demo.entity.dy_boardData;
+import com.example.demo.entity.boardData;
+import com.example.demo.entity.qnaboardData;
 import com.example.demo.service.asReceptionService;
-import com.example.demo.service.dy_boardService;
+import com.example.demo.service.boardService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/managementPage")
 public class managementPageController {
     @Autowired
-    private dy_boardService service;
+    private boardService service;
 
     @Autowired
     asReceptionService asReceptionService;
@@ -46,7 +48,7 @@ public class managementPageController {
         int pageSize = 10; // 페이지당 게시물 수
         int offset = (page - 1) * pageSize;
 
-        List<dy_boardData> boardList = service.getBoardList(pageSize, offset);
+        List<boardData> boardList = service.getBoardList(pageSize, offset);
         model.addAttribute("boardlist", boardList);
 
         int totalCount = service.getTotalCount();
@@ -57,22 +59,126 @@ public class managementPageController {
 		return "noticeBoard"; // jsp 파일 경로
 	}
 
+    // 게시글 상세보기 및 수정 페이지
+    @GetMapping({"/boardPost"})
+    public String boardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        service.updateVisitCount(bnum); // 조회수 증가
+        model.addAttribute("board", service.getBoardById(bnum));
+        model.addAttribute("page", page); // 페이지 정보 추가
+        return "boardPost"; // post.html 템플릿 반환
+    }
+
+    // 게시글 등록 페이지
+    @GetMapping("/boardRegister")
+    public String boardRegister() {
+        return "boardRegister"; // dy_register.html 템플릿 반환
+    }
+
+    // 게시글 등록 처리
+    @PostMapping("/boardRegister")
+    public String register(boardData boardData, RedirectAttributes rttr) {
+        service.register(boardData); // 엔티티 저장
+        rttr.addFlashAttribute("result", boardData.getBnum()); // 저장된 게시글 번호 전달
+        return "redirect:/managementPage/noticeBoard"; // 등록 후 목록 페이지로 리다이렉트
+    }
+    
+    // GET 요청: 수정 화면 제공
+    @GetMapping("/boardUpdate")
+    public String updateForm(@RequestParam("bnum") Long bnum, Model model) {
+        boardData boardData = service.getBoardById(bnum);
+        model.addAttribute("board", boardData);
+        return "boardUpdate"; // 수정 화면 템플릿 반환
+    }
+    // POST 요청: 수정 작업 처리
+    @PostMapping("/boardUpdate")
+    public String update(boardData boardData, RedirectAttributes rttr) {
+        if (service.update(boardData)) {
+            rttr.addFlashAttribute("result", "success");
+        } else {
+            rttr.addFlashAttribute("result", "fail");
+        }
+        return "redirect:/managementPage/boardPost?bnum=" + boardData.getBnum(); // 수정 후 상세보기로 리다이렉트
+    }
+
+    // 게시글 삭제 처리
+    @PostMapping("/boardDelete")
+    public String delete(@RequestParam("bnum") Long bnum, RedirectAttributes rttr) {
+        if (service.delete(bnum)) {
+            rttr.addFlashAttribute("result", "success");
+        } else {
+            rttr.addFlashAttribute("result", "fail");
+        }
+        return "redirect:/managementPage/noticeBoard";
+    }
+
     // QnA 게시판 페이지
 	@GetMapping("/qnaBoard")
     public String getQnaBoard(Model model, @RequestParam(defaultValue = "1") int page) {
         int pageSize = 10; // 페이지당 게시물 수
         int offset = (page - 1) * pageSize;
 
-        List<dy_boardData> boardList = service.getBoardList(pageSize, offset);
-        model.addAttribute("boardlist", boardList);
+        List<qnaboardData> qnaboardList = service.getqnaBoardList(pageSize, offset);
+        model.addAttribute("qnaboardlist", qnaboardList);
 
-        int totalCount = service.getTotalCount();
+        int totalCount = service.getqnaTotalCount();
         int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
 		return "qnaBoard"; // jsp 파일 경로
 	}
+
+    // qna 게시글 상세보기 및 수정 페이지
+    @GetMapping({"/qnaboardPost"})
+    public String qnaboardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        service.updateqnaVisitCount(bnum); // 조회수 증가
+        model.addAttribute("board", service.getqnaBoardById(bnum));
+        model.addAttribute("page", page); // 페이지 정보 추가
+        return "qnaboardPost"; // post.html 템플릿 반환
+    }
+
+    // qna 게시글 등록 페이지
+    @GetMapping("/qnaboardRegister")
+    public String qnaboardRegister() {
+        return "qnaboardRegister"; // dy_register.html 템플릿 반환
+    }
+
+    // qna 게시글 등록 처리
+    @PostMapping("/qnaboardRegister")
+    public String qnaregister(qnaboardData qnaboardData, RedirectAttributes rttr) {
+        service.registerqna(qnaboardData); // 엔티티 저장
+        rttr.addFlashAttribute("result", qnaboardData.getBnum()); // 저장된 게시글 번호 전달
+        return "redirect:/managementPage/qnaBoard"; // 등록 후 목록 페이지로 리다이렉트
+    }
+    
+    // GET 요청: qna 수정 화면 제공
+    @GetMapping("/qnaboardUpdate")
+    public String updateqnaForm(@RequestParam("bnum") Long bnum, Model model) {
+        qnaboardData qnaboardData = service.getqnaBoardById(bnum);
+        model.addAttribute("board", qnaboardData);
+        return "qnaboardUpdate"; // 수정 화면 템플릿 반환
+    }
+    // POST 요청: qna 수정 작업 처리
+    @PostMapping("/qnaboardUpdate")
+    public String updateqna(qnaboardData qnaboardData, RedirectAttributes rttr) {
+        if (service.updateqna(qnaboardData)) {
+            rttr.addFlashAttribute("result", "success");
+        } else {
+            rttr.addFlashAttribute("result", "fail");
+        }
+        return "redirect:/managementPage/qnaboardPost?bnum=" + qnaboardData.getBnum(); // 수정 후 상세보기로 리다이렉트
+    }
+
+    // qna 게시글 삭제 처리
+    @PostMapping("/qnaboardDelete")
+    public String deleteqna(@RequestParam("bnum") Long bnum, RedirectAttributes rttr) {
+        if (service.deleteqna(bnum)) {
+            rttr.addFlashAttribute("result", "success");
+        } else {
+            rttr.addFlashAttribute("result", "fail");
+        }
+        return "redirect:/managementPage/qnaBoard";
+    }
 
     @GetMapping("/fullCalendar")
     public String loadFullCalendarPage(Model model) {
