@@ -19,6 +19,7 @@
 
     <!-- 메인 컨텐츠 -->
     <div class="main">
+        <div th:insert="sidebar.html :: sidebar"></div>
         <div class="signup-container">
             <h2>회원가입</h2>
             <form class="signup-form" onsubmit="return formCheck()" method="post" action="/signup/register">

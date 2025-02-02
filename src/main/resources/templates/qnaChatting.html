@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>채팅방</title>
+
+    <link rel="stylesheet" href="/resources/css/main-style.css">
+    <link rel="stylesheet" href="/resources/css/board/boardDetail-style.css">
+    <link rel="stylesheet" href="/css/qnaChatting.css" />
+    <link rel="stylesheet" href="/css/chatting-style.css" />
+
+    <script src="https://kit.fontawesome.com/a2e8ca0ae3.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="qnaChat_container">
+        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
+        <div th:insert="sidebar.html :: sidebar"></div>
+        <main id="qnaChat_mp_container">
+            <div id="qnaChat_mp_sub_container">
+                <button id="addTarget">추가</button>
+
+                <div id="addTargetPopupLayer" class="popup-layer-close">
+                    <span id="closeBtn">&times;</span>
+
+                    <div class="target-input-area">
+                        <input type="search" id="targetInput" placeholder="닉네임 또는 이메일을 입력하세요" autocomplete="off">
+                    </div>
+
+                    <ul id="resultArea">
+                        <!-- 여기에 동적으로 사용자 목록이 표시됩니다 -->
+                    </ul>
+                </div>
+
+                <div class="chatting-area">
+                    <ul class="chatting-list">
+                        <th:block th:each="room : ${roomList}">
+                            <li class="chatting-item" th:attr="data-chat-no=${room.chattingNo}"
+                                th:attr="data-target-no=${room.targetNo}">
+                                <div class="item-header">
+                                    <img class="list-profile"
+                                        th:src="${room.targetProfile != null ? room.targetProfile : '/resources/images/user.png'}" />
+                                </div>
+                                <div class="item-body">
+                                    <p>
+                                        <span class="target-name" th:text="${room.targetNickName}">유저 이름</span>
+                                        <span class="recent-send-time" th:text="${room.sendTime}">시간</span>
+                                    </p>
+                                    <div>
+                                        <p class="recent-message" th:text="${room.lastMessage}">메시지 내용</p>
+
+                                        <span th:if="${room.notReadCount > 0}" class="not-read-count"
+                                            th:text="${room.notReadCount}">읽지 않은 메시지 수</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </th:block>
+                    </ul>
+
+                    <div class="chatting-content">
+                        <ul class="display-chatting">
+                            <!-- 채팅 내용 -->
+                        </ul>
+
+                        <div class="input-area">
+                            <textarea id="inputChatting" rows="3"></textarea>
+                            <button id="send">보내기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script>
+        // 로그인한 회원 번호
+        const loginMemberNo = /*[[${loginMember.memberNo}]]*/'';
+    </script>
+
+    <script src="/resources/js/chatting/chatting.js"></script>
+</body>
+
+</html>

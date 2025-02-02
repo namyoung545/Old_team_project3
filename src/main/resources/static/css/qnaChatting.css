@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#qnaChat_container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#qnaChat_mp_container {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+    justify-content: center;
+}
+
+#qnaChat_mp_sub_container{
+    flex: 1;
+    /* display: flex; */
+    padding: 20px;
+    /* text-align: center; */
+    width: 90%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* 메시지 출력 영역 */
+#messages {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    max-height: 600px;
+    height: 600px;
+}
+
+/* 메시지 입력란과 버튼 */
+#messageInput {
+    width: calc(100% - 110px);
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* 사용자 메시지 스타일 */
+.message.user {
+    text-align: right;
+    background-color: #d4f7a8;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+/* 상대방 메시지 스타일 */
+.message.other {
+    text-align: left;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+}

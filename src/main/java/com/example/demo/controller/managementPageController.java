@@ -31,7 +31,10 @@ public class managementPageController {
 
     @Autowired
     asReceptionService asReceptionService;
-    
+
+    @Autowired
+    private RoomService roomService; // 채팅방 정보를 처리하는 서비스
+
     @GetMapping("")
     public String getindex() {
         return "managementPage";
@@ -39,11 +42,11 @@ public class managementPageController {
 
     @GetMapping("/boardIndex")
     public String getBoardIndex() {
-		return "BoardIndex";
-	}
+        return "BoardIndex";
+    }
 
     // 공지사항 게시판 페이지
-	@GetMapping("/noticeBoard")
+    @GetMapping("/noticeBoard")
     public String getNoticeBoard(Model model, @RequestParam(defaultValue = "1") int page) {
         int pageSize = 10; // 페이지당 게시물 수
         int offset = (page - 1) * pageSize;
@@ -56,12 +59,13 @@ public class managementPageController {
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-		return "noticeBoard"; // jsp 파일 경로
-	}
+        return "noticeBoard"; // jsp 파일 경로
+    }
 
     // 게시글 상세보기 및 수정 페이지
-    @GetMapping({"/boardPost"})
-    public String boardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    @GetMapping({ "/boardPost" })
+    public String boardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum,
+            @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         service.updateVisitCount(bnum); // 조회수 증가
         model.addAttribute("board", service.getBoardById(bnum));
         model.addAttribute("page", page); // 페이지 정보 추가
@@ -81,7 +85,7 @@ public class managementPageController {
         rttr.addFlashAttribute("result", boardData.getBnum()); // 저장된 게시글 번호 전달
         return "redirect:/managementPage/noticeBoard"; // 등록 후 목록 페이지로 리다이렉트
     }
-    
+
     // GET 요청: 수정 화면 제공
     @GetMapping("/boardUpdate")
     public String updateForm(@RequestParam("bnum") Long bnum, Model model) {
@@ -89,6 +93,7 @@ public class managementPageController {
         model.addAttribute("board", boardData);
         return "boardUpdate"; // 수정 화면 템플릿 반환
     }
+
     // POST 요청: 수정 작업 처리
     @PostMapping("/boardUpdate")
     public String update(boardData boardData, RedirectAttributes rttr) {
@@ -112,7 +117,7 @@ public class managementPageController {
     }
 
     // QnA 게시판 페이지
-	@GetMapping("/qnaBoard")
+    @GetMapping("/qnaBoard")
     public String getQnaBoard(Model model, @RequestParam(defaultValue = "1") int page) {
         int pageSize = 10; // 페이지당 게시물 수
         int offset = (page - 1) * pageSize;
@@ -125,12 +130,13 @@ public class managementPageController {
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-		return "qnaBoard"; // jsp 파일 경로
-	}
+        return "qnaBoard"; // jsp 파일 경로
+    }
 
     // qna 게시글 상세보기 및 수정 페이지
-    @GetMapping({"/qnaboardPost"})
-    public String qnaboardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    @GetMapping({ "/qnaboardPost" })
+    public String qnaboardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum,
+            @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         service.updateqnaVisitCount(bnum); // 조회수 증가
         model.addAttribute("board", service.getqnaBoardById(bnum));
         model.addAttribute("page", page); // 페이지 정보 추가
@@ -150,7 +156,7 @@ public class managementPageController {
         rttr.addFlashAttribute("result", qnaboardData.getBnum()); // 저장된 게시글 번호 전달
         return "redirect:/managementPage/qnaBoard"; // 등록 후 목록 페이지로 리다이렉트
     }
-    
+
     // GET 요청: qna 수정 화면 제공
     @GetMapping("/qnaboardUpdate")
     public String updateqnaForm(@RequestParam("bnum") Long bnum, Model model) {
@@ -158,6 +164,7 @@ public class managementPageController {
         model.addAttribute("board", qnaboardData);
         return "qnaboardUpdate"; // 수정 화면 템플릿 반환
     }
+
     // POST 요청: qna 수정 작업 처리
     @PostMapping("/qnaboardUpdate")
     public String updateqna(qnaboardData qnaboardData, RedirectAttributes rttr) {
@@ -178,6 +185,24 @@ public class managementPageController {
             rttr.addFlashAttribute("result", "fail");
         }
         return "redirect:/managementPage/qnaBoard";
+    }
+
+    // 실시간 채팅 상담 기능
+    @GetMapping("/qnaChatting")
+    public String getQnaChat(Model model) {
+        // 채팅방 목록 가져오기
+        List<Room> roomList = roomService.getRoomList();
+
+        // 로그인한 회원 정보 가져오기 (예시)
+        Member loginMember = memberService.getLoggedInMember();
+
+        // Model에 데이터를 담아서 전달
+        model.addAttribute("roomList", roomList);
+        model.addAttribute("loginMember", loginMember);
+
+        // Thymeleaf에서 사용할 HTML 파일을 반환
+
+        return "qnaChatting";
     }
 
     @GetMapping("/fullCalendar")
@@ -239,12 +264,12 @@ public class managementPageController {
     }
 
     // as 처리현황 페이지
-	@GetMapping("/ASprocessStatus")
+    @GetMapping("/ASprocessStatus")
     public String getASprocessStatus() {
-	// public String getProcessStatus(Model model) {
-		// List<ReservationDTO> statusList = scheduleMapper.getStatusList();
-		// model.addAttribute("statusList", statusList);
-		return "ASprocessStatusBoard"; // jsp 파일 경로
-	}
+        // public String getProcessStatus(Model model) {
+        // List<ReservationDTO> statusList = scheduleMapper.getStatusList();
+        // model.addAttribute("statusList", statusList);
+        return "ASprocessStatusBoard"; // jsp 파일 경로
+    }
 
 }

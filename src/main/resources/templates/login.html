@@ -13,6 +13,7 @@
 
     <!-- 메인 컨텐츠 -->
     <div class="main">
+        <div th:insert="sidebar.html :: sidebar"></div>
         <div class="login-container">
             <h2>로그인</h2>
             <form class="login-form" action="/login/processing" method="POST">
