@@ -1,5 +1,6 @@
 $(document).ready(() => {
     function initialize() {
+
         loadVWorldMap();
     }
 
@@ -40,7 +41,7 @@ $(document).ready(() => {
         let url = `http://localhost:8080/sh_api/vworldWFS?TYPENAME=${dataType}`;
 
         // GMLParser 생성
-        var parser = new vw.GMLParser();
+        let parser = new vw.GMLParser();
 
         // 객체 고유 ID 설정
         // Feature 객체에도 아이디가 부여됩니다.
@@ -50,10 +51,10 @@ $(document).ready(() => {
         // data 읽기. parser.read( 데이터타입, 데이터경로, 데이터좌표계)
         // 전달되는 좌표계를 의미하며, 이 좌표를 웹지엘에서는 EPSG:4326으로 변환하여 사용합니다.
         // 데이터타입. vw.GMLParserType { GEOJSON, GML1, GML2, GML2 } 
-        var featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
+        let featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
 
         // 옵션 설정
-        var options = {
+        let options = {
             // 지형 따라 출력시 true, 지면에서 위로 출력시 false
             isTerrain: false,
             // 선의 경우 크기지정.
@@ -91,7 +92,8 @@ $(document).ready(() => {
             featureInfos.objCollection.collectionProp.forEach(function (item) {
                 // result += i.properties.full_nm + " "
                 // $("#features").html(result);
-                console.log("Feature Name:", item.properties.ctp_kor_nm);
+                // console.log("Feature Name:", item.properties.ctp_kor_nm);
+                console.log("Feature Properties:", item);
             })
         });
 
@@ -103,12 +105,29 @@ $(document).ready(() => {
             // console.log(featureInfo)
             if (featureInfo) {
                 let feature = featureInfos.getById(featureInfo.groupId);
-                console.log("Clicked Feature Properties:", feature.getProperties());
+                console.log("You clicked on: " + feature.getProperties().ctp_kor_nm);
+                console.log("Clicked Feature:", feature);
 
                 // 사용자 지정 코드 실행
-                console.log("You clicked on: " + feature.getProperties().ctp_kor_nm);
-
                 // 피처 숨기기 (필요 시)
+                // 옵션 설정
+                let hoverOptions = {
+                    // 지형 따라 출력시 true, 지면에서 위로 출력시 false
+                    isTerrain: false,
+                    // 선의 경우 크기지정.
+                    width: 50,
+                    // RGBA A값만 255이하로 주면 투명 또는 withAlpha(1.0~0.1)로 설정.
+                    material: new vw.Color(255, 0, 0, 255).ws3dColor.withAlpha(0.2),
+                    // 아웃라인지정시 true, 아웃라인 미지정 false
+                    outline: true,
+                    // 아웃라인 너비. 
+                    outlineWidth: 1,
+                    // 아웃라인 색상. 
+                    outlineColor: vw.Color.YELLOW.ws3dColor,
+                    // 높이 지정값 meter.
+                    height: 1600.0
+                };
+                feature.getStyle();
                 // feature.hide();
                 loadFireInfoSido(feature.getProperties().ctp_kor_nm);
             }
@@ -125,44 +144,142 @@ $(document).ready(() => {
     // 화재 현황 정보 조회
     function loadFireInfoSido(targetName) {
         const $fireInfo = $(".fireInfo");
-        console.log($fireInfo)
-        $fireInfo.empty();
+        const $fireCasualty = $(".fireCasualty");
+        const $fireDamage = $(".fireDamage");
 
-        fetchFireInfoSido().then((data) => {
-            if (data && Array.isArray(data) && data.length > 0) {
-                data.forEach((data) => {
-                    if (targetName && targetName == data.sido_nm) {
-                        const dataElement = `
+        $fireInfo.empty();
+        $fireCasualty.empty();
+        $fireDamage.empty();
+
+        if (targetName == "강원특별자치도") {
+            targetName = "강원도";
+        } else if (targetName == "전북특별자치도") {
+            targetName = "전라북도";
+        }
+
+        Promise.all([
+            fetchFireInfoSido(),
+            fetchFireInfoSidoCasualty(),
+            fetchFireInfoSidoDamage()])
+            .then(([infoData, casualtyData, damageData]) => {
+
+                if (infoData && Array.isArray(infoData) && infoData.length > 0) {
+                    infoData.forEach((data) => {
+                        if (data.sido_nm == targetName) {
+                            const dataElement = `
                             <div class="sidoData">
-                                <div>${data.sido_nm || "정보 없음"} ${data.ocrn_ymd || "정보 없음"}</div>
-                                <div>화재접수 : ${data.fire_rcpt_mnb || "0"}</div>
-                                <div>상황종료 : ${data.stn_end_mnb || "0"}</div>
-                                <div>자체진화 : ${data.slf_extsh_mnb || "0"}</div>
-                                <div>오보처리 : ${data.flsrp_prcs_mnb || "0"}</div>
-                                <div>허위신고 : ${data.fals_dclr_mnb || "0"}</div>
+                                <div class="sidoTitle">화재 현황 (${data.ocrn_ymd || "정보 없음"})</div>
+                                <div class="sidoName">${data.sido_nm || "정보 없음"}</div>
+                                <div>화재접수 : ${data.fire_rcpt_mnb || "0"} 건</div>
+                                <div>상황종료 : ${data.stn_end_mnb || "0"} 건</div>
+                                <div>자체진화 : ${data.slf_extsh_mnb || "0"} 건</div>
+                                <div>오보처리 : ${data.flsrp_prcs_mnb || "0"} 건</div>
+                                <div>허위신고 : ${data.fals_dclr_mnb || "0"} 건</div>
                             </div>
                             `;
-                        $fireInfo.append(dataElement);
-                    }
-                });
-            }
-        }).catch((error) => {
-            console.error("[ERROR] loadFireInfoSido / Faile dto load fire information", error);
-            $fireInfo.append("<p>정보를 불러오는데 실패했습니다.</P>");
-        });
+                            $fireInfo.append(dataElement);
+                        }
+                    });
+                }
 
+                if (casualtyData && Array.isArray(casualtyData) && casualtyData.length > 0) {
+                    const groupedCasualty = groupBySido(casualtyData, ["vctmPercnt", "injrdprPercnt", "lifeDmgPercnt", "ocrnMnb"]);
+
+                    let today = new Date();
+                    let weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7).toLocaleDateString();
+                    let weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1).toLocaleDateString();
+                    for (const sido in groupedCasualty) {
+                        if (sido == targetName) {
+                            const data = groupedCasualty[sido];
+                            const dataElement = `
+                            <div class="sidoData">
+                                <div class="sidoTitle">주간 피해 현황 (${weekStart} ~ ${weekEnd})</div>
+                                <div class="sidoName">${sido || "정보 없음"}</div>
+                                <div>화재건수 : ${data.ocrnMnb || "0"} 건</div>
+                                <div>사망자 : ${data.vctmPercnt || "0"} 명</div>
+                                <div>부상자 : ${data.injrdprPercnt || "0"} 명</div>
+                                <div>인명피해 : ${data.lifeDmgPercnt || "0"} 명</div>
+                            </div>
+                            `;
+                            $fireCasualty.append(dataElement);
+                        }
+                    }
+                }
+
+                if (damageData && Array.isArray(damageData) && damageData.length > 0) {
+                    const groupedDamage = groupBySido(damageData, ["prptDmgSbttAmt", "ocrnMnb"]);
+                    for (const sido in groupedDamage) {
+                        if (sido == targetName) {
+                            const data = groupedDamage[sido];
+                            const propertyDamage = parseInt(data.prptDmgSbttAmt + "000").toLocaleString() || "0";
+                            const dataElement = `
+                            <div class="sidoData">
+                                <div>재산피해 : ${propertyDamage} 원</div>
+                            </div>
+                            `;
+                            $fireDamage.append(dataElement);
+                        }
+                    }
+                }
+
+            }).catch((error) => {
+                console.error("[ERROR] loadFireInfoSido / Faile dto load fire information", error);
+                $fireInfo.append("<p>화재정보를 불러오는데 실패했습니다.</P>");
+                $fireCasualty.append("<p>인명피해 정보를 불러오는데 실패했습니다.</P>");
+                $fireDamage.append("<p>재산피해 정보를 불러오는데 실패했습니다.</P>");
+            }).finally(() => {
+                // console.log("[FINALLY] loadFireInfoSido / Fire information loaded successfully.");
+                if ($fireInfo.children().length == 0) {
+                    $fireInfo.append(`
+                            <div class="sidoData">
+                                <div class="sidoTitle">화재 현황</div>
+                                <div class="sidoName">${targetName || "정보 없음"}</div>
+                                <p>해당 지역의 화재정보가 없습니다.</p>
+                            </div>
+                            `);
+                }
+                if ($fireCasualty.children().length == 0) {
+                    $fireCasualty.append(`
+                            <div class="sidoData">
+                                <div class="sidoTitle">화재 현황</div>
+                                <div class="sidoName">${targetName || "정보 없음"}</div>
+                                <p>해당 지역의 인명피해 정보가 없습니다.</p>
+                            </div>
+                            `);
+                }
+                if ($fireDamage.children().length == 0) {
+                    $fireDamage.append("<p>해당 지역의 재산피해 정보가 없습니다.</P>");
+                }
+            });
+
+    }
+    // 데이터를 sidoNm 기준으로 그룹화하고 필드값을 합산하는 함수
+    function groupBySido(data, fields) {
+        return data.reduce((acc, item) => {
+            const sido = item.sidoNm || item.sido_nm || "알 수 없음";
+            if (!acc[sido]) {
+                acc[sido] = fields.reduce((obj, field) => {
+                    obj[field] = 0;
+                    return obj;
+                }, {});
+            }
+            fields.forEach(field => {
+                acc[sido][field] += item[field] || 0;
+            });
+            return acc;
+        }, {});
     }
 
     function fetchFireInfoSido() {
         return new Promise((resolve, reject) => {
             try {
                 $.ajax({
-                    url: '/sh_api/fireInformation',
+                    url: '/sh_api/fireInfo',
                     type: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
                     success: (data) => {
-                        console.log(data);
+                        // console.log(data);
                         resolve(data);
                     },
                     error: (error) => {
@@ -172,6 +289,54 @@ $(document).ready(() => {
                 })
             } catch (error) {
                 console.error("[ERROR] fetchFireInfoSido / Try Catch", error);
+                reject(error);
+            }
+        });
+    }
+
+    function fetchFireInfoSidoCasualty() {
+        return new Promise((resolve, reject) => {
+            try {
+                $.ajax({
+                    url: '/sh_api/fireInfoCasualty',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: (data) => {
+                        // console.log(data);
+                        resolve(data);
+                    },
+                    error: (error) => {
+                        console.error("[ERROR] fetchFireInfoSidoCasualty / AJAX", error);
+                        reject(error);
+                    }
+                })
+            } catch (error) {
+                console.error("[ERROR] fetchFireInfoSidoCasualty / Try Catch", error);
+                reject(error);
+            }
+        });
+    }
+
+    function fetchFireInfoSidoDamage() {
+        return new Promise((resolve, reject) => {
+            try {
+                $.ajax({
+                    url: '/sh_api/fireInfoDamage',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: (data) => {
+                        // console.log(data);
+                        resolve(data);
+                    },
+                    error: (error) => {
+                        console.error("[ERROR] fetchFireInfoSidoDamage / AJAX", error);
+                        reject(error);
+                    }
+                })
+            } catch (error) {
+                console.error("[ERROR] fetchFireInfoSidoDamage / Try Catch", error);
                 reject(error);
             }
         });
