@@ -12,7 +12,7 @@ public class SHAPythonController {
     @Autowired
     private SHPythonService pythonService;
 
-    @GetMapping("/sh_api")
+    @GetMapping("/sh_python")
     public String getPrediction(Model model) {
         String result = pythonService.executePythonScript();
         model.addAttribute("result", result);

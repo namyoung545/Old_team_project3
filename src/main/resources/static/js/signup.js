@@ -1,11 +1,11 @@
         // DOM 요소들을 저장하는 객체
         let elements = {    
-            id: document.getElementById("user_id"),
-            pw: document.getElementById("user_pw"),
+            id: document.getElementById("userId"),
+            pw: document.getElementById("userPw"),
             pwCheck: document.getElementById("pwCheck"),
             email: document.getElementById("email"),
             name: document.getElementById("name"),
-            tel: document.getElementById("phone_number"),
+            tel: document.getElementById("phoneNumber"),
             address: document.getElementById("address")
         }
 
@@ -73,13 +73,13 @@
         // 아이디 중복 확인 함수
         function fn_idOverlap() {
             $.ajax({
-                url: "/join/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
+                url: "/signup/idOverlap",    // 실제 중복 확인 엔드포인트로 수정
                 type: "POST",
                 dataType: "json",
-                data: { "user_id": $("#user_id").val() },  // 파라미터 이름 확인
+                data: { "userId": $("#userId").val() },  // 파라미터 이름 확인
                 success: function(data) {
                     console.log(data);
-                    let userId = $("#user_id").val().trim();
+                    let userId = $("#userId").val().trim();
                     if(userId === "") {
                         alert("아이디를 입력하세요.");
                     } else if(data === 0) { // 사용 가능
@@ -119,7 +119,7 @@
         // 추가적인 유효성 검사 및 이벤트 핸들러 (선택 사항)
         $(document).ready(function(){
             // 아이디 입력 시 중복 확인 상태 초기화
-            $("#user_id").on('input', function(){
+            $("#userId").on('input', function(){
                 $("#idOverlap").attr("data-overlap", "N");
                 $("#idMsg").text("");
             });

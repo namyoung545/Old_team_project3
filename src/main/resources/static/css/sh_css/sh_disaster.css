@@ -1,0 +1,14 @@
+main .mainContainer {
+    width: 100vw;
+    height: 100vh;
+}
+
+.disasterContainer {
+    width: 100%;
+    height: 100%;
+}
+
+.disasterMessage {
+    font-size: 0.9rem;
+    font-weight: 600;
+}

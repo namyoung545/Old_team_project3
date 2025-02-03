@@ -8,7 +8,6 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    font-family: Arial, sans-serif;
     background-color: #fdfdfe;
     color: #333333;
     overflow: hidden; /* 전체 컨테이너는 스크롤을 막음 */
@@ -24,4 +23,28 @@
     justify-content: center;  /* 가로로 가운데 정렬 */
     align-items: center;      /* 세로로 가운데 정렬 */
     /* height: 100vh;            화면 전체 높이를 사용 */
+}
+
+#mp_index_container{
+    flex:1;
+    align-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 30px;
+    height: 100%;
+    padding: 20px 160px;
+}
+
+.mp_homeMenu{
+    /* display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 20px;
+    height: 100%; */
+}
+
+a, a:link, a:hover, a:visited {
+	text-decoration: none;
+	/* color: black; */
 }

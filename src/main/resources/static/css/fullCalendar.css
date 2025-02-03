@@ -1,49 +1,63 @@
-@charset "UTF-8";
-
-#fullCalendar_container{
-	display: flex;
-	flex-direction: column; /* 세로 방향 정렬 */
-	justify-content: center;
-    align-items: center;
-	background-color: #fff;
-	max-width: 1000px;
-	width:100%;
-	padding:40px 20px;
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
-#fullCalendar_subContainer{
+
+#fullCalendar_sub_border_container {
+	display: flex;
+	flex-direction: column;
+	/* 세로 방향 정렬 */
+	justify-content: center;
+	align-items: center;
+	background-color: #fff;
+	width: 100%;
+	padding: 40px 20px;
+}
+
+#fullCalendar_sub_Container {
 	display: flex;
 	background-color: #fff;
 	max-width: 1000px;
-	width:100%;
+	width: 100%;
 	border-radius: 12px;
-	flex-direction: column; /* 세로 방향 정렬 */
+	flex-direction: column;
+	/* 세로 방향 정렬 */
 	justify-content: center;
-    align-items: center;
-	padding:20px;
+	align-items: center;
+	padding: 20px;
 	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 	/* margin: 20px; */
 }
-#fullCalendar{
-	width:100%;
-	height:80vh;
+
+#fullCalendar {
+	width: 100%;
+	height: 80vh;
 }
 
 /* 스케줄 달력 컨테이너 스타일 */
 .scheduleCalendar {
-	background-color: #fff; /* 배경색을 흰색으로 설정 */
+	background-color: #fff;
+	/* 배경색을 흰색으로 설정 */
 	padding: 40px 30px;
-	border-radius: 12px; /* 둥근 모서리 */
-	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+	border-radius: 12px;
+	/* 둥근 모서리 */
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+	/* 부드러운 그림자 */
 	text-align: center;
-	max-width: 1000px; /* 최대 너비 */
-	width: 100%; /* 100% 너비를 사용하되 최대 너비 */
-	margin: 0 auto; /* 좌우 마진을 자동으로 설정 */
+	max-width: 1000px;
+	/* 최대 너비 */
+	width: 100%;
+	/* 100% 너비를 사용하되 최대 너비 */
+	margin: 0 auto;
+	/* 좌우 마진을 자동으로 설정 */
 }
 
 /* 헤더 스타일 */
 h1 {
 	font-size: 36px;
-	color: #333; /* 어두운 색 텍스트 */
+	color: #333;
+	/* 어두운 색 텍스트 */
 	margin-bottom: 20px;
 	font-weight: 600;
 }
@@ -51,13 +65,15 @@ h1 {
 /* 구분선 */
 hr {
 	border: 0;
-	border-top: 2px solid #ddd; /* 연한 회색 구분선 */
+	border-top: 2px solid #ddd;
+	/* 연한 회색 구분선 */
 	margin: 20px 0;
 }
 
 /* Full Calendar */
 #calendar {
-	margin-bottom: 30px; /* 달력과 버튼 간의 간격 */
+	margin-bottom: 30px;
+	/* 달력과 버튼 간의 간격 */
 }
 
 /* 달력 데이터 박스 */
@@ -67,8 +83,10 @@ hr {
 
 /* 접수 버튼 스타일 */
 .calendar_submit {
-	background-color: #f68e3e; /* 주황색 포인트 색 */
-	color: #fff; /* 흰색 텍스트 */
+	background-color: #f68e3e;
+	/* 주황색 포인트 색 */
+	color: #fff;
+	/* 흰색 텍스트 */
 	font-size: 18px;
 	padding: 12px 30px;
 	border: none;
@@ -79,7 +97,8 @@ hr {
 
 /* 접수 버튼 hover 효과 */
 .calendar_submit:hover {
-	background-color: #e77c2a; /* hover 시 다소 어두운 주황색 */
+	background-color: #e77c2a;
+	/* hover 시 다소 어두운 주황색 */
 }
 
 .eventDetails {
@@ -101,8 +120,20 @@ hr {
 	cursor: pointer;
 	transition: background-color 0.3s ease;
 	box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.3);
-	background-color: #f68e3e; /* 버튼 기본 배경색 */
-	color: #fff; /* 텍스트 색상 */
+	background-color: #f68e3e;
+	/* 버튼 기본 배경색 */
+	color: #fff;
+	/* 텍스트 색상 */
+}
+
+.fc-daygrid-day .fc-daygrid-day-number {
+	/*일요일, 토요일 제외 */
+	color: black;
+}
+
+.fc-col-header-cell-cushion {
+	/*일요일, 토요일 제외 */
+	color: black;
 }
 
 .fc-day-sun .fc-col-header-cell-cushion {
@@ -113,9 +144,6 @@ hr {
 	color: blue !important;
 }
 
-/* 	    	.fc-daygrid-day .fc-daygrid-day-number {	// 일요일, 토요일 제외
-	    		color: black;
-	    	} */
 .fc-daygrid-day.fc-day-sun .fc-daygrid-day-number {
 	color: red;
 }
@@ -147,26 +175,30 @@ hr {
 }
 
 /* 반응형 디자인 */
-@media ( max-width : 768px) {
+@media (max-width : 768px) {
 	.scheduleCalendar {
 		padding: 20px;
 	}
+
 	h1 {
 		font-size: 28px;
 	}
+
 	.calendar_submit {
 		font-size: 16px;
 		padding: 10px 25px;
 	}
 }
 
-@media ( max-width : 480px) {
+@media (max-width : 480px) {
 	.scheduleCalendar {
 		padding: 15px;
 	}
+
 	h1 {
 		font-size: 24px;
 	}
+
 	.calendar_submit {
 		font-size: 14px;
 		padding: 8px 20px;
