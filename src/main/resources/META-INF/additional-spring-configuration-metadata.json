@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "spring.ai.ollama.connection.keep-alive",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.ollama.connection.keep-alive'"
+  },
+  {
+    "name": "spring.ai.ollama.connection.max-idle-time",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.ollama.connection.max-idle-time'"
+  },
+  {
+    "name": "spring.ai.ollama.max-connections",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.ollama.max-connections'"
+  },
+  {
+    "name": "spring.ai.ollama.timeout",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.ollama.timeout'"
+  }
+]}
