@@ -31,7 +31,7 @@ public class SHController {
     }
 
     @GetMapping("/sh_disaster")
-    public String getMethodName(Model model) {
+    public String getSHDisaster(Model model) {
         return "/sh_html/sh_disaster";
     }
     

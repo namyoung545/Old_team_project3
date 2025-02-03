@@ -27,7 +27,8 @@ $(document).ready(() => {
                 map.getLayerElement('poi_bound').hide();
                 map.getLayerElement('hybrid_bound').hide();
                 map.getLayerElement('facility_build').hide();
-                loadGeoJsonLayer('lt_c_adsido_info');
+                loadGeoJsonLayer('lt_c_adsido_info', map);
+
             }
         } catch (error) {
             console.error("[ERROR] loadVWorldMap : ", error);
@@ -37,7 +38,7 @@ $(document).ready(() => {
 
     }
 
-    function loadGeoJsonLayer(dataType) {
+    function loadGeoJsonLayer(dataType, map) {
         let url = `http://localhost:8080/sh_api/vworldWFS?TYPENAME=${dataType}`;
 
         // GMLParser 생성
@@ -127,7 +128,12 @@ $(document).ready(() => {
                     // 높이 지정값 meter.
                     height: 1600.0
                 };
-                feature.getStyle();
+                console.log(map);
+                console.log(map._layers);   // 지도에 추가된 레이어 정보 확인
+                console.log(map.overlays);  // 추가된 오버레이 객체 확인
+                console.log(map._wsmap);    // 내부 WebGL 관련 요소 확인
+
+                // feature.getStyle();
                 // feature.hide();
                 loadFireInfoSido(feature.getProperties().ctp_kor_nm);
             }
@@ -250,6 +256,10 @@ $(document).ready(() => {
                 if ($fireDamage.children().length == 0) {
                     $fireDamage.append("<p>해당 지역의 재산피해 정보가 없습니다.</P>");
                 }
+                let canvas = document.querySelector("canvas");
+                let gl = canvas.getContext("webgl");
+                console.log(gl);
+
             });
 
     }

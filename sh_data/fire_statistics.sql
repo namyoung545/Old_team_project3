@@ -122,11 +122,11 @@ SELECT * FROM fire_info_sido;
 
 DESCRIBE fire_info_sido_casualty;
 SELECT * FROM fire_info_sido_casualty;
-DROP TABLE fire_info_sido_casualty;
+-- DROP TABLE fire_info_sido_casualty;
 
 DESCRIBE fire_info_sido_damage;
 SELECT * FROM fire_info_sido_damage;
-DROP TABLE fire_info_sido_damage;
+-- DROP TABLE fire_info_sido_damage;
 
 DESCRIBE disasters;
 SELECT * FROM disasters;
