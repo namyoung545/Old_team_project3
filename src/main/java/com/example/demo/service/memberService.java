@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.PHG_MemberDTO;
+import java.util.List;
+
 import com.example.demo.dto.memberDTO;
 
 public interface memberService {
@@ -12,7 +13,9 @@ public interface memberService {
 
 	memberDTO getUserById(String userId) throws Exception;
 
+	int delete(String userId) throws Exception;
+
 	int memberUpdate(memberDTO currentUser, String newPassword) throws Exception;
 
-	int delete(String userId) throws Exception;
+	List<memberDTO> deliverySelect(memberDTO dto) throws Exception;
 }

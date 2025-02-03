@@ -25,4 +25,15 @@ public class asReceptionServiceImpl implements asReceptionService {
         return asReceptionDAO.AS_Status(dto);
     }
 
+    @Override
+    public void deliveryArrangement(int requestId, String receptionDelivery, String receptionStatus) {
+        asReceptionDAO.deliveryArrangement(requestId, receptionDelivery, receptionStatus);
+    }
+
+    @Override
+    public int DeliveryAssignment(asReceptionDTO dto) {
+
+        return asReceptionDAO.DeliveryAssignment(dto);
+    }
+
 }

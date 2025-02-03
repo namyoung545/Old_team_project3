@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.memberDTO;
+import com.example.demo.service.memberService;
 import com.example.demo.dto.asReceptionDTO;
 import com.example.demo.entity.boardData;
 import com.example.demo.entity.qnaboardData;
@@ -31,7 +35,10 @@ public class managementPageController {
 
     @Autowired
     asReceptionService asReceptionService;
-    
+
+    @Autowired
+    memberService memberService;
+
     @GetMapping("")
     public String getindex() {
         return "managementPage";
@@ -39,11 +46,11 @@ public class managementPageController {
 
     @GetMapping("/boardIndex")
     public String getBoardIndex() {
-		return "BoardIndex";
-	}
+        return "BoardIndex";
+    }
 
     // 공지사항 게시판 페이지
-	@GetMapping("/noticeBoard")
+    @GetMapping("/noticeBoard")
     public String getNoticeBoard(Model model, @RequestParam(defaultValue = "1") int page) {
         int pageSize = 10; // 페이지당 게시물 수
         int offset = (page - 1) * pageSize;
@@ -56,12 +63,13 @@ public class managementPageController {
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-		return "noticeBoard"; // jsp 파일 경로
-	}
+        return "noticeBoard"; // jsp 파일 경로
+    }
 
     // 게시글 상세보기 및 수정 페이지
-    @GetMapping({"/boardPost"})
-    public String boardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    @GetMapping({ "/boardPost" })
+    public String boardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum,
+            @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         service.updateVisitCount(bnum); // 조회수 증가
         model.addAttribute("board", service.getBoardById(bnum));
         model.addAttribute("page", page); // 페이지 정보 추가
@@ -81,7 +89,7 @@ public class managementPageController {
         rttr.addFlashAttribute("result", boardData.getBnum()); // 저장된 게시글 번호 전달
         return "redirect:/managementPage/noticeBoard"; // 등록 후 목록 페이지로 리다이렉트
     }
-    
+
     // GET 요청: 수정 화면 제공
     @GetMapping("/boardUpdate")
     public String updateForm(@RequestParam("bnum") Long bnum, Model model) {
@@ -89,6 +97,7 @@ public class managementPageController {
         model.addAttribute("board", boardData);
         return "boardUpdate"; // 수정 화면 템플릿 반환
     }
+
     // POST 요청: 수정 작업 처리
     @PostMapping("/boardUpdate")
     public String update(boardData boardData, RedirectAttributes rttr) {
@@ -112,7 +121,7 @@ public class managementPageController {
     }
 
     // QnA 게시판 페이지
-	@GetMapping("/qnaBoard")
+    @GetMapping("/qnaBoard")
     public String getQnaBoard(Model model, @RequestParam(defaultValue = "1") int page) {
         int pageSize = 10; // 페이지당 게시물 수
         int offset = (page - 1) * pageSize;
@@ -125,12 +134,13 @@ public class managementPageController {
 
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
-		return "qnaBoard"; // jsp 파일 경로
-	}
+        return "qnaBoard"; // jsp 파일 경로
+    }
 
     // qna 게시글 상세보기 및 수정 페이지
-    @GetMapping({"/qnaboardPost"})
-    public String qnaboardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum, @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    @GetMapping({ "/qnaboardPost" })
+    public String qnaboardPost(@RequestParam(value = "bnum", defaultValue = "1") Long bnum,
+            @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         service.updateqnaVisitCount(bnum); // 조회수 증가
         model.addAttribute("board", service.getqnaBoardById(bnum));
         model.addAttribute("page", page); // 페이지 정보 추가
@@ -150,7 +160,7 @@ public class managementPageController {
         rttr.addFlashAttribute("result", qnaboardData.getBnum()); // 저장된 게시글 번호 전달
         return "redirect:/managementPage/qnaBoard"; // 등록 후 목록 페이지로 리다이렉트
     }
-    
+
     // GET 요청: qna 수정 화면 제공
     @GetMapping("/qnaboardUpdate")
     public String updateqnaForm(@RequestParam("bnum") Long bnum, Model model) {
@@ -158,6 +168,7 @@ public class managementPageController {
         model.addAttribute("board", qnaboardData);
         return "qnaboardUpdate"; // 수정 화면 템플릿 반환
     }
+
     // POST 요청: qna 수정 작업 처리
     @PostMapping("/qnaboardUpdate")
     public String updateqna(qnaboardData qnaboardData, RedirectAttributes rttr) {
@@ -218,10 +229,18 @@ public class managementPageController {
     }
 
     @PostMapping("/registAS/insert")
-    public String insertAsReception(asReceptionDTO asReceptionDTO, Model model) {
+    public String insertAsReception(asReceptionDTO asReceptionDTO, Model model, asReceptionDTO dto) {
         try {
-            int result = asReceptionService.AS_Reception(asReceptionDTO);
+            int DeliveryAssignment = asReceptionService.DeliveryAssignment(dto);
+            System.out.println("DeliveryAssignment : " + DeliveryAssignment);
+            // model.addAttribute("DeliveryAss1ignment", DeliveryAssignment);
+            if (DeliveryAssignment < 1) {
+                model.addAttribute("msg", "해당 시각은 예약이 가득 찼습니다.");
+                model.addAttribute("url", "/managementPage/registAS"); // 접수 페이지 URL
+                return "/alertPrint";
+            }
 
+            int result = asReceptionService.AS_Reception(asReceptionDTO);
             if (result > 0) {
                 model.addAttribute("msg", "A/S 접수가 성공적으로 완료되었습니다.");
                 model.addAttribute("url", "/managementPage"); // 목록 페이지 URL
@@ -233,18 +252,106 @@ public class managementPageController {
         } catch (Exception e) {
             model.addAttribute("msg", "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             model.addAttribute("url", "/managementPage/registAS");
+            System.out.println("PreferredDate 체크: " + asReceptionDTO.getPreferredDateTime());
+            e.printStackTrace();
         }
 
         return "/alertPrint";
     }
 
+    @GetMapping("/registAS/checkAvailableTimeSlots")
+    @ResponseBody
+    public ResponseEntity<?> checkAvailableTimeSlots(@RequestParam("selectedDate") String selectedDate) {
+        try {
+            // 메서드 진입 로그
+            System.out.println(">>> checkAvailableTimeSlots() 호출됨. 선택된 날짜: " + selectedDate);
+
+            List<String> availableTimeSlots = new ArrayList<>();
+
+            String[] timeSlots = {
+                    "09:00:00", "10:00:00", "11:00:00", "12:00:00",
+                    "14:00:00", "15:00:00", "16:00:00", "17:00:00"
+            };
+
+            for (String timeSlot : timeSlots) {
+                String fullDateTime = selectedDate + " " + timeSlot;
+
+                // 반복문 내 변수 확인용 로그
+                System.out.println(">>> 현재 확인 중인 시간 슬롯: " + fullDateTime);
+
+                asReceptionDTO dto = new asReceptionDTO();
+
+                dto.setPreferredDateTime(fullDateTime);
+
+                // 0과 1 이상으로 비교
+                int DeliveryAssignment = asReceptionService.DeliveryAssignment(dto);
+
+                // 서비스 호출 후 결과 확인 로그
+                System.out.println(">>> DeliveryAssignment 결과: " + DeliveryAssignment);
+
+                if (DeliveryAssignment > 0) {
+                    System.out.println(">>> " + timeSlot + " 시간대는 사용 가능합니다.");
+                    availableTimeSlots.add(timeSlot);
+                } else {
+                    System.out.println(">>> " + timeSlot + " 시간대는 사용 불가능합니다.");
+                }
+            }
+
+            // 최종 결과 로그
+            System.out.println(">>> 사용 가능한 모든 시간대: " + availableTimeSlots);
+
+            return ResponseEntity.ok(availableTimeSlots);
+        } catch (Exception e) {
+            // 에러 시 로그
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("시간 슬롯 조회 중 오류 발생: " + e.getMessage());
+        }
+    }
+
     // as 처리현황 페이지
-	@GetMapping("/ASprocessStatus")
-    public String getASprocessStatus() {
-	// public String getProcessStatus(Model model) {
-		// List<ReservationDTO> statusList = scheduleMapper.getStatusList();
-		// model.addAttribute("statusList", statusList);
-		return "ASprocessStatusBoard"; // jsp 파일 경로
-	}
+    @GetMapping("/ASprocessStatus")
+    public String getASprocessStatus(HttpSession session, Model model, asReceptionDTO asReceptionDTO,
+            memberDTO memberDTO)
+            throws Exception {
+
+        if (session.getAttribute("userId") == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("url", "/login");
+            return "/alertPrint";
+        }
+
+        String userId = (String) session.getAttribute("userId");
+        int authorityId = (int) session.getAttribute("authorityId");
+
+        asReceptionDTO.setUserId(userId);
+        asReceptionDTO.setAuthorityId(authorityId);
+
+        List<memberDTO> deliverySelect = memberService.deliverySelect(memberDTO);
+        List<asReceptionDTO> asReceptionList = asReceptionService.AS_Status(asReceptionDTO);
+        model.addAttribute("asReceptionList", asReceptionList);
+        model.addAttribute("deliverySelect", deliverySelect);
+
+        return "ASprocessStatusBoard"; // jsp 파일 경로
+    }
+
+    @PostMapping("/ASprocessStatus/deliveryArrangement")
+    public String deliveryArrangement(@RequestParam("selectedRequestId") String requestId,
+            @RequestParam("receptionDelivery") String receptionDelivery,
+            @RequestParam("receptionStatus") String receptionStatus,
+            Model model) {
+
+        asReceptionService.deliveryArrangement(Integer.parseInt(requestId), receptionDelivery, receptionStatus);
+        try {
+            model.addAttribute("msg", "배정 완료되었습니다.");
+            model.addAttribute("url", "/managementPage/ASprocessStatus"); // 목록 페이지 URL
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "문제 발생");
+            model.addAttribute("url", "/managementPage/ASprocessStatus"); // 접수 페이지 URL
+            e.printStackTrace();
+        }
+        return "/alertPrint";
+    }
 
 }
