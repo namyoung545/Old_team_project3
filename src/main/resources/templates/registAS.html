@@ -2,7 +2,7 @@
 <html lang="ko">
 
 <head>
-  <title>난방기사 A/S 스케쥴 관리 서비스</title>
+  <title>노후 시설 A/S 접수</title>
 
   <head th:replace="common_headscript.html :: common_headscript"></head>
   <link rel="stylesheet" href="/css/registAS.css">
@@ -11,17 +11,18 @@
 </head>
 
 <body>
-  <div id="boardIndex_container">
+  <div id="registAS_container">
     <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
     <div th:insert="sidebar.html :: sidebar"></div>
-    <main class="registAS">
+
+    <main class="registAS_main_container">
       <div class="maintenance-report">
-        <h1>시설 A/S 접수</h1>
+        <h1>노후 시설 A/S 접수</h1>
         <hr>
 
         <div class="report-form">
-          <form action="/managementPage/registAS/insert" method="post">
+          <form id="maintenanceForm" action="/managementPage/registAS/insert" method="post">
             <input type="hidden" name="userId" th:value="${session.userId}">
             <!-- 신고자 정보 섹션 -->
             <table class="info-table">
@@ -153,53 +154,44 @@
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <th><label for="preferredTime">방문 가능 시간 *</label></th>
-                  <td>
-                    <div class="input-wrapper">
-                      <select name="preferredTime" id="preferredTime" required>
-                        <option value="">시간 선택</option>
-                        <option value="09:00:00">09시</option>
-                        <option value="10:00:00">10시</option>
-                        <option value="11:00:00">11시</option>
-                        <option value="12:00:00">12시</option>
-                        <option value="14:00:00">14시</option>
-                        <option value="15:00:00">15시</option>
-                        <option value="16:00:00">16시</option>
-                        <option value="17:00:00">17시</option>
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <tr>
+                <th><label for="preferredTime">방문 가능 시간 *</label></th>
+                <td>
+                  <div class="input-wrapper">
+                    <select id="preferredTime" required>
 
-            <div class="privacy_container">
-              <!-- 개인정보 동의 섹션 -->
-              <div class="privacy-agreement">
-                <h3>개인정보 수집 및 이용 동의</h3>
-                <div class="agreement-content">
-                  <p>1. 수집하는 개인정보 항목: 성명, 연락처, 이메일</p>
-                  <p>2. 수집 목적: A/S 신청 처리 및 결과 회신</p>
-                  <p>3. 보유 기간: 신청일로부터 1년</p>
-                </div>
-                <div class="agreement-checkbox">
-                  <input type="checkbox" name="privacyAgreement" id="privacyAgreement" required>
-                  <label for="privacyAgreement">위 개인정보 수집 및 이용에 동의합니다. *</label>
-                </div>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
+          <input type="hidden" name="preferredDateTime" id="preferredDateTime">
 
-                <!-- 버튼 그룹 -->
-                <div class="button-group">
-                  <button type="submit" class="submit-btn">신고서 제출</button>
-                  <button type="reset" class="reset-btn">초기화</button>
-                </div>
-              </div>
+          <!-- 개인정보 동의 섹션 -->
+          <div class="privacy-agreement">
+            <h3>개인정보 수집 및 이용 동의</h3>
+            <div class="agreement-content">
+              <p>1. 수집하는 개인정보 항목: 성명, 연락처, 이메일</p>
+              <p>2. 수집 목적: A/S 신청 처리 및 결과 회신</p>
+              <p>3. 보유 기간: 신청일로부터 1년</p>
             </div>
-          </form>
-        </div>
+            <div class="agreement-checkbox">
+              <input type="checkbox" name="privacyAgreement" id="privacyAgreement" required onchange="validateDateTime()">
+              <label for="privacyAgreement" onchange="validateDateTime()">위 개인정보 수집 및 이용에 동의합니다. *</label>
+            </div>
+          </div>
+          
+          <!-- 버튼 그룹 -->
+          <div class="button-group">
+            <button type="submit" class="submit-btn">신고서 제출</button>
+            <button type="reset" class="reset-btn">초기화</button>
+          </div>
+        </form>
       </div>
-    </main>
+    </div>
+  </main>
 
     <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
   </div>

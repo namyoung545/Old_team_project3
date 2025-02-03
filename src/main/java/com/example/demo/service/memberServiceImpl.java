@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.PHG_MemberDTO;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,6 +48,7 @@ public class memberServiceImpl implements memberService {
 			System.out.println("   - 암호화된 PW: " + storedUser.getUserPw());
 			System.out.println("   - 이메일: " + storedUser.getEmail());
 			System.out.println("   - 이름: " + storedUser.getName());
+			System.out.println("   - 권한: " + storedUser.getAuthorityId());
 		} else {
 			System.out.println("   - 사용자 정보 없음");
 		}
@@ -92,6 +93,12 @@ public class memberServiceImpl implements memberService {
 	@Override
 	public int delete(String userId) throws Exception {
 		return memberDAO.delete(userId);
+	}
+
+		// 배정할 기사 목록
+	@Override
+	public List<memberDTO> deliverySelect(memberDTO dto) throws Exception {
+		return memberDAO.deliverySelect(dto);
 	}
     
 }

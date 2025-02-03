@@ -11,6 +11,7 @@ header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     box-sizing: border-box;
+    margin-left: 60px;
 }
 
 .headerText {
@@ -50,6 +51,7 @@ header {
     grid-column: 2;
     text-align: center;
     align-content: center;
+    gap:10px;
 }
 
 .headerboardIndex_container{
@@ -84,11 +86,13 @@ header {
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
 }
 
-.header_link_boardIndex, .header_link_memberModify{
-    /* background-color: #FFE000; */
+
+/* header 오른쪽 링크 아이콘 */
+.header_link_boardIndex, .header_link_memberModify {
+    background-color: #ffffff;
     color: #001f3f;
     padding: 8px 16px;
-    border-radius: 30px;
+    border-radius: 100px;
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
