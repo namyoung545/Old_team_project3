@@ -116,12 +116,17 @@ SELECT * FROM fire_types WHERE fire_type LIKE "%건축%";
 --     fire_region TO fire_regions,
 --     fire_ignition TO fire_ignitions;
 
-DESCRIBE fire_info_sido_damage;
-SELECT * FROM fire_info_sido_damage;
-
 DESCRIBE fire_info_sido;
 SELECT * FROM fire_info_sido;
 -- DROP TABLE fire_info_sido;
+
+DESCRIBE fire_info_sido_casualty;
+SELECT * FROM fire_info_sido_casualty;
+DROP TABLE fire_info_sido_casualty;
+
+DESCRIBE fire_info_sido_damage;
+SELECT * FROM fire_info_sido_damage;
+DROP TABLE fire_info_sido_damage;
 
 DESCRIBE disasters;
 SELECT * FROM disasters;
