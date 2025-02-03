@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전기적 세부요인별 AI 위험감소 예측비율</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>지역별 전기적 세부요인별 위험감소 AI예측비율</h2>
+    
+    <label for="regionSelect">지역 선택:</label>
+    <select id="regionSelect">
+        <option value="">전체</option>
+    </select>
+
+    <canvas id="riskChart"></canvas>
+
+    <script>
+        $(document).ready(function () {
+            let chart;
+            const ctx = document.getElementById('riskChart').getContext('2d');
+
+            // 서버에서 데이터 가져오기
+            $.getJSON("/aiRisk/data", function (riskData) {
+                console.log("불러온 데이터:", riskData);
+
+                // 지역 목록 추가
+                populateSelect(riskData);
+
+                // 기본값: 경기도 데이터 표시
+                updateChart(riskData, "경기도");
+            });
+
+            function populateSelect(riskData) {
+                let uniqueRegions = [...new Set(riskData.map(d => d.Region))];
+                uniqueRegions.forEach(region => {
+                    $("#regionSelect").append(`<option value="${region}">${region}</option>`);
+                });
+            }
+
+            function updateChart(riskData, region) {
+                const filteredData = region ? riskData.filter(d => d.Region === region) : riskData;
+                const labels = filteredData.map(d => d.Cause);
+                const values = filteredData.map(d => d["Reduction (%)"]);
+
+                if (chart) chart.destroy();
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '위험 감소 비율 (%)',
+                            data: values,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { 
+                            y: { 
+                                beginAtZero: true,
+                                max: 100  // Y축 최대값을 100%로 고정
+                            } 
+                        }
+                    }
+                });
+            }
+
+            $("#regionSelect").change(function () {
+                let selectedRegion = $(this).val();
+                $.getJSON("/aiRisk/data", function (riskData) {
+                    updateChart(riskData, selectedRegion);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
