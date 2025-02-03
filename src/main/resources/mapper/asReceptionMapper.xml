@@ -20,8 +20,7 @@
 			facilityType, 
 			issueTitle, 
 			issueDetails, 
-			preferredDate, 
-			preferredTime
+			preferredDateTime
 		)
 		SELECT 
 			m.userId,
@@ -35,17 +34,31 @@
 			#{facilityType}, 
 			#{issueTitle}, 
 			#{issueDetails}, 
-			#{preferredDate}, 
-			#{preferredTime}
+			#{preferredDateTime}
 		FROM member m
 		WHERE m.userId = #{userId}
 	</insert>
 	
 	<select id="AS_Status" parameterType="com.example.demo.dto.asReceptionDTO" resultType="com.example.demo.dto.asReceptionDTO">
-		SELECT requestId, userId, authorityId, receptionDate, name, preferredDate, preferredTime, receptionStatus
+		SELECT requestId, userId, authorityId, receptionDate, name, preferredDateTime, receptionStatus, receptionDelivery
 		FROM as_reception
 		<if test="authorityId != 1">
 			WHERE userId = #{userId}
 		</if>
+	</select>
+
+	<select id="deliveryArrangement" parameterType="com.example.demo.dto.asReceptionDTO">
+		UPDATE as_reception 
+		SET receptionDelivery = #{receptionDelivery}, receptionStatus = #{receptionStatus}
+		WHERE requestId = #{requestId};
+	</select>
+	
+	<select id="DeliveryAssignment" parameterType="com.example.demo.dto.asReceptionDTO" resultType="int">
+		SELECT 
+        COALESCE(
+            (SELECT COUNT(*) FROM member WHERE authorityId = 2) -
+            (SELECT COUNT(*) FROM as_reception WHERE preferredDateTime = #{preferredDateTime}),
+            0
+        ) AS assignedTechniciansCount;
 	</select>
 </mapper>
