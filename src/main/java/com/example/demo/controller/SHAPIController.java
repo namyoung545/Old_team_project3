@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.dto.APIVWorldWFSDTO;
+import com.example.demo.entity.FireInfoSidoEntity;
 import com.example.demo.entity.FireStatistics;
 import com.example.demo.entity.SHDisasterMessageEntity;
 import com.example.demo.service.SHAPIService;
 import com.example.demo.service.SHDisasterService;
+import com.example.demo.service.SHFireInfoService;
 import com.example.demo.service.SHVMapService;
 
 import jakarta.validation.Valid;
@@ -38,10 +40,16 @@ public class SHAPIController {
     @Autowired
     SHDisasterService shDisasterService;
 
+    @Autowired
+    SHFireInfoService shFireInfoService;
+
     @PostMapping("/fireInformation")
-    public String postFireInformation() {
+    public ResponseEntity<?> postFireInformation() {
         System.out.println("SHAPI - fireInformation");
-        return "test";
+        List<FireInfoSidoEntity> response = shFireInfoService.getFireInfoSido();
+        System.out.println("SHAPI - fireInformation / response");
+        System.out.println(response);
+        return ResponseEntity.ok(response);
     }
     
 
