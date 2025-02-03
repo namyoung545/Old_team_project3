@@ -21,24 +21,16 @@ public class FireInfoSidoDamageEntity {
     @Column(nullable = false)
     private String sidoNm;
 
-    // 사고자수
+    // 재산피해
     @Column(nullable = false)
-    private Integer vctmPercnt;
-
-    // 부상자수
-    @Column(nullable = false)
-    private Integer injrdprPercnt;
-
-    // 인명피해수
-    @Column(nullable = false)
-    private Integer lifeDmgPercnt;
+    private Integer prptDmgSbttAmt;
 
     // 화재발생건수
     @Column(nullable =false)
     private Integer ocrnMnb;
 
     // 발생일자
-    @Column(nullable = false)
+    @Column (nullable = false)
     private LocalDate ocrnYmd;
 
     public Integer getId() {
@@ -57,28 +49,12 @@ public class FireInfoSidoDamageEntity {
         this.sidoNm = sidoNm;
     }
 
-    public Integer getVctmPercnt() {
-        return vctmPercnt;
+    public Integer getPrptDmgSbttAmt() {
+        return prptDmgSbttAmt;
     }
 
-    public void setVctmPercnt(Integer vctmPercnt) {
-        this.vctmPercnt = vctmPercnt;
-    }
-
-    public Integer getInjrdprPercnt() {
-        return injrdprPercnt;
-    }
-
-    public void setInjrdprPercnt(Integer injrdprPercnt) {
-        this.injrdprPercnt = injrdprPercnt;
-    }
-
-    public Integer getLifeDmgPercnt() {
-        return lifeDmgPercnt;
-    }
-
-    public void setLifeDmgPercnt(Integer lifeDmgPercnt) {
-        this.lifeDmgPercnt = lifeDmgPercnt;
+    public void setPrptDmgSbttAmt(Integer prptDmgSbttAmt) {
+        this.prptDmgSbttAmt = prptDmgSbttAmt;
     }
 
     public Integer getOcrnMnb() {
@@ -96,6 +72,6 @@ public class FireInfoSidoDamageEntity {
     public void setOcrnYmd(LocalDate ocrnYmd) {
         this.ocrnYmd = ocrnYmd;
     }
-
-
+   
+    
 }

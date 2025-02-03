@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
-@EnableScheduling
 public class SHDisasterService {
     // API 세팅
     private final String DISASTER_API_KEY;
