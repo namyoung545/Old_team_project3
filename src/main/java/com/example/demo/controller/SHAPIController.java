@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.dto.APIVWorldWFSDTO;
+import com.example.demo.entity.FireInfoSidoDamageEntity;
+import com.example.demo.entity.FireInfoSidoCasualtyEntity;
 import com.example.demo.entity.FireInfoSidoEntity;
 import com.example.demo.entity.FireStatistics;
 import com.example.demo.entity.SHDisasterMessageEntity;
@@ -43,12 +46,33 @@ public class SHAPIController {
     @Autowired
     SHFireInfoService shFireInfoService;
 
-    @PostMapping("/fireInformation")
+    // 화재정보 기능
+    @PostMapping("/fireInfo")
     public ResponseEntity<?> postFireInformation() {
-        System.out.println("SHAPI - fireInformation");
+        System.out.println("SHAPI - fireInfo");
         List<FireInfoSidoEntity> response = shFireInfoService.getFireInfoSido();
-        System.out.println("SHAPI - fireInformation / response");
-        System.out.println(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 화재정보 기능 - 인명피해
+    @PostMapping("/fireInfoCasualty")
+    public ResponseEntity<?> postFireInformationCasualty() {
+        System.out.println("SHAPI - fireInfoCasualty");
+        List<FireInfoSidoCasualtyEntity> response = shFireInfoService.getFireInfoSidoCasualty();
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 화재정보 기능 - 재산피해
+    @PostMapping("/fireInfoDamage")
+    public ResponseEntity<?> postFireInformationProperty() {
+        System.out.println("SHAPI - fireInfoDamage");
+        List<FireInfoSidoDamageEntity> response = shFireInfoService.getFireInfoSidoDamage();
+        
+        // String responseDamage = shFireInfoService.fetchFireInfoSidoDamageData(LocalDate.now().minusDays(1));
+        // System.out.println("responseDamage : " + responseDamage);
+
         return ResponseEntity.ok(response);
     }
     
