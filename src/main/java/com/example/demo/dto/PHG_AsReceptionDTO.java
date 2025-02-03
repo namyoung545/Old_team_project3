@@ -1,7 +1,5 @@
 package com.example.demo.dto;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -24,14 +22,15 @@ public class PHG_AsReceptionDTO {
 	// 신고 상세
 	private String issueTitle;
 	private String issueDetails;
-	private Date preferredDate;
-	private Time preferredTime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private String preferredDateTime;
 
 	// 나머지
-	@JsonFormat(pattern = "yyyy년 MM월 dd일 HH시 mm분 ss초")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private String receptionDate;
 	private String receptionStatus;
 	private String receptionDelivery;
+	
 	public Integer getRequestId() {
 		return requestId;
 	}
@@ -104,17 +103,11 @@ public class PHG_AsReceptionDTO {
 	public void setIssueDetails(String issueDetails) {
 		this.issueDetails = issueDetails;
 	}
-	public Date getPreferredDate() {
-		return preferredDate;
+	public String getPreferredDateTime() {
+		return preferredDateTime;
 	}
-	public void setPreferredDate(Date preferredDate) {
-		this.preferredDate = preferredDate;
-	}
-	public Time getPreferredTime() {
-		return preferredTime;
-	}
-	public void setPreferredTime(Time preferredTime) {
-		this.preferredTime = preferredTime;
+	public void setPreferredDateTime(String preferredDateTime) {
+		this.preferredDateTime = preferredDateTime;
 	}
 	public String getReceptionDate() {
 		return receptionDate;
@@ -137,8 +130,8 @@ public class PHG_AsReceptionDTO {
 	@Override
 	public int hashCode() {
 		return Objects.hash(address, authorityId, detailAddress, email, facilityType, issueDetails, issueTitle, name,
-				phoneNumber, postcode, preferredDate, preferredTime, receptionDate, receptionDelivery, receptionStatus,
-				requestId, userId);
+				phoneNumber, postcode, preferredDateTime, receptionDate, receptionDelivery, receptionStatus, requestId,
+				userId);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -154,8 +147,7 @@ public class PHG_AsReceptionDTO {
 				&& Objects.equals(facilityType, other.facilityType) && Objects.equals(issueDetails, other.issueDetails)
 				&& Objects.equals(issueTitle, other.issueTitle) && Objects.equals(name, other.name)
 				&& Objects.equals(phoneNumber, other.phoneNumber) && Objects.equals(postcode, other.postcode)
-				&& Objects.equals(preferredDate, other.preferredDate)
-				&& Objects.equals(preferredTime, other.preferredTime)
+				&& Objects.equals(preferredDateTime, other.preferredDateTime)
 				&& Objects.equals(receptionDate, other.receptionDate)
 				&& Objects.equals(receptionDelivery, other.receptionDelivery)
 				&& Objects.equals(receptionStatus, other.receptionStatus) && Objects.equals(requestId, other.requestId)
@@ -166,11 +158,10 @@ public class PHG_AsReceptionDTO {
 		return "PHG_AsReceptionDTO [requestId=" + requestId + ", userId=" + userId + ", authorityId=" + authorityId
 				+ ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + ", postcode=" + postcode
 				+ ", address=" + address + ", detailAddress=" + detailAddress + ", facilityType=" + facilityType
-				+ ", issueTitle=" + issueTitle + ", issueDetails=" + issueDetails + ", preferredDate=" + preferredDate
-				+ ", preferredTime=" + preferredTime + ", receptionDate=" + receptionDate + ", receptionStatus="
-				+ receptionStatus + ", receptionDelivery=" + receptionDelivery + "]";
+				+ ", issueTitle=" + issueTitle + ", issueDetails=" + issueDetails + ", preferredDateTime="
+				+ preferredDateTime + ", receptionDate=" + receptionDate + ", receptionStatus=" + receptionStatus
+				+ ", receptionDelivery=" + receptionDelivery + "]";
 	}
 
 	
-
 }

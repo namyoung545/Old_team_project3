@@ -10,4 +10,6 @@ public interface PHG_AsReceptionDAO {
     List<PHG_AsReceptionDTO> AS_Status(PHG_AsReceptionDTO dto) throws Exception;
 
     void deliveryArrangement(int requestId, String receptionDelivery, String receptionStatus);
+
+    int DeliveryAssignment(PHG_AsReceptionDTO dto);
 }
