@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전기적 세부요인별 AI 위험감소 예측비율</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>지역별 전기적 세부요인별 위험감소 랜던포레스트AI & SHAP분석 예측비율</h2>
+    
+    <label for="regionSelect">지역 선택:</label>
+    <select id="regionSelect">
+        <option value="">전체</option>
+    </select>
+
+    <canvas id="riskChart"></canvas>
+
+    <script>
+        $(document).ready(function () {
+            let chart;
+            const ctx = document.getElementById('riskChart').getContext('2d');
+
+            // 서버에서 데이터 가져오기
+            $.getJSON("/aiRisk/data", function (riskData) {
+                console.log("불러온 데이터:", riskData);
+
+                // 지역 목록 추가
+                populateSelect(riskData);
+
+                // 기본값: 전체 데이터를 전기적 세부요인별 평균으로 정리하여 표시
+                updateChart(riskData, "");
+            });
+
+            function populateSelect(riskData) {
+                let uniqueRegions = [...new Set(riskData.map(d => d.Region))];
+                uniqueRegions.forEach(region => {
+                    $("#regionSelect").append(`<option value="${region}">${region}</option>`);
+                });
+            }
+
+            function aggregateByCause(data) {
+                let grouped = {};
+                data.forEach(d => {
+                    if (!grouped[d.Cause]) {
+                        grouped[d.Cause] = { Cause: d.Cause, Reduction: [] };
+                    }
+                    grouped[d.Cause].Reduction.push(d["Reduction (%)"]);
+                });
+
+                return Object.values(grouped).map(d => ({
+                    Cause: d.Cause,
+                    Reduction: (d.Reduction.reduce((a, b) => a + b, 0) / d.Reduction.length).toFixed(2)
+                }));
+            }
+
+            function updateChart(riskData, region) {
+                let filteredData = region ? riskData.filter(d => d.Region === region) : riskData;
+                let aggregatedData = aggregateByCause(filteredData);
+
+                aggregatedData.sort((a, b) => b.Reduction - a.Reduction); // 내림차순 정렬
+
+                const labels = aggregatedData.map(d => d.Cause);
+                const values = aggregatedData.map(d => d.Reduction);
+
+                if (chart) chart.destroy();
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '랜덤포레스트AI모델 & SHAP분석 위험 감소 비율 (%)',
+                            data: values,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { 
+                            y: { 
+                                beginAtZero: true,
+                                max: 100  // Y축 최대값 100으로 고정
+                            } 
+                        }
+                    }
+                });
+            }
+
+            $("#regionSelect").change(function () {
+                let selectedRegion = $(this).val();
+                $.getJSON("/aiRisk/data", function (riskData) {
+                    updateChart(riskData, selectedRegion);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
