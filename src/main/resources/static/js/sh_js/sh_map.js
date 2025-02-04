@@ -41,7 +41,7 @@ $(document).ready(() => {
         let url = `http://localhost:8080/sh_api/vworldWFS?TYPENAME=${dataType}`;
 
         // GMLParser 생성
-        var parser = new vw.GMLParser();
+        let parser = new vw.GMLParser();
 
         // 객체 고유 ID 설정
         // Feature 객체에도 아이디가 부여됩니다.
@@ -51,10 +51,10 @@ $(document).ready(() => {
         // data 읽기. parser.read( 데이터타입, 데이터경로, 데이터좌표계)
         // 전달되는 좌표계를 의미하며, 이 좌표를 웹지엘에서는 EPSG:4326으로 변환하여 사용합니다.
         // 데이터타입. vw.GMLParserType { GEOJSON, GML1, GML2, GML2 } 
-        var featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
+        let featureInfos = parser.read(vw.GMLParserType.GEOJSON, url, "EPSG:4326");
 
         // 옵션 설정
-        var options = {
+        let options = {
             // 지형 따라 출력시 true, 지면에서 위로 출력시 false
             isTerrain: false,
             // 선의 경우 크기지정.
@@ -93,7 +93,7 @@ $(document).ready(() => {
                 // result += i.properties.full_nm + " "
                 // $("#features").html(result);
                 // console.log("Feature Name:", item.properties.ctp_kor_nm);
-                // console.log("Feature Properties:", item);
+                console.log("Feature Properties:", item);
             })
         });
 
@@ -105,11 +105,29 @@ $(document).ready(() => {
             // console.log(featureInfo)
             if (featureInfo) {
                 let feature = featureInfos.getById(featureInfo.groupId);
-                // console.log("You clicked on: " + feature.getProperties().ctp_kor_nm);
-                // console.log("Clicked Feature:", feature);
-                
+                console.log("You clicked on: " + feature.getProperties().ctp_kor_nm);
+                console.log("Clicked Feature:", feature);
+
                 // 사용자 지정 코드 실행
                 // 피처 숨기기 (필요 시)
+                // 옵션 설정
+                let hoverOptions = {
+                    // 지형 따라 출력시 true, 지면에서 위로 출력시 false
+                    isTerrain: false,
+                    // 선의 경우 크기지정.
+                    width: 50,
+                    // RGBA A값만 255이하로 주면 투명 또는 withAlpha(1.0~0.1)로 설정.
+                    material: new vw.Color(255, 0, 0, 255).ws3dColor.withAlpha(0.2),
+                    // 아웃라인지정시 true, 아웃라인 미지정 false
+                    outline: true,
+                    // 아웃라인 너비. 
+                    outlineWidth: 1,
+                    // 아웃라인 색상. 
+                    outlineColor: vw.Color.YELLOW.ws3dColor,
+                    // 높이 지정값 meter.
+                    height: 1600.0
+                };
+                feature.getStyle();
                 // feature.hide();
                 loadFireInfoSido(feature.getProperties().ctp_kor_nm);
             }
