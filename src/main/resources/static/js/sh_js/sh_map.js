@@ -23,11 +23,16 @@ $(document).ready(() => {
             // 지도 로드 완료 이벤트 처리
             vw.ws3dInitCallBack = () => {
                 console.log('Map loaded successfully');
+                // 내부 WebGL 관련 요소 확인
+                // console.log(map);
+                // console.log(map._wsmap);
+
                 map.getLayerElement('poi_base').hide();
                 map.getLayerElement('poi_bound').hide();
                 map.getLayerElement('hybrid_bound').hide();
                 map.getLayerElement('facility_build').hide();
-                loadGeoJsonLayer('lt_c_adsido_info');
+                loadGeoJsonLayer('lt_c_adsido_info', map);
+
             }
         } catch (error) {
             console.error("[ERROR] loadVWorldMap : ", error);
@@ -37,7 +42,7 @@ $(document).ready(() => {
 
     }
 
-    function loadGeoJsonLayer(dataType) {
+    function loadGeoJsonLayer(dataType, map) {
         let url = `http://localhost:8080/sh_api/vworldWFS?TYPENAME=${dataType}`;
 
         // GMLParser 생성
@@ -70,7 +75,25 @@ $(document).ready(() => {
             // 높이 지정값 meter.
             height: 1600.0
         };
+
         // 출력 색상등 지정.
+        let activeOptions = {
+            // 지형 따라 출력시 true, 지면에서 위로 출력시 false
+            isTerrain: false,
+            // 선의 경우 크기지정.
+            width: 50,
+            // RGBA A값만 255이하로 주면 투명 또는 withAlpha(1.0~0.1)로 설정.
+            material: new vw.Color(255, 167, 36, 255).ws3dColor.withAlpha(0.5),
+            // 아웃라인지정시 true, 아웃라인 미지정 false
+            outline: true,
+            // 아웃라인 너비. 
+            outlineWidth: 1,
+            // 아웃라인 색상. 
+            outlineColor: vw.Color.YELLOW.ws3dColor,
+            // outlineColor: new vw.Color(255, 167, 36, 255).ws3dColor,
+            // 높이 지정값 meter.
+            height: 1600.0
+        };
 
         // Point의 경우 이미지 설정. options 항목이 필요없음.
         //featureInfos.setImage("https://map.vworld.kr/images/comm/symbol_05.png");
@@ -80,7 +103,7 @@ $(document).ready(() => {
         // featureInfos.makeCoords();
         const promise = new Promise((resolve, reject) => {
             featureInfos.makeCoords();
-            resolve('[PROMISE] resolve - makeCoords');
+            // resolve('[PROMISE] resolve - makeCoords');
         });
 
         promise.then((value) => {
@@ -106,29 +129,28 @@ $(document).ready(() => {
             if (featureInfo) {
                 let feature = featureInfos.getById(featureInfo.groupId);
                 console.log("You clicked on: " + feature.getProperties().ctp_kor_nm);
-                console.log("Clicked Feature:", feature);
+                console.log("Clicked Feature:", feature.id);
+                // let featureOptions = feature.getOptions();
+                // console.log(featureOptions);
+                
+                let objectCollection = featureInfos.objCollection.collectionProp;
+                console.log(objectCollection);
+                objectCollection.forEach((item) =>{ 
+                    if (item.id != feature.id) {
+                        // console.log(item.id);
+                        // featureInfos.getById(item.id).setOptions(options);
+                        item.setOptions(options);
+                        item.show();
+                    }
+                });
 
+                
                 // 사용자 지정 코드 실행
                 // 피처 숨기기 (필요 시)
-                // 옵션 설정
-                let hoverOptions = {
-                    // 지형 따라 출력시 true, 지면에서 위로 출력시 false
-                    isTerrain: false,
-                    // 선의 경우 크기지정.
-                    width: 50,
-                    // RGBA A값만 255이하로 주면 투명 또는 withAlpha(1.0~0.1)로 설정.
-                    material: new vw.Color(255, 0, 0, 255).ws3dColor.withAlpha(0.2),
-                    // 아웃라인지정시 true, 아웃라인 미지정 false
-                    outline: true,
-                    // 아웃라인 너비. 
-                    outlineWidth: 1,
-                    // 아웃라인 색상. 
-                    outlineColor: vw.Color.YELLOW.ws3dColor,
-                    // 높이 지정값 meter.
-                    height: 1600.0
-                };
-                feature.getStyle();
                 // feature.hide();
+                // 옵션 설정
+                feature.setOptions(activeOptions);
+                feature.show();
                 loadFireInfoSido(feature.getProperties().ctp_kor_nm);
             }
         };
@@ -250,6 +272,11 @@ $(document).ready(() => {
                 if ($fireDamage.children().length == 0) {
                     $fireDamage.append("<p>해당 지역의 재산피해 정보가 없습니다.</P>");
                 }
+
+                // Canvas 테스트 코드
+                // let canvas = document.querySelector("canvas");
+                // let gl = canvas.getContext("webgl");
+                // console.log(gl);
             });
 
     }
