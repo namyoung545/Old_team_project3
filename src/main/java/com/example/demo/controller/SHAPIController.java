@@ -17,14 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.APIFiresDTO;
 import com.example.demo.dto.APIVWorldWFSDTO;
-import com.example.demo.entity.FireInfoSidoDamageEntity;
 import com.example.demo.entity.FireInfoSidoCasualtyEntity;
+import com.example.demo.entity.FireInfoSidoDamageEntity;
 import com.example.demo.entity.FireInfoSidoEntity;
 import com.example.demo.entity.FireStatistics;
 import com.example.demo.entity.SHDisasterMessageEntity;
 import com.example.demo.service.SHAPIService;
 import com.example.demo.service.SHDisasterService;
 import com.example.demo.service.SHFireInfoService;
+import com.example.demo.service.SHFullCalendarService;
 import com.example.demo.service.SHVMapService;
 
 import jakarta.validation.Valid;
@@ -45,6 +46,19 @@ public class SHAPIController {
 
     @Autowired
     SHFireInfoService shFireInfoService;
+
+    @Autowired
+    SHFullCalendarService shFullCalendarService;
+
+    // 달력 이벤트 기능
+    @PostMapping("/calendarEvents")
+    public List<Map<String, Object>> postCalendarEvents() throws Exception {
+        System.out.println("SHAPI - calendarEvents");
+        LocalDate start = LocalDate.now().minusDays(1);
+        LocalDate end = LocalDate.now().plusDays(1);
+        List<Map<String, Object>> eventsList = shFullCalendarService.getFullCalendarEvents(start, end);
+        return eventsList;
+    }
 
     // 화재정보 기능
     @PostMapping("/fireInfo")
@@ -69,13 +83,13 @@ public class SHAPIController {
     public ResponseEntity<?> postFireInformationProperty() {
         System.out.println("SHAPI - fireInfoDamage");
         List<FireInfoSidoDamageEntity> response = shFireInfoService.getFireInfoSidoDamage();
-        
-        // String responseDamage = shFireInfoService.fetchFireInfoSidoDamageData(LocalDate.now().minusDays(1));
+
+        // String responseDamage =
+        // shFireInfoService.fetchFireInfoSidoDamageData(LocalDate.now().minusDays(1));
         // System.out.println("responseDamage : " + responseDamage);
 
         return ResponseEntity.ok(response);
     }
-    
 
     // 재난문자 기능 DB 호출
     @PostMapping("/disasterMessage")
