@@ -29,4 +29,10 @@ public class PHG_AsReceptionServiceImpl implements PHG_AsReceptionService {
         asReceptionDAO.deliveryArrangement(requestId, receptionDelivery, receptionStatus);
     }
 
+    @Override
+    public int DeliveryAssignment(PHG_AsReceptionDTO dto) {
+
+        return asReceptionDAO.DeliveryAssignment(dto);
+    }
+
 }

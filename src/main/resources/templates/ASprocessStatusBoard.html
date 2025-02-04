@@ -5,7 +5,7 @@
     <title>AS처리현황페이지</title>
 
     <head th:replace="common_headscript.html :: common_headscript"></head>
-    
+
     <link rel="stylesheet" href="/css/ASprocessStatusBoard.css">
     <script src="/js/ASprocessStatusBoard.js" defer></script>
 
@@ -15,41 +15,76 @@
     <div id="ASprocessStatus_container">
         <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
-        <div id="ASprocessStatus_sub_border_Container">
-            <div id="ASprocessStatus_sub_Container">
-                <div th:insert="sidebar.html :: sidebar"></div>
-                <h1>A/S 처리현황</h1>
-                <hr>
-                <table>
+        <div th:insert="sidebar.html :: sidebar"></div>
+
+        <main class="registProcessStatus_main_container">
+            <div class="registProcessStatus_box">
+                <h1>A/S 처리 현황</h1>
+                <table border="1">
                     <thead>
                         <tr>
                             <th>접수번호</th>
-                            <!-- rnum(DB접수번호) -->
                             <th>접수일자</th>
-                            <!-- rdate(DB접수일자) -->
                             <th>고객명</th>
-                            <!-- cname(DB고객명) -->
-                            <th>처리현황</th>
-                            <!-- 새 칼럼 processStatus -->
                             <th>완료 예정일시</th>
-                            <!-- visitedateEnd(DB완료일자 시각) -->
-                            <th>처리 버튼</th>
+                            <th>배정된 기사</th>
+                            <th>처리현황</th>
+                            <!-- admin일때만 "처리하기" 열 노출 -->
+                            <th th:if="${session.authorityId == 1}">처리하기</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="status" items="${statusList}">
-                            <tr>
-                                <td>${status.rnum}</td>
-                                <td>${status.rdate}</td>
-                                <td>${status.cname}</td>
-                                <td>${status.processStatus}</td>
-                                <!-- 새로운 칼럼 -->
-                                <td>${status.visitdate_end}</td>
-                                <td><button class="status">처리 버튼</button></td>
-                            </tr>
-                        </c:forEach>
+                        <tr th:each="reception : ${asReceptionList}">
+                            <td th:text="${reception.requestId}"></td>
+                            <td th:text="${reception.receptionDate}"></td>
+                            <td th:text="${reception.name}"></td>
+                            <td th:text="${reception.preferredDateTime}"></td>
+                            <td th:text="${reception.receptionDelivery}"></td>
+                            <td th:text="${reception.receptionStatus}"></td>
+                            <!-- admin일 경우 "처리하기" 버튼 추가 -->
+                            <td th:if="${session.authorityId == 1}">
+                            <button type="button" class="process-btn"
+                                th:data-request-id="${reception.requestId}"
+                                th:data-name="${reception.name}"
+                                onclick="openModal(this)">
+                                처리하기
+                            </button>
+                            
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+            </div>
+        </main>
+
+        <!-- Modal 박스 (관리자 전용) -->
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal-box">
+                <h2>기사 배정 및 처리</h2>
+                <!-- 선택된 요청의 접수번호를 저장 -->
+                <form action="/managementPage/ASprocessStatus/deliveryArrangement" method="post">
+                    <input type="hidden" id="selectedRequestId" name="selectedRequestId" />
+                    <p>접수번호: <span id="displayRequestId"></span>
+                        , 고객명: <span id="displayRequestName"></span></p>
+                    <!--name 속성을 controller로 보내기-->
+                    <p>여기에 기사 배정 등의 추가 정보를 입력하거나 선택할 수 있습니다.</p>
+                    <label for="technician">기사 선택:</label>
+                    <select id="technician" name="receptionDelivery">
+                        <option th:each="delivery : ${deliverySelect}" th:value="${delivery.name}"
+                            th:text="${delivery.name}">
+                        </option>
+                    </select>
+                    <label for="receptionStatus">처리 상태:</label>
+                    <select name="receptionStatus">
+                        <option value="처리 중">처리 중</option>
+                        <option value="처리 완료">처리 완료</option>
+                    </select>
+                    <br>
+                    <button type="submit" class="process-btn" style="margin-top: 10px;">배정하기</button>
+                </form>
+                <div class="modal-close-btn">
+                    <button type="button" class="process-btn" onclick="closeModal()">닫기</button>
+                </div>
             </div>
         </div>
 

@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div id="boardIndex_container">
+    <div id="qnaboardIndex_container">
         <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
 
         <main id="qnaBoard_container" th:fragment="qnaBoard_main">
@@ -23,7 +23,7 @@
                         <thead>
                             <tr>
                                 <th>번호</th>
-                                <th>제목</th>
+                                <th class="table_title">제목</th>
                                 <th>작성자</th>
                                 <th>작성일</th>
                                 <th>조회수</th>
@@ -31,15 +31,15 @@
                         </thead>
                         <tbody>
                             <!-- 게시글 목록 -->
-                            <tr th:each="board : ${boardlist}">
+                            <tr th:each="qnaboard : ${qnaboardlist}">
                                 <!-- Entity의 필드명에 따라 변경 -->
-                                <td th:text="${board.bnum}"></td>
+                                <td th:text="${qnaboard.bnum}"></td>
                                 <td>
-                                    <a th:href="@{/dy_post(bnum=${board.bnum})}" th:text="${board.title}"></a>
+                                    <a th:href="@{/managementPage/qnaboardPost(bnum=${qnaboard.bnum}, page=${currentPage})}" th:text="${qnaboard.title}"></a>
                                 </td>
-                                <td th:text="${board.ename}"></td>
-                                <td th:text="${#temporals.format(board.postdate, 'yyyy-MM-dd')}"></td>
-                                <td th:text="${board.visitcount}"></td>
+                                <td th:text="${qnaboard.ename}"></td>
+                                <td th:text="${#temporals.format(qnaboard.postdate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${qnaboard.visitcount}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -52,15 +52,15 @@
                         이전
                     </button>
                     <button th:each="i : ${#numbers.sequence(1, totalPages)}"
-                        th:onclick="'location.href=\'//managementPage/qnaBoard?page=' + ${i} + '\''" th:text="${i}">
+                        th:onclick="'location.href=\'/managementPage/qnaBoard?page=' + ${i} + '\''" th:text="${i}">
                     </button>
                     <button th:if="${currentPage < totalPages}"
-                        th:onclick="'location.href=\'//managementPage/qnaBoard?page=' + (${currentPage} + 1) + '\''">
+                        th:onclick="'location.href=\'/managementPage/qnaBoard?page=' + (${currentPage} + 1) + '\''">
                         다음
                     </button>
                 </div>
                 <div class="listTop">
-                    <button onclick="location.href='/dy_register'">작성하기</button>
+                    <button onclick="location.href='/managementPage/qnaboardRegister'">작성하기</button>
                 </div>
             </div>
         </main>

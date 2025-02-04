@@ -103,10 +103,15 @@ public class IndexController {
             return "/alertPrint";
         }
 
+        // 로그인 성공 시 사용자 정보를 새로 조회
+        memberDTO userInfo = memberService.getUserById(memberDTO.getUserId());
+
         // 세션 생성 및 사용자 ID 저장
         HttpSession session = request.getSession();
-        session.setAttribute("userId", memberDTO.getUserId());
-        System.out.println("세션 생성 완료 - 사용자 ID: " + memberDTO.getUserId());
+        session.setAttribute("userId", userInfo.getUserId());
+        session.setAttribute("authorityId", userInfo.getAuthorityId());
+        System.out.println("세션 생성 완료 - 사용자 ID: " + userInfo.getUserId());
+        System.out.println("세션 생성 완료 - 사용자 권한: " + userInfo.getAuthorityId());
 
         // 아이디 저장 쿠키 처리
         if (rememberId) {

@@ -2,7 +2,7 @@
 <html lang="ko">
 
 <head>
-    <title>난방기사 A/S 스케쥴 관리 서비스</title>
+    <title>공지사항</title>
 
     <head th:replace="common_headscript.html :: common_headscript"></head>
     <link rel="stylesheet" href="/css/noticeBoard.css" />
@@ -16,14 +16,14 @@
         <main id="noticeBoard_container" th:fragment="noticeBoard_main">
             <div th:insert="sidebar.html :: sidebar"></div>
             <div class="boardList">
-                <h1>노후시설 A/S관리 게시판</h1>
+                <h1>공지사항</h1>
                 <hr>
                 <div class="list">
                     <table>
                         <thead>
                             <tr>
                                 <th>번호</th>
-                                <th>제목</th>
+                                <th class="table_title">제목</th>
                                 <th>작성자</th>
                                 <th>작성일</th>
                                 <th>조회수</th>
@@ -35,7 +35,7 @@
                                 <!-- Entity의 필드명에 따라 변경 -->
                                 <td th:text="${board.bnum}"></td>
                                 <td>
-                                    <a th:href="@{/dy_post(bnum=${board.bnum})}" th:text="${board.title}"></a>
+                                    <a th:href="@{/managementPage/boardPost(bnum=${board.bnum}, page=${currentPage})}" th:text="${board.title}"></a>
                                 </td>
                                 <td th:text="${board.ename}"></td>
                                 <td th:text="${#temporals.format(board.postdate, 'yyyy-MM-dd')}"></td>
@@ -60,7 +60,7 @@
                     </button>
                 </div>
                 <div class="listTop">
-                    <button onclick="location.href='/dy_register'">작성하기</button>
+                    <button onclick="location.href='/managementPage/boardRegister'">작성하기</button>
                 </div>
             </div>
         </main>

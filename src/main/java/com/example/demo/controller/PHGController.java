@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -218,14 +221,23 @@ public class PHGController {
             model.addAttribute("url", "/PHG_login");
             return "/PHG/PHG_alertPrint";
         }
+
         return "/PHG/RequestCode/registAS";
     }
 
     @PostMapping("/schedule/registAS/insert")
-    public String insertAsReception(PHG_AsReceptionDTO asReceptionDTO, Model model) {
+    public String insertAsReception(PHG_AsReceptionDTO asReceptionDTO, Model model, PHG_AsReceptionDTO dto) {
         try {
-            int result = asReceptionService.AS_Reception(asReceptionDTO);
+            int DeliveryAssignment = asReceptionService.DeliveryAssignment(dto);
+            System.out.println("DeliveryAssignment : " + DeliveryAssignment);
+            // model.addAttribute("DeliveryAss1ignment", DeliveryAssignment);
+            if (DeliveryAssignment < 1) {
+                model.addAttribute("msg", "해당 시각은 예약이 가득 찼습니다.");
+                model.addAttribute("url", "/schedule/registAS"); // 접수 페이지 URL
+                return "/PHG/PHG_alertPrint";
+            }
 
+            int result = asReceptionService.AS_Reception(asReceptionDTO);
             if (result > 0) {
                 model.addAttribute("msg", "A/S 접수가 성공적으로 완료되었습니다.");
                 model.addAttribute("url", "/PHG_managementPage"); // 목록 페이지 URL
@@ -237,9 +249,61 @@ public class PHGController {
         } catch (Exception e) {
             model.addAttribute("msg", "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             model.addAttribute("url", "/schedule/registAS");
+            System.out.println("PreferredDate 체크: " + asReceptionDTO.getPreferredDateTime());
+            e.printStackTrace();
         }
 
         return "/PHG/PHG_alertPrint";
+    }
+
+    @GetMapping("/schedule/registAS/checkAvailableTimeSlots")
+    @ResponseBody
+    public ResponseEntity<?> checkAvailableTimeSlots(@RequestParam("selectedDate") String selectedDate) {
+        try {
+            // 메서드 진입 로그
+            System.out.println(">>> checkAvailableTimeSlots() 호출됨. 선택된 날짜: " + selectedDate);
+
+            List<String> availableTimeSlots = new ArrayList<>();
+
+            String[] timeSlots = {
+                    "09:00:00", "10:00:00", "11:00:00", "12:00:00",
+                    "14:00:00", "15:00:00", "16:00:00", "17:00:00"
+            };
+
+            for (String timeSlot : timeSlots) {
+                String fullDateTime = selectedDate + " " + timeSlot;
+
+                // 반복문 내 변수 확인용 로그
+                System.out.println(">>> 현재 확인 중인 시간 슬롯: " + fullDateTime);
+
+                PHG_AsReceptionDTO dto = new PHG_AsReceptionDTO();
+
+                dto.setPreferredDateTime(fullDateTime);
+
+                // 0과 1 이상으로 비교
+                int DeliveryAssignment = asReceptionService.DeliveryAssignment(dto);
+
+                // 서비스 호출 후 결과 확인 로그
+                System.out.println(">>> DeliveryAssignment 결과: " + DeliveryAssignment);
+
+                if (DeliveryAssignment > 0) {
+                    System.out.println(">>> " + timeSlot + " 시간대는 사용 가능합니다.");
+                    availableTimeSlots.add(timeSlot);
+                } else {
+                    System.out.println(">>> " + timeSlot + " 시간대는 사용 불가능합니다.");
+                }
+            }
+
+            // 최종 결과 로그
+            System.out.println(">>> 사용 가능한 모든 시간대: " + availableTimeSlots);
+
+            return ResponseEntity.ok(availableTimeSlots);
+        } catch (Exception e) {
+            // 에러 시 로그
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("시간 슬롯 조회 중 오류 발생: " + e.getMessage());
+        }
     }
 
     // --------------------------------------------------------------------------------------------------

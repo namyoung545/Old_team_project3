@@ -4,93 +4,94 @@
     box-sizing: border-box;
 }
 
-#ASprocessStatus_sub_border_Container{
+#ASprocessStatus_container{
 	display: flex;
-	flex-direction: column; /* 세로 방향 정렬 */
-	justify-content: center;
-    align-items: center;
-	background-color: #fff;
-	width:100%;
-	padding:40px 20px;
+	flex-direction: column;
+	height: 100vh;
 }
 
-#ASprocessStatus_sub_Container {
-    display: flex;
-	background-color: #fff;
-	max-width: 1000px;
+.registProcessStatus_main_container {
+	flex: 1;
+	display: flex;
+	padding: 20px;
+	justify-content: center;
+}
+
+.registProcessStatus_box {
 	width: 100%;
+	max-width: 1000px;
+	text-align: center;
+	background-color: #fff;
 	border-radius: 12px;
-    flex-direction: column; /* 세로 방향 정렬 */
-    justify-content: center;
-    align-items: center;
 	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-	padding:20px;
+	padding: 20px 30px;
 	margin: 0 auto;
 }
-
+h1 {
+	color: #333;
+	margin-bottom: 20px;
+}
 table {
-	width: 100%; /* 테이블 전체 너비 */
-	border-collapse: collapse; /* 경계선 중복 제거 */
-	margin: 20px 0;
-	font-size: 16px;
-	text-align: center;
-	background-color: #fff; /* 배경색 */
-	/* 	border: 1px solid #ddd; 테두리 */
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0 auto;
 }
-
-table thead tr {
-	border-bottom: 2px solid #ddd; /* 아래쪽 테두리 */
+th, td {
+	padding: 10px;
+	border: 1px solid #ddd;
 }
-
-/* 테이블 헤더 스타일 */
-table thead th {
-	background-color: #f4f4f4; /* 연한 회색 배경 */
-	color: #333; /* 어두운 텍스트 */
-	padding: 10px 15px;
+th {
+	background-color: #f2f2f2;
 	font-weight: bold;
 }
-
-/* 테이블 본문 스타일 */
-table td {
-	color: #333; /* 기본 텍스트 */
-	border-bottom: 1px solid #ddd; /* 줄 간 구분선 */
-	padding: 10px 15px;
+tr:nth-child(even) {
+	background-color: #f9f9f9;
+}
+tr:hover {
+	background-color: #f5f5f5;
 }
 
-/* 짝수 행 배경색 */
-table tbody tr:nth-child(even) {
-	background-color: #f9f9f9; /* 연한 회색 */
+.process-btn{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--button-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-/* 홀수 행 배경색 */
-table tbody tr:nth-child(odd) {
-	background-color: #fff;
+.process-btn:hover{
+	background-color: var(--button-hover-color);
 }
-
-/* 테이블 행 hover 효과 */
-table tbody tr:hover {
-	background-color: #f1f1f1; /* hover 시 연한 배경 */
+/* 모달 박스 스타일 */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0,0,0,0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
 }
-
-table button {
-	background-color: #f8f8f8;
-	font-size: 1rem;
-	font-weight: 600;
-	border: none;
+.modal-box {
+	background: #fff;
 	border-radius: 5px;
-	color: #0f0f0f;
-	padding: 0.5rem 1rem;
-	transition: background-color 0.3s, box-shadow 0.3s;
-	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* 살짝 그림자 효과 */
+	padding: 20px;
+	width: 500px;
+	max-width: 95%;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
-
-table button.complete {
-	background-color: #f68e3e;
-	color: white;
+.modal-box h2 {
+	margin-top: 0;
 }
-
-table button:hover {
-	background-color: #e57a31;
-	color:#f0f0f0;
-	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+.modal-close-btn {
+	margin-top: 20px;
+}
+#displayRequestId, #displayRequestName{
+	font-size: 20px;
+    font-weight: bold;
+    color: #881824;
 }
