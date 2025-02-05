@@ -20,7 +20,70 @@
         <main class="registProcessStatus_main_container">
             <div class="registProcessStatus_box">
                 <h1>A/S 처리 현황</h1>
-                <table border="1">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>접수번호</th>
+                            <th>접수일시</th>
+                            <th>고객명</th>
+                            <th>완료 예정일시</th>
+                            <th>배정된 기사</th>
+                            <th>처리현황</th>
+                            <!-- admin일때만 "처리하기" 열 노출 -->
+                            <th th:if="${session.authorityId == 1}">처리하기</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="reception : ${receptions}">
+                            <td th:text="${reception.requestId}"></td>
+                            <td th:text="${reception.receptionDate}"></td>
+                            <td th:text="${reception.name}"></td>
+                            <td th:text="${reception.preferredDateTime}"></td>
+                            <td th:text="${reception.receptionDelivery}"></td>
+                            <td th:text="${reception.receptionStatus}"></td>
+                            <!-- admin일 경우 "처리하기" 버튼 추가 -->
+                            <td th:if="${session.authorityId == 1}">
+                                <button type="button" class="process-btn" th:data-request-id="${reception.requestId}"
+                                    th:data-name="${reception.name}" onclick="openModal(this)">
+                                    처리하기
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 페이징 버튼 -->
+                <nav>
+                    <ul class="pagination">
+                        <!-- <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/managementPage/ASprocessStatus(page=1, pageSize=${pageSize})}">처음</a>
+                        </li> -->
+                        <li class="page-item" th:if="${currentPage > 1}" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/managementPage/ASprocessStatus(page=${currentPage - 1}, pageSize=${pageSize})}">이전</a>
+                        </li>
+
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                                th:href="@{/managementPage/ASprocessStatus(page=${i}, pageSize=${pageSize})}"
+                                th:text="${i}"></a>
+                        </li>
+
+                        <li class="page-item" th:if="${currentPage < totalPages}" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/managementPage/ASprocessStatus(page=${currentPage + 1}, pageSize=${pageSize})}">다음</a>
+                        </li>
+                        <!-- <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/managementPage/ASprocessStatus(page=${totalPages}, pageSize=${pageSize})}">마지막</a>
+                        </li> -->
+                    </ul>
+                </nav>
+
+                <!-- 페이징 처리 안함 -->
+                <!-- <table border="1">
                     <thead>
                         <tr>
                             <th>접수번호</th>
@@ -29,7 +92,6 @@
                             <th>완료 예정일시</th>
                             <th>배정된 기사</th>
                             <th>처리현황</th>
-                            <!-- admin일때만 "처리하기" 열 노출 -->
                             <th th:if="${session.authorityId == 1}">처리하기</th>
                         </tr>
                     </thead>
@@ -41,19 +103,15 @@
                             <td th:text="${reception.preferredDateTime}"></td>
                             <td th:text="${reception.receptionDelivery}"></td>
                             <td th:text="${reception.receptionStatus}"></td>
-                            <!-- admin일 경우 "처리하기" 버튼 추가 -->
                             <td th:if="${session.authorityId == 1}">
-                            <button type="button" class="process-btn"
-                                th:data-request-id="${reception.requestId}"
-                                th:data-name="${reception.name}"
-                                onclick="openModal(this)">
-                                처리하기
-                            </button>
-                            
+                                <button type="button" class="process-btn" th:data-request-id="${reception.requestId}"
+                                    th:data-name="${reception.name}" onclick="openModal(this)">
+                                    처리하기
+                                </button>
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </div>
         </main>
 
