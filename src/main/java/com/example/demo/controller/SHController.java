@@ -40,4 +40,9 @@ public class SHController {
         return "sh_html/sh_fireInfo";
     }
     
+    @GetMapping("/sh_fullcalendar")
+    public String getSHFullCalendar() {
+        return "sh_html/sh_fullcalendar";
+    }
+    
 }

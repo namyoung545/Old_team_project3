@@ -40,7 +40,7 @@
 	</insert>
 	
 	<select id="AS_Status" parameterType="com.example.demo.dto.asReceptionDTO" resultType="com.example.demo.dto.asReceptionDTO">
-		SELECT requestId, userId, authorityId, receptionDate, name, preferredDateTime, receptionStatus, receptionDelivery
+		SELECT requestId, userId, authorityId, receptionDate, name, phoneNumber, email, postcode, address, detailAddress, facilityType, issueTitle, issueDetails, preferredDateTime, receptionStatus, receptionDelivery
 		FROM as_reception
 		<if test="authorityId != 1">
 			WHERE userId = #{userId}
