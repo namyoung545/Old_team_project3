@@ -311,8 +311,14 @@ public class managementPageController {
 
     // as 처리현황 페이지
     @GetMapping("/ASprocessStatus")
-    public String getASprocessStatus(HttpSession session, Model model, asReceptionDTO asReceptionDTO,
-            memberDTO memberDTO)
+    public String getASprocessStatus(
+            HttpSession session,
+            Model model,
+            asReceptionDTO asReceptionDTO,
+            memberDTO memberDTO,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+            )
             throws Exception {
 
         if (session.getAttribute("userId") == null) {
@@ -321,16 +327,28 @@ public class managementPageController {
             return "/alertPrint";
         }
 
+        // 세션에서 사용자 정보 가져오기
         String userId = (String) session.getAttribute("userId");
         int authorityId = (int) session.getAttribute("authorityId");
 
+        // DTO에 사용자 정보 설정
         asReceptionDTO.setUserId(userId);
         asReceptionDTO.setAuthorityId(authorityId);
 
+        // 정보 가져오기
         List<memberDTO> deliverySelect = memberService.deliverySelect(memberDTO);
         List<asReceptionDTO> asReceptionList = asReceptionService.AS_Status(asReceptionDTO);
         model.addAttribute("asReceptionList", asReceptionList);
         model.addAttribute("deliverySelect", deliverySelect);
+
+        // 페이징 처리
+        List<asReceptionDTO> receptions = asReceptionService.getASStatusWithPaging(userId, authorityId, page, pageSize);
+        int totalPages = asReceptionService.getTotalPages(userId, authorityId, pageSize);
+
+        model.addAttribute("receptions", receptions);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageSize", pageSize);
 
         return "ASprocessStatusBoard"; // jsp 파일 경로
     }

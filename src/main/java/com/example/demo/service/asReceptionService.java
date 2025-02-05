@@ -9,7 +9,12 @@ public interface asReceptionService {
 
     List<asReceptionDTO> AS_Status(asReceptionDTO dto) throws Exception;
 
+    List<asReceptionDTO> getASStatusWithPaging(String userId, int authorityId, int page, int pageSize);
+
+    int getTotalPages(String userId, int authorityId,int pageSize);
+
     void deliveryArrangement(int requestId, String receptionDelivery, String receptionStatus);
 
     int DeliveryAssignment(asReceptionDTO dto);
+
 }
