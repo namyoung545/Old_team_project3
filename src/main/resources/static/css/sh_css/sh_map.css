@@ -1,0 +1,62 @@
+main .mainContainer {
+    width: 100vw;
+    height: 100vh;
+}
+
+.vworldContainer {
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
+    width: 100%;
+    height: 90%;
+}
+
+#vworldMap {
+    width: 50%;
+    height: 100%;
+}
+
+#mapData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 50%;
+    height: 100%;
+    background-color: #FAFAFA;
+    padding: 1rem;
+}
+
+#mapData .dataBox {
+    width: 90%;
+    height: 45%;
+    background-color: #FEFEFE;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    padding: 1rem;
+    margin: 1rem auto;
+}
+
+#mapData .sidoData {
+    position: relative;
+}
+
+#mapData .sidoTitle {
+    border-bottom: 1px solid #9A9A9A;
+    font-weight: 600;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+}
+
+#mapData .sidoName {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #FEFEFE;
+    background-color: #ffc82d;
+    border-radius: 5px;
+    padding: 0.25rem;
+    margin: 0.25rem;
+}
+

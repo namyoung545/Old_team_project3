@@ -1,0 +1,78 @@
+/* 기본 리셋 및 전역 스타일 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f0f8ff;
+    margin: 0;
+    padding: 0;
+}
+.memberModify_container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+h1, h2 {
+    color: #000080;
+    text-align: center;
+}
+.menu_container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.menu-item {
+    padding: 10px 20px;
+    background-color: #000080;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.menu-item:hover {
+    background-color: #000050;
+}
+.content_container {
+    padding: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #000080;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4169e1;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #1e90ff;
+}
+.btn-danger {
+    background-color: #dc3545;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}

@@ -63,23 +63,83 @@ modified_time DATETIME NOT NULL
 
 
 -- DROP TABLE
-DROP TABLE fire_causes;
-DROP TABLE fire_ignition;
-DROP TABLE fire_items;
-DROP TABLE fire_locations;
-DROP TABLE fire_region;
-DROP TABLE fire_statistics;
-DROP TABLE fire_type;
-DROP TABLE fires;
+-- DROP TABLE fire_causes;
+-- DROP TABLE fire_ignitions;
+-- DROP TABLE fire_items;
+-- DROP TABLE fire_locations;
+-- DROP TABLE fire_regions;
+-- DROP TABLE fire_statistics;
+-- DROP TABLE fire_types;
+-- DROP TABLE fires;
 
 
 DESCRIBE fires;
 SELECT * FROM fires;
+SELECT COUNT(*), SUM(f.damage_property) FROM fires as f WHERE year(date_time) = 2023;
+SELECT COUNT(*), SUM(f.casualties_total), SUM(f.casualties_deaths), SUM(f.casualties_injuries), SUM(f.damage_property) FROM fires as f WHERE fire_region_id IN (27, 84, 107, 138, 207) AND date_time >= 2023;
 SELECT COUNT(*) as cnt FROM fires;
+
+DESCRIBE fire_causes;
 SELECT * FROM fire_causes;
 SELECT COUNT(*) as cnt FROM fire_causes;
-SELECT * FROM fire_locations;
-SELECT * FROM fire_items;
+SELECT * FROM fire_causes WHERE cause_category LIKE "%전기%";
+SELECT * FROM fire_causes WHERE cause_subcategory LIKE "%불씨%";
 
+DESCRIBE fire_ignitions;
+SELECT * FROM fire_ignitions;
+SELECT * FROM fire_ignitions AS i WHERE i.ignition_source_category LIKE "%작동%";
+SELECT * FROM fire_ignitions WHERE ignition_source_subcategory LIKE "%전기%";
+
+DESCRIBE fire_items;
+SELECT * FROM fire_items;
+SELECT COUNT(*) as cnt FROM fire_items;
+SELECT * FROM fire_items WHERE item_category LIKE "%전기%";
+SELECT * FROM fire_items WHERE item_detail LIKE "%나무%";
+
+DESCRIBE fire_locations;
+SELECT * FROM fire_locations;
+SELECT COUNT(*) as cnt FROM fire_locations;
+SELECT * FROM fire_locations WHERE location_main_category LIKE "%주거%";
+SELECT * FROM fire_locations WHERE location_sub_category LIKE "%단독%";
+SELECT * FROM fire_locations WHERE location_detail LIKE "%자동차%";
+
+DESCRIBE fire_regions;
+SELECT * FROM fire_regions;
+SELECT * FROM fire_regions WHERE region_province LIKE "%울산%";
+SELECT * FROM fire_regions WHERE region_city LIKE "%남구%";
+
+DESCRIBE fire_types;
+SELECT * FROM fire_types WHERE fire_type LIKE "%건축%";
+
+-- RENAME TABLE 
+-- 	fire_type TO fire_types,
+--     fire_region TO fire_regions,
+--     fire_ignition TO fire_ignitions;
+
+DESCRIBE fire_info_sido;
+SELECT * FROM fire_info_sido;
+-- DROP TABLE fire_info_sido;
+
+DESCRIBE fire_info_sido_casualty;
+SELECT * FROM fire_info_sido_casualty;
+DROP TABLE fire_info_sido_casualty;
+
+DESCRIBE fire_info_sido_damage;
+SELECT * FROM fire_info_sido_damage;
+DROP TABLE fire_info_sido_damage;
+
+DESCRIBE disasters;
+SELECT * FROM disasters;
+-- DROP TABLE disasters; 
+DESCRIBE fires;
+SELECT * FROM fires;
+SELECT * FROM fire_causes;
+
+DROP TABLE fire_statistics;
 DESCRIBE fire_statistics;
-SELECT * FROM fire_statistics;
+SELECT * FROM fire_statistics ORDER BY id DESC;
+SELECT * FROM fire_statistics WHERE year = "2023";
+SELECT * FROM fire_statistics WHERE stat_name LIKE "%재산피해%" AND year = "2023" ORDER BY id DESC;
+
+-- DELETE FROM fire_statistics WHERE stat_name LIKE ("%인명피해 합계(원인)%") LIMIT 100; 
+-- TRUNCATE TABLE fire_statistics;

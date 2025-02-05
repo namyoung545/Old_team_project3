@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>위험도 평가 데이터</title>
+    <link rel="stylesheet" href="/css/dy_css/dy_risk.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.9/dist/echarts-gl.min.js"></script>
+</head>
+<body>
+    <h1>전기적 요인에 의한 화재 및 감전재해 현황</h1>
+
+    <!-- Select Dropdown -->
+    <div id="controls">
+        <label for="year-select">연도:</label>
+        <select id="year-select">
+            <option value="2023" th:selected="${defaultYear == 2023}">2023</option>
+            <option value="2022" th:selected="${defaultYear == 2022}">2022</option>
+            <option value="2021" th:selected="${defaultYear == 2021}">2021</option>
+            <option value="2020" th:selected="${defaultYear == 2020}">2020</option>
+            <option value="2019" th:selected="${defaultYear == 2019}">2019</option>
+            <option value="2018" th:selected="${defaultYear == 2018}">2018</option>
+        </select>
+    </div>
+
+    <!-- Hidden JSON Data -->
+    <div id="jsonData" th:text="${jsonData}" style="display: none;"></div>
+
+    <!-- Charts Container -->
+    <div id="charts-container">
+        <div id="chart1" class="chart"></div>
+        <div id="chart2" class="chart"></div>
+        <div id="chart3" class="chart"></div>
+        <div id="chart4" class="chart"></div>
+    </div>
+
+    <script src="/js/dy_risk.js"></script>
+</body>
+</html>

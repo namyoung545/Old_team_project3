@@ -1,118 +1,120 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <title>전기재해 모니터링</title>
-  <head th:replace="dashboard_headscript.html :: dashboard_headscript"></head> <!-- main 삽입 -->
+
+  <head th:replace="common_headscript.html :: common_headscript"></head> <!-- main 삽입 -->
+  <script src="/js/dashboardChart_sh_graph.js" defer></script>
+  <script src="/js/dashboardChart_vworldmap.js" defer></script>
+  <script src="/js/dashboardChart_dy.js" defer></script>
+  <script src="/js/dashboard.js" defer></script>
+  <script type="text/javascript"
+  src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
+  <link rel="stylesheet" href="/css/dashboardChart.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/vworldmap.css" />
 </head>
 
 <body>
   <div class="dashboard_container">
-    <div class="widgetWrapper">
-      <section class="widgetContainer active">
-        <div class="widget windMapKakao">
-          <h2>예상 발전량 지도</h2>
-          <div id="kakaoMap"></div>
-
+    <!-- <div class="dashboard_sub_container"> -->
+    <div class="scroll_page" id="first_page">
+      <div class="chartBox chartFires">
+        <canvas id="chartFires_ny"></canvas>
+      </div>
+      <div class="chartBox chartCause">
+        <div class="chartCanvas">
+          <canvas id="chartCause_ny"></canvas>
         </div>
-        <div class="widget weatherForecast">
-          <h2>날씨 예보<span class="widgetIndicator fcLocation"></span>
-          </h2>
-          <article class="widgetArticle">
-            <div class="weatherContainer">
-              <div class="weatherToday">
-                <div class="weather-data">
-                  <div class="weather-icon"></div>
-                  <div class="weather-text">
-                    <div class="weather-temp"></div>
-                    <div class="weather-desc"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="weatherWeek"></div>
-              <div class="weatherFcTime"></div>
+        <div id="labelCause_ny"></div>
+      </div>
+      <div class="chartBox chartInjuries">
+        <canvas id="chartInjuries_ny"></canvas>
+      </div>
+      <div class="chartBox chartDamage">
+        <canvas id="chartDamage_ny"></canvas>
+      </div>
+      <div class="vworldmainContainer">
+        <div class="vworldContainer">
+            <div id="vworldMap_ny"></div>
+            <div id="mapData">
+                <div class="dataBox"></div>
+                <div class="dataBox"></div>
             </div>
-          </article>
         </div>
-        <div class="widget turbine-3d">
-          <h2>3D 풍력 발전기</h2>
-          <canvas id="renderCanvas"></canvas>
-        </div>
-        <div class="widget predictPower">
-          <h2>모델별 예상 발전량</h2>
-          <div class="gaugeChart"></div>
-          <div class="gaugeXYChart"></div>
-          <div class="modelList">
-            <span class="model_item"><span class="model_xgboost">XBGoost Model</span><span
-                class="xgboost_value">-</span></span>
-            <span class="model_item"><span class="model_rf">RF Model</span><span class="rf_value">-</span></span>
-            <span class="model_item"><span class="model_cstl">CSTL Model</span><span class="cstl_value">-</span></span>
+        <!-- <div class="vwButton">
+            <tr>
+                <th>건물 레이어 On/Off</th>
+                <td><input type="checkbox" class="facilityButton" checked="checked"></td>
+            </tr>
+            <tr>
+                <th>도시명 레이어 On/Off</th>
+                <td><input type="checkbox" class="cityNameButton" checked="checked"></td>
+            </tr>
+            <tr>
+                <th>행정구역 레이어 On/Off</th>
+                <td><input type="checkbox" class="cityBoundButton" checked="checked"></td>
+            </tr>
+            <tr>
+                <th>GEOJSON</th>
+                <td><button type="button" class="geoJsonButton">Button</button></td>
+            </tr>
+        </div> -->
+    </div>
+    <div id="features"></div>
+    </div>
+    <div class="scroll_page" id="second_page">
+      <h1>전기적 요인에 의한 화재 및 감전재해 현황</h1>
+
+      <!-- Select Dropdown -->
+      <div id="controls">
+        <label for="year-select">연도:</label>
+        <select id="year-select_ny">
+          <option value="2023" th:selected="${defaultYear == 2023}">2023</option>
+          <option value="2022" th:selected="${defaultYear == 2022}">2022</option>
+          <option value="2021" th:selected="${defaultYear == 2021}">2021</option>
+          <option value="2020" th:selected="${defaultYear == 2020}">2020</option>
+          <option value="2019" th:selected="${defaultYear == 2019}">2019</option>
+          <option value="2018" th:selected="${defaultYear == 2018}">2018</option>
+        </select>
+      </div>
+
+      <!-- Hidden JSON Data -->
+      <div id="jsonData_ny" th:text="${jsonData}" style="display: none;"></div>
+
+      <!-- Charts Container -->
+      <div id="charts-container">
+        <div id="chart_ny1" class="chart"></div>
+        <div id="chart_ny2" class="chart"></div>
+        <div id="chart_ny3" class="chart"></div>
+        <div id="chart_ny4" class="chart"></div>
+      </div>
+    </div>
+    <div class="scroll_page" id="third_page">
+      <div id="index_container">
+        <!-- 헤더 -->
+        <!-- <div th:replace="indexHeader.html :: index_header"></div> Header 삽입 -->
+
+        <!-- 메인 컨텐츠 -->
+        <div class="main">
+          <div class="content">
+            <a href="/dashboard" class="box">
+              <h2>전기 재해 모니터링</h2>
+            </a>
+            <a href="/managementPage" id="menuManagementPageLink" class="box">
+              <h2>노후 시설 AS 신고 관리 시스템</h2>
+            </a>
           </div>
         </div>
-      </section>
-      <section class="widgetContainer slideRight">
-        <div class="widget windMapVentusky">
-          <h2>풍향 지도</h2>
-          <article class="widgetArticle">
-            <div class="ventuskyMapContainer">
-              <div
-                style="display:block!important;position:relative!important;max-width:101.979vh!important;margin:auto!important;padding:0!important;border:0!important">
-                <div
-                  style="display:block!important;position:relative!important;width:100%!important;height:0!important;box-sizing:content-box!important;margin:0!important;border:0!important;padding:0 0 98.06%!important;left:0!important;top:0!important;right:0!important;bottom:0!important">
-                  <iframe src="https://embed.ventusky.com/?p=38.1;127.6;5&l=wind-10m"
-                    style="display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;right:auto!important;bottom:auto!important"
-                    loading="lazy"></iframe>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-        <div class="widget windPowerChart">
-          <h2>의사결정 모델 발전량 차트</h2>
-          <article class="widgetArticle">
-            <div class="chartContainer">
-              <canvas id="windPowerCanvas" class="windPowerCanvas"></canvas>
-            </div>
-          </article>
-        </div>
-        <div class="widget windPowerTimeSeriesChart">
-          <h2>시계열 모델 발전량 차트</h2>
-          <article class="widgetArticle">
-            <div class="chartContainer">
-              <canvas id="windPowerTimeSeriesCanvas" class="windPowerTimeSeriesCanvas"></canvas>
-            </div>
-          </article>
-        </div>
-      </section>
-      <section class="widgetContainer rightOut slideHide">
-        <div class="widget powerStation">
-          <h2>발전원별 발전량</h2>
-          <article class="widgetArticle">
-            <canvas id="powerStationCanvas" class="doughnutChart"></canvas>
-          </article>
-        </div>
-        <div class="widget copyright">
-          <h2>Team Old</h2>
-          <article class="widgetArticle">
-            <div class="copyrightInfo">
-              <p>본 프로젝트는 공공데이터를 활용하여 제작되었습니다.</p>
-              <p>풍력 발전량 예측 모델은 머신러닝을 활용하여 제작되었습니다.</p>
-              <p>모델은 XGBoost, Random Forest, CSTL 을 사용하였습니다.</p>
-              <p>2019년 12월 1일부터 2024년 9월 30일까지의 데이터를 학습하였습니다.</p>
-              <p>예측 모델의 R² Score는 약 0.43 입니다.</p>
-              <p>Team Old</p>
-            </div>
-          </article>
-        </div>
-      </section>
-    </div>
-    <div class="widgetControl">
-      <button id="prev-btn"><i class="prev-btn bi bi-chevron-left"></i></button>
-      <button id="next-btn"><i class="next-btn bi bi-chevron-right"></i></button>
-    </div>
-  </div>
 
-  <!-- <script src="{{ url_for('static', filename='js/turbine.js') }}"></script> -->
+        <!-- 푸터 -->
+        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+      </div>
+    </div>
+    <!-- </div> -->
+  </div>
 </body>
 
 </html>

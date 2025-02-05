@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지도</title>
+    <!-- headScripts.html 파일 삽입 -->
+    <!-- <div th:replace="sh_html/fragments/headScripts :: headScripts"></div> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript"
+        src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
+        <script type="module" th:src="@{/js/dashboardChart_vworldmap.js}"></script>
+        <link rel="stylesheet" th:href="@{/css/sh_css/sh_map.css}">
+</head>
+
+<body>
+    <main>
+        <div class="mainContainer">
+            <div class="vworldContainer">
+                <div id="vworldMapny"></div>
+                <div id="mapData">
+                    <div class="dataBox"></div>
+                    <div class="dataBox"></div>
+                </div>
+            </div>
+            <div class="vwButton">
+                <tr>
+                    <th>건물 레이어 On/Off</th>
+                    <td><input type="checkbox" class="facilityButton" checked="checked"></td>
+                </tr>
+                <tr>
+                    <th>도시명 레이어 On/Off</th>
+                    <td><input type="checkbox" class="cityNameButton" checked="checked"></td>
+                </tr>
+                <tr>
+                    <th>행정구역 레이어 On/Off</th>
+                    <td><input type="checkbox" class="cityBoundButton" checked="checked"></td>
+                </tr>
+                <tr>
+                    <th>GEOJSON</th>
+                    <td><button type="button" class="geoJsonButton">Button</button></td>
+                </tr>
+            </div>
+        </div>
+        <div id="features"></div>
+    </main>
+
+</body>
+
+</html>

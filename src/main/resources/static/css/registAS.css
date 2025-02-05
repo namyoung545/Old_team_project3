@@ -1,0 +1,215 @@
+@charset "UTF-8";
+
+/* registAS 컨테이너 스타일 */
+.registAS {
+	background-color: #fff; /* 흰색 배경 */
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+	width: 100%;
+	max-width: 800px; /* 최대 너비 */
+	margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 헤더 스타일 */
+h1 {
+	font-size: 32px;
+	color: #333; /* 어두운 색 텍스트 */
+	margin-bottom: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+
+/* 구분선 */
+hr {
+	border: 0;
+	border-top: 2px solid #ddd;
+	margin: 20px 0;
+}
+
+/* 폼 테이블 스타일 */
+table {
+	width: 100%;
+	border-spacing: 0;
+}
+
+th, td {
+	padding: 10px;
+	vertical-align: top;
+}
+
+th {
+	text-align: left;
+	font-weight: 600;
+	color: #555;
+	width: 25%;
+	align-content: center;
+}
+
+td input, td select, td textarea {
+	width: calc(100% - 20px);
+	padding: 8px 10px;
+	font-size: 16px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	margin: 5px 0;
+	box-sizing: border-box;
+}
+
+/* 캡션 스타일 */
+caption {
+	text-align: left;
+	font-size: 18px;
+	font-weight: 600;
+	margin-bottom: 10px;
+	color: #333;
+}
+
+/* 텍스트 박스 */
+textarea {
+	resize: vertical;
+	min-height: 100px;
+}
+
+/* 약관 체크박스 스타일 */
+#term {
+	margin-right: 10px;
+	width: auto;
+}
+
+label {
+	font-size: 14px;
+	color: #555;
+}
+
+/* 버튼 스타일 (전체 페이지 버튼 통일) */
+.registAS button {
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	font-size: 16px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+	background-color: #343a40; /* 버튼 기본 배경색 */
+	color: #fff; /* 텍스트 색상 */
+}
+
+.registAS button:hover {
+	background-color: #DAB800; /* 호버 시 배경색 */
+}
+
+.registAS button:active {
+	background-color: #FFD700; /* 클릭 시 배경색 */
+}
+
+.registAS table .phone {
+	width: 30%
+}
+
+.registAS table .address {
+	width: 30%;
+}
+
+.time-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin :0.5rem 0;
+}
+
+.time-buttons button {
+	padding: 10px 20px;
+	font-size: 16px;
+	color: #0f0f0f;
+	background-color: #f8f8f8;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+	transition: background-color 0.3s;
+}
+
+.time-buttons button:hover {
+	background-color: #e0e0e0;
+}
+
+.time-buttons button.active {
+	background-color: #f68e3e;
+	color: white;
+}
+
+
+.employeeButton {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin :0.5rem 0;
+}
+
+.employeeButton button {
+	padding: 10px 20px;
+	font-size: 16px;
+	color: #0f0f0f;
+	background-color: #f8f8f8;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+	transition: background-color 0.3s;
+}
+
+.employeeButton button:hover {
+	background-color: #e0e0e0;
+}
+
+.employeeButton button.active {
+	background-color: #f68e3e;
+	color: white;
+}
+
+/* 반응형 스타일 */
+@media ( max-width : 768px) {
+	main {
+		padding: 20px;
+	}
+	.registAS {
+		padding: 30px 20px;
+	}
+	h1 {
+		font-size: 28px;
+	}
+	th, td {
+		display: block;
+		width: 100%;
+	}
+	td {
+		margin-bottom: 10px;
+	}
+	th {
+		margin-bottom: 5px;
+		font-size: 16px;
+	}
+	td input, td select, td textarea {
+		width: 100%;
+	}
+}
+
+.privacy_container{
+	display: flex;
+	justify-content: center;
+}
+
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+	margin-top: 10px;
+}
+
+.phone{
+	text-align: center;
+}

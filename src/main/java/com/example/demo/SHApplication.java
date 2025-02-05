@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.service.SHFireStatisticsService;
@@ -8,6 +9,7 @@ import com.example.demo.service.SHPythonService;
 import com.example.demo.service.SHVirtualEnvService;
 
 @Component
+@EnableScheduling
 public class SHApplication {
 
     @Autowired

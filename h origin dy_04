@@ -1,0 +1,156 @@
+[33m726ab91[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdy_04[m[33m)[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into dy_04
+[33m2d01519[m[33m ([m[1;31morigin/dy_04[m[33m)[m 20250124
+[33m7906766[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #44 from namyoung545/sh_map
+[33m6a3b688[m VWorld GeoJson Parser Comment
+[33m6239bf2[m 20250123
+[33m78963c1[m Merge pull request #43 from namyoung545/ny_branch
+[33m31273cf[m 2025년 1월 23일 진행중
+[33m3b7ff62[m Merge pull request #42 from namyoung545/dy_04
+[33m63e1f91[m 20250123
+[33m30a3e28[m 20250123
+[33m59bb1d0[m[33m ([m[1;32mdy_03[m[33m)[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into dy_03
+[33m99ac876[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #40 from namyoung545/dy_03
+[33m99492b2[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into dy_03
+[33m121d757[m 20250123
+[33m90bd992[m Merge pull request #39 from namyoung545/sh_map
+[33m4c15b0f[m[33m ([m[1;31morigin/sh_map[m[33m)[m VWorld WFS Map
+[33m9818f87[m Merge pull request #38 from namyoung545/PHG
+[33me15114e[m Merge pull request #37 from namyoung545/sh_map
+[33m31d7dfa[m WFS DTO
+[33mf4f465a[m Merge pull request #36 from namyoung545/dy_02
+[33m8090761[m[33m ([m[1;31morigin/dy_02[m[33m)[m 20250122
+[33md36a07a[m[33m ([m[1;31morigin/PHG[m[33m)[m 2025-01-22 update
+[33mf343e30[m GeoJson Map
+[33m00b8cba[m 20250122
+[33m6722c00[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 https://github.com/namyoung545/Old_team_project3f it merges an updated upstream into a topic branch.
+[33mac5d520[m 20250121.f
+[33m3e1d387[m WMS Sido
+[33mf440b96[m Merge pull request #35 from namyoung545/ny_branch
+[33ma4b12a5[m[33m ([m[1;31morigin/ny_branch[m[33m)[m 2025년 1월 21일 작업중
+[33m8d04cea[m Merge pull request #34 from namyoung545/PHG
+[33me823595[m 2025-01-21 update
+[33m0e8db02[m Merge pull request #33 from namyoung545/dy_01
+[33mf8d3cdc[m[33m ([m[1;31morigin/dy_01[m[33m)[m 20250121
+[33m4b23b00[m Merge pull request #32 from namyoung545/sh_map
+[33m0e60b00[m Line Point Chart
+[33m9a9b062[m Merge pull request #31 from namyoung545/sh_map
+[33mff08199[m Chart Percentage
+[33m336a612[m Fires Chart
+[33ma67c645[m Doughnut Chart
+[33m90236f8[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into sh_map
+[33ma7e80ba[m Merge pull request #30 from namyoung545/ny_branch
+[33m16ebd16[m 박성현 하트
+[33m0294742[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into sh_map
+[33mc82cc65[m Merge pull request #29 from namyoung545/dy_01
+[33m391a662[m Merge pull request #17 from namyoung545/dy_new
+[33md4e8b33[m Merge branch 'main' into dy_new
+[33m09c2abe[m 20250117
+[33ma540183[m 2025년 1월 17일 진행중
+[33me3ec87a[m Fires Chart
+[33m5cbdd88[m Merge pull request #28 from namyoung545/PHG
+[33m67361e2[m 2025-01-17 A/S 신청 기능추가
+[33m7e22df3[m 20250117
+[33m8fa9dbd[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into dy_01
+[33m3ac65a9[m 20250117
+[33m654a4f6[m Map Controller
+[33m7d15109[m[33m ([m[1;31morigin/sh_model[m[33m)[m AJAX Fires Data
+[33maa4d48e[m 20250116
+[33m36c82de[m Merge pull request #27 from namyoung545/ny_branch
+[33mce66641[m Merge branch 'main' into ny_branch
+[33md9dd9c4[m 2025년 1월 16일 하나하나 연결 진행중
+[33m47ec16a[m Merge pull request #26 from namyoung545/dy_01
+[33m34e66b4[m Merge branch 'main' into dy_01
+[33m6ba2970[m Merge pull request #25 from namyoung545/PHG
+[33m664e1ad[m 20250116
+[33m09f40f3[m 2025-01-16 update one
+[33m682fca3[m Analyze Yearly Fires Data
+[33mb287080[m Statistics Query
+[33mc07bf35[m Find Distinct and Data List
+[33m15a5aca[m 20250115
+[33mc6a750e[m Merge pull request #24 from namyoung545/PHG
+[33m2a011ea[m 2025-01-15 update two
+[33mae43c9c[m Damage Property By Causes
+[33m0201cdf[m Analyze Data By Ids
+[33m05bb503[m 20250115
+[33m91594f7[m 2025-01-15 update PythonExcutor
+[33m05abbc8[m Seach DATA ID
+[33ma51441f[m Get Cause Category ID
+[33mcaea578[m Merge branch 'main' of github.com-ja2pyc:namyoung545/Old_team_project3 into sh_model
+[33m6ad4720[m 20250114 Modified
+[33ma935d98[m 20250114 Analyze Fire Data
+[33m4f289d0[m Merge pull request #23 from namyoung545/ny_branch
+[33mf15dbf7[m application 내용 spring.config.import=optional:config/application-local.properties 로 수정
+[33mda00364[m Merge pull request #22 from namyoung545/ny_branch
+[33m112ca47[m Merge branch 'main' into ny_branch
+[33m75a803a[m 2025년 1월 14일 기능 링크 연결 중
+[33mfaa0ca5[m Merge pull request #21 from namyoung545/PHG
+[33m15e7855[m 2025-01-14 update
+[33m998a30e[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into dy_01
+[33m66568b8[m Merge pull request #20 from namyoung545/sh_model
+[33m98113e7[m 20250114 Rename TABLE
+[33m8ac8659[m 20250114
+[33m458ed84[m 20250114
+[33mce47e71[m Merge pull request #19 from namyoung545/sh_model
+[33m4233661[m 20250114 Remove HomeController
+[33md8d8173[m Merge pull request #18 from namyoung545/sh_model
+[33m36f07f0[m 20250114 Fire Statistics Table
+[33m9c4af00[m 20250114 Merge Main
+[33m7c4a309[m Fires DB
+[33m32bc8bc[m 20250114
+[33m741ed1c[m Insert Fires Data
+[33m2e9b5fe[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into ny_branch
+[33m1e66b9c[m 2차 프로젝트 링크 연결 중
+[33m777918e[m Merge Main
+[33m3140b3c[m 20250113
+[33m4dcb4ed[m Merge branch 'main' of https://github.com/namyoung545/Old_team_project3 into ny_branch
+[33mff0f8ad[m Merge pull request #16 from namyoung545/dy_01
+[33m09a5915[m 20250113
+[33ma8b4c0b[m 20250113
+[33mbd456f1[m 2025-01-13 update
+[33m4c7a0e0[m Fires DB
+[33mac4ae1d[m mysql 연결 추가
+[33mcdbb808[m mysql연결 추가
+[33md64eb19[m Merge branch 'main' of github.com-ja2pyc:namyoung545/Old_team_project3 into sh_model
+[33mc54b006[m Correlation Analysis
+[33ma66c910[m 2025년 1월 10일 마무리
+[33m8b18ae5[m Merge pull request #15 from namyoung545/PHG
+[33m2347977[m 2025-01-10 update
+[33m5860cfc[m Set requirements
+[33md20bcb9[m Save Statistics
+[33mc33183b[m SH Application
+[33mffdf358[m JSON Data
+[33m7cef015[m Merge pull request #14 from namyoung545/PHG
+[33m2f44a09[m 2025-01-09 request
+[33m1b3d0d3[m 2025-01-09 작업 끝
+[33m238fc64[m Merge pull request #13 from namyoung545/ny_branch
+[33mff0857b[m 2차 프로젝트 적용중...
+[33m1df86c6[m Merge pull request #12 from namyoung545/PHG
+[33md4ad7c2[m mybatis setting
+[33m1d20177[m Merge pull request #11 from namyoung545/PHG
+[33ma2b82b9[m update 3file
+[33mb650f9d[m Merge pull request #10 from namyoung545/ny_branch
+[33mc0e1a67[m 2차프로젝트 적용중...
+[33m1c3cfe8[m Merge pull request #9 from namyoung545/PHG
+[33med14aa6[m file name change
+[33m09cfc44[m JS Update
+[33m48d432d[m 2차 프로젝트 적용중...
+[33m5e3a6f3[m PHG 파일명 변경
+[33m51b0316[m Merge pull request #8 from namyoung545/ny_branch
+[33mfb65b6e[m 2차 프로젝트 적용중...
+[33ma410017[m Merge pull request #7 from namyoung545/ny_branch
+[33m1bc71cd[m 2차 프로젝트 적용중...
+[33m71144ff[m Merge pull request #6 from namyoung545/PHG
+[33mb267266[m Merge pull request #5 from namyoung545/dy_01
+[33mc25cab5[m 20250109
+[33m2044d6f[m 20250109
+[33ma425f75[m 2025-01-09 잘못된 경로 수정
+[33mdad0753[m Merge pull request #4 from namyoung545/PHG
+[33m1f84f10[m 2025-01-09
+[33m98908c3[m 20250709
+[33md57f9dc[m Merge pull request #3 from namyoung545/sh_model
+[33m8e2a127[m Set Database
+[33m224def7[m Merge pull request #2 from namyoung545/ny_branch
+[33m46ba065[m html파일 생성 및 controller폴더 생성
+[33mde75477[m Merge pull request #1 from namyoung545/ny_branch
+[33m27c438e[m file create
+[33mf936f32[m first commit
