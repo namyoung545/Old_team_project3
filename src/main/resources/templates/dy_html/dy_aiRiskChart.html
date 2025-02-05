@@ -3,74 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전기적 세부요인별 AI 위험감소 예측비율</title>
+    <title>전기적 세부요인별 AI 위험점수 예측</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h2>지역별 전기적 세부요인별 위험감소 랜던포레스트AI & SHAP분석 예측비율</h2>
-    
+    <h2>지역별 전기적 세부요인별 위험점수 AI예측에 따른 요인별 감소기여도</h2>
     <label for="regionSelect">지역 선택:</label>
     <select id="regionSelect">
         <option value="">전체</option>
     </select>
-
     <canvas id="riskChart"></canvas>
-<!--  -->
+
     <script>
         $(document).ready(function () {
             let chart;
             const ctx = document.getElementById('riskChart').getContext('2d');
+            let fullData = [];
+            let excludedCauses = [];
 
-            // 서버에서 데이터 가져오기
+            // ✅ **지역별 총 위험점수를 기준으로 정규화**
+            function normalizeDataByRegion(data, region) {
+                let regionData = region ? data.filter(d => d.Region === region) : data;
+                let regionTotalRisk = regionData.reduce((sum, d) => sum + parseFloat(d["Reduction (%)"]), 0);
+
+                console.log(`📌 [${region || "전체"}] 지역별 총 위험점수:`, regionTotalRisk);
+
+                return regionData.map(d => ({
+                    ...d,
+                    "Reduction (%)": ((parseFloat(d["Reduction (%)"]) / regionTotalRisk) * 100).toFixed(2)
+                }));
+            }
+
+            // ✅ **서버에서 데이터 가져오기**
             $.getJSON("/aiRisk/data", function (riskData) {
-                console.log("불러온 데이터:", riskData);
-
-                // 지역 목록 추가
-                populateSelect(riskData);
-
-                // 기본값: 전체 데이터를 전기적 세부요인별 평균으로 정리하여 표시
-                updateChart(riskData, "");
+                fullData = riskData;
+                populateSelect(fullData);
+                updateChart(fullData, "", []);
             });
 
-            function populateSelect(riskData) {
-                let uniqueRegions = [...new Set(riskData.map(d => d.Region))];
+            function populateSelect(data) {
+                let uniqueRegions = [...new Set(data.map(d => d.Region))];
                 uniqueRegions.forEach(region => {
                     $("#regionSelect").append(`<option value="${region}">${region}</option>`);
                 });
             }
 
-            function aggregateByCause(data) {
+            // ✅ **원인을 그룹화하여 중복 제거**
+            function aggregateByCause(data, excludeCauses = []) {
                 let grouped = {};
                 data.forEach(d => {
+                    if (excludeCauses.includes(d.Cause)) return;
                     if (!grouped[d.Cause]) {
-                        grouped[d.Cause] = { Cause: d.Cause, Reduction: [] };
+                        grouped[d.Cause] = { Cause: d.Cause, Reduction: 0 };
                     }
-                    grouped[d.Cause].Reduction.push(d["Reduction (%)"]);
+                    grouped[d.Cause].Reduction += parseFloat(d["Reduction (%)"]);
                 });
 
-                return Object.values(grouped).map(d => ({
+                return Object.values(grouped);
+            }
+
+            // ✅ **제거된 원인의 기여도를 남은 요인에 비례하여 재분배**
+            function redistributeReduction(data, excludeCauses) {
+                let filteredData = data.filter(d => !excludeCauses.includes(d.Cause));
+                let remainingTotal = filteredData.reduce((sum, d) => sum + parseFloat(d.Reduction), 0);
+
+                console.log("📌 제거된 원인 이후 총합 (재조정 전):", remainingTotal);
+
+                return filteredData.map(d => ({
                     Cause: d.Cause,
-                    Reduction: (d.Reduction.reduce((a, b) => a + b, 0) / d.Reduction.length).toFixed(2)
+                    Reduction: ((parseFloat(d.Reduction) / remainingTotal) * 100).toFixed(2)
                 }));
             }
 
-            function updateChart(riskData, region) {
-                let filteredData = region ? riskData.filter(d => d.Region === region) : riskData;
-                let aggregatedData = aggregateByCause(filteredData);
+            // ✅ **차트 업데이트 (지역별 기준)**
+            function updateChart(riskData, region, excludeCauses) {
+                console.log("📌 차트 업데이트 시작", { region, excludeCauses });
 
-                aggregatedData.sort((a, b) => b.Reduction - a.Reduction); // 내림차순 정렬
+                let normalizedData = normalizeDataByRegion(riskData, region);
+                let aggregatedData = aggregateByCause(normalizedData, excludeCauses);
 
+                if (excludeCauses.length > 0) {
+                    aggregatedData = redistributeReduction(aggregatedData, excludeCauses);
+                }
+
+                aggregatedData.sort((a, b) => b.Reduction - a.Reduction);
                 const labels = aggregatedData.map(d => d.Cause);
                 const values = aggregatedData.map(d => d.Reduction);
 
-                if (chart) chart.destroy();
+                if (chart) {
+                    chart.options.plugins.legend.onClick = null;
+                    chart.destroy();
+                }
+
+                console.log("📌 차트 데이터", { labels, values });
+
                 chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: '랜덤포레스트AI모델 & SHAP분석 위험 감소 비율 (%)',
+                            label: '위험 감소 기여도',
                             data: values,
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             borderColor: 'rgba(54, 162, 235, 1)',
@@ -79,11 +112,19 @@
                     },
                     options: {
                         responsive: true,
+                        onClick: (event, elements) => {
+                            if (elements.length > 0 && elements[0] !== undefined) {
+                                let index = elements[0].index;
+                                let cause = chart.data.labels[index];
+
+                                if (!excludedCauses.includes(cause)) {
+                                    excludedCauses.push(cause);
+                                    updateChart(fullData, $("#regionSelect").val(), excludedCauses);
+                                }
+                            }
+                        },
                         scales: { 
-                            y: { 
-                                beginAtZero: true,
-                                max: 100  // Y축 최대값 100으로 고정
-                            } 
+                            y: { beginAtZero: true, max: 100 } 
                         }
                     }
                 });
@@ -91,9 +132,8 @@
 
             $("#regionSelect").change(function () {
                 let selectedRegion = $(this).val();
-                $.getJSON("/aiRisk/data", function (riskData) {
-                    updateChart(riskData, selectedRegion);
-                });
+                excludedCauses = [];
+                updateChart(fullData, selectedRegion, excludedCauses);
             });
         });
     </script>
