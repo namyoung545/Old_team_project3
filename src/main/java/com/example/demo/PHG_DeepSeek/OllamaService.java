@@ -1,5 +1,5 @@
 // OllamaService.java: AI 응답을 생성하는 서비스 클래스
-package com.example.demo.service;
+package com.example.demo.PHG_DeepSeek;
 
 import java.io.BufferedReader;
 import java.io.IOException;
