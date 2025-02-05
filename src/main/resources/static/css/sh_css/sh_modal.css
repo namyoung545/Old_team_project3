@@ -21,7 +21,7 @@
 	border-radius: 12px; /* 둥근 모서리 */
 	box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* 부드러운 그림자 */
 	width: 90%;
-	max-width: 600px; /* 최대 너비 */
+	max-width: 1200px; /* 최대 너비 */
 	text-align: center; /* 가운데 정렬 */
 	animation: fadeIn 0.3s ease-in-out; /* 부드러운 등장 효과 */
 }
@@ -29,6 +29,14 @@
 .eventTitle{
 	font-size: 18px;
 	font-weight:600;
+}
+
+.modal #eventDetails {
+	display: flex;
+}
+
+.modal #eventIssueDetails {
+	line-height: 4rem;
 }
 
 .modal .eventHr{
