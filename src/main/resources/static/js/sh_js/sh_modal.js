@@ -1,16 +1,20 @@
 $(document).ready(function() {
-    console.log("sh_modal.js loaded");
 	const modal = $(".eventModal");
 	const closeButton = modal.find(".eventButton");
 
 	// 모달 열기 함수
 	window.openModal = function openModal(eventDetails) {
-		console.log(eventDetails);
-		console.log(modal);
 		$("#eventName").text(eventDetails.title || "고객 정보 없음");
+		$("#eventPhone").text(eventDetails.phone || "시간 정보 없음");
+		$("#eventEmail").text(eventDetails.email || "시간 정보 없음");
 		$("#eventTime").text(eventDetails.time || "시간 정보 없음");
 		$("#eventLocation").text(eventDetails.location || "주소 없음");
 		$("#eventDetailLocation").text(eventDetails.detailLocation || "세부 주소 없음");
+		$("#eventFacilityType").text(eventDetails.facilityType || "시설 유형 없음");
+		$("#eventIssue").text(eventDetails.issueTitle || "상태 없음");
+		$("#eventIssueDetails").text(eventDetails.issueDetails || "상세 내용 없음");
+		$("#eventReceptionStatus").text(eventDetails.receptionStatus || "접수 확인 중");
+		$("#eventReceptionDelivery").text(eventDetails.receptionDelivery || "미배정");
 		modal.css("display", "flex"); // 모달 표시
 	}
 

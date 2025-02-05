@@ -10,8 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function initialize() {
         featchCalendarEvents()
             .then((events) => {
-                console.log("Fetched events:", events);
-
+                // console.log("Fetched events:", events);
                 events = dataToEvent(events);
                 const calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
@@ -38,18 +37,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 이벤트 클릭 시 상세 정보 표시
     function handleEventClick(info) {
-        console.log(info);
         selectedEvent = info.event;
-        console.log(selectedEvent.start);
-
+        // console.log("Selected event:", selectedEvent.extendedProps);
         // 날짜 및 시간을 시간대 설정으로 포맷
         let startDate = new Date(selectedEvent.start);
         let startTime = startDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
         let timeData = startTime;
 
-        // 장소 (여기서 장소는 extendedProps로 가정)
         locationData = selectedEvent.extendedProps.address || "주소 확인요망";
         detailLocationData = selectedEvent.extendedProps.detailAddress || "세부주소 확인요망";
+        facilityTypeData = String(selectedEvent.extendedProps.facilityType).charAt(0).toUpperCase() + String(selectedEvent.extendedProps.facilityType).slice(1) || "시설 유형 확인요망";
 
         window.openModal({
             title: selectedEvent.title,
@@ -60,18 +57,22 @@ document.addEventListener("DOMContentLoaded", () => {
             postCode: selectedEvent.extendedProps.postCode,
             location: locationData,
             detailLocation: detailLocationData,
-            receptionDelivery: selectedEvent.extendedProps.receptionDelivery,
+            facilityType: facilityTypeData,
+            issueTitle: selectedEvent.extendedProps.issueTitle,
+            issueDetails: selectedEvent.extendedProps.issueDetails,
+            prefferedDateTime: selectedEvent.extendedProps.prefferedDateTime,
             receptionStatus: selectedEvent.extendedProps.receptionStatus,
+            receptionDelivery: selectedEvent.extendedProps.receptionDelivery,
         });
 
         // 카카오 지도 로드
-        // loadMap(selectedEvent.extendedProps.location);
+        loadMap(locationData);
     }
 
     function dataToEvent(data) {
         return data.map(event => ({
             title: event.name || "제목 없음",
-            start: event.start || null,  // 시작 날짜
+            start: event.prefferedDateTime || null,  // 시작 날짜
             end: event.end || null,  // 종료 날짜 (데이터에 없으면 null)
             extendedProps: {
                 name: event.name || "이름 없음",
@@ -80,7 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 postCode: event.postCode || "우편번호 없음",
                 address: event.address || "주소 없음",
                 detailAddress: event.detailAddress || "상세 주소 없음",
-                details: event.details || "상세 내용 없음",
+                facilityType: event.facilityType || "시설 유형 없음",
+                issueTitle: event.issueTitle || "상태 없음",
+                issueDetails: event.issueDetails || "상세 내용 없음",
+                prefferedDateTime: event.prefferedDateTime || "날짜 없음",
                 receptionStatus: event.receptionStatus || "접수 확인 중",
                 receptionDelivery: event.receptionDelivery || "미배정"
             }
