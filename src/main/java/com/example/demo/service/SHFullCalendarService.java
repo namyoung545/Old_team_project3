@@ -34,11 +34,12 @@ public class SHFullCalendarService {
                 event.put("postCode", getOrDefault(reception.getPostcode(), "우편번호 없음"));
                 event.put("address", getOrDefault(reception.getAddress(), "주소 없음"));
                 event.put("detailAddress", getOrDefault(reception.getDetailAddress(), "상세 주소 없음"));
-                event.put("title", getOrDefault(reception.getReceptionStatus(), "상태 없음"));
-                event.put("details", getOrDefault(reception.getIssueDetails(), "상세 내용 없음"));
-                event.put("start", getOrDefault(reception.getPreferredDateTime(), "날짜 없음"));
-                event.put("receptionStatus", getOrDefault(reception.getReceptionStatus(), "미확인"));
-                event.put("receptionDelivery", getOrDefault(reception.getReceptionDelivery(), "배송 정보 없음"));
+                event.put("facilityType", getOrDefault(reception.getFacilityType(), "시설 유형 없음"));
+                event.put("issueTitle", getOrDefault(reception.getIssueTitle(), "상태 없음"));
+                event.put("issueDetails", getOrDefault(reception.getIssueDetails(), "상세 내용 없음"));
+                event.put("prefferedDateTime", getOrDefault(reception.getPreferredDateTime(), "날짜 없음"));
+                event.put("receptionStatus", getOrDefault(reception.getReceptionStatus(), "접수 확인 중"));
+                event.put("receptionDelivery", getOrDefault(reception.getReceptionDelivery(), "미배정"));
     
                 events.add(event);
             });
