@@ -95,3 +95,29 @@ tr:hover {
     font-weight: bold;
     color: #881824;
 }
+
+nav {
+	display: flex;
+	margin : 1rem auto;
+}
+
+nav .pagination {
+	display: flex;
+	list-style: none;
+	margin: auto;
+}
+
+nav .page-link{
+	color: #333;
+	border: none;
+	border-radius: 5px;
+}
+
+nav .page-link:hover{
+	color: #fff;
+	background-color: #a0a0a0;
+}
+
+nav .page-item.active .page-link {
+	background-color: #333;
+}
