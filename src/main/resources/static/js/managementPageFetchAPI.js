@@ -54,69 +54,69 @@
 //     });
 // });
 
-// 공지사항 게시판 페이지를 비동기적으로 로드하는 코드
-document.addEventListener("DOMContentLoaded", () => {
-    const mainContent = document.getElementById("mainContent");
+// // 공지사항 게시판 페이지를 비동기적으로 로드하는 코드
+// document.addEventListener("DOMContentLoaded", () => {
+//     const mainContent = document.getElementById("mainContent");
 
-    if (!mainContent) {
-        console.error("mainContent 요소를 찾을 수 없습니다!");
-        return;
-    }
+//     if (!mainContent) {
+//         console.error("mainContent 요소를 찾을 수 없습니다!");
+//         return;
+//     }
 
-    // 이벤트 위임: mainContent 내부에서 클릭 이벤트 처리
-    mainContent.addEventListener("click", async (event) => {
-        // 클릭된 요소 확인
-        const target = event.target.closest("#menuNoticeBoardLink");
-        if (!target) return; // 클릭된 요소가 해당 ID가 아니면 무시
+//     // 이벤트 위임: mainContent 내부에서 클릭 이벤트 처리
+//     mainContent.addEventListener("click", async (event) => {
+//         // 클릭된 요소 확인
+//         const target = event.target.closest("#menuNoticeBoardLink");
+//         if (!target) return; // 클릭된 요소가 해당 ID가 아니면 무시
 
-        event.preventDefault();
+//         event.preventDefault();
 
-        try {
-            // HTML 로드
-            const htmlResponse = await fetch('/managementPage/noticeBoard');
-            if (!htmlResponse.ok) {
-                throw new Error(`HTML Load Error! status: ${htmlResponse.status}`);
-            }
-            const html = await htmlResponse.text();
-            mainContent.innerHTML = html;
-            // updateHeaderText("boardIndex");
-        } catch (error) {
-            console.error("Error loading content or events:", error);
-        }
-    });
-});
+//         try {
+//             // HTML 로드
+//             const htmlResponse = await fetch('/managementPage/noticeBoard');
+//             if (!htmlResponse.ok) {
+//                 throw new Error(`HTML Load Error! status: ${htmlResponse.status}`);
+//             }
+//             const html = await htmlResponse.text();
+//             mainContent.innerHTML = html;
+//             // updateHeaderText("boardIndex");
+//         } catch (error) {
+//             console.error("Error loading content or events:", error);
+//         }
+//     });
+// });
 
-// QnA 게시판 페이지를 비동기적으로 로드하는 코드
-document.addEventListener("DOMContentLoaded", () => {
-    const mainContent = document.getElementById("mainContent");
+// // QnA 게시판 페이지를 비동기적으로 로드하는 코드
+// document.addEventListener("DOMContentLoaded", () => {
+//     const mainContent = document.getElementById("mainContent");
 
-    if (!mainContent) {
-        console.error("mainContent 요소를 찾을 수 없습니다!");
-        return;
-    }
+//     if (!mainContent) {
+//         console.error("mainContent 요소를 찾을 수 없습니다!");
+//         return;
+//     }
 
-    // 이벤트 위임: mainContent 내부에서 클릭 이벤트 처리
-    mainContent.addEventListener("click", async (event) => {
-        // 클릭된 요소 확인
-        const target = event.target.closest("#menuQnaBoardLink");
-        if (!target) return; // 클릭된 요소가 해당 ID가 아니면 무시
+//     // 이벤트 위임: mainContent 내부에서 클릭 이벤트 처리
+//     mainContent.addEventListener("click", async (event) => {
+//         // 클릭된 요소 확인
+//         const target = event.target.closest("#menuQnaBoardLink");
+//         if (!target) return; // 클릭된 요소가 해당 ID가 아니면 무시
 
-        event.preventDefault();
+//         event.preventDefault();
 
-        try {
-            // HTML 로드
-            const htmlResponse = await fetch('/managementPage/qnaBoard');
-            if (!htmlResponse.ok) {
-                throw new Error(`HTML Load Error! status: ${htmlResponse.status}`);
-            }
-            const html = await htmlResponse.text();
-            mainContent.innerHTML = html;
-            // updateHeaderText("boardIndex");
-        } catch (error) {
-            console.error("Error loading content or events:", error);
-        }
-    });
-});
+//         try {
+//             // HTML 로드
+//             const htmlResponse = await fetch('/managementPage/qnaBoard');
+//             if (!htmlResponse.ok) {
+//                 throw new Error(`HTML Load Error! status: ${htmlResponse.status}`);
+//             }
+//             const html = await htmlResponse.text();
+//             mainContent.innerHTML = html;
+//             // updateHeaderText("boardIndex");
+//         } catch (error) {
+//             console.error("Error loading content or events:", error);
+//         }
+//     });
+// });
 
 // fullCalendar 페이지를 비동기적으로 로드하는 코드
 // document.addEventListener("DOMContentLoaded", () => {

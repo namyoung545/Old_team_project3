@@ -9,8 +9,9 @@
   <script src="/js/dashboardChart_vworldmap.js" defer></script>
   <script src="/js/dashboardChart_dy.js" defer></script>
   <script src="/js/dashboard.js" defer></script>
+  <script src="/js/aiRiskChart.js" defer></script>
   <script type="text/javascript"
-  src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
+    src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
   <link rel="stylesheet" href="/css/dashboardChart.css" />
   <link rel="stylesheet" href="/css/dashboard.css" />
   <link rel="stylesheet" href="/css/index.css" />
@@ -19,30 +20,21 @@
 
 <body>
   <div class="dashboard_container">
+
     <!-- <div class="dashboard_sub_container"> -->
     <div class="scroll_page" id="first_page">
-      <div class="chartBox chartFires">
-        <canvas id="chartFires_ny"></canvas>
-      </div>
-      <div class="chartBox chartCause">
-        <div class="chartCanvas">
-          <canvas id="chartCause_ny"></canvas>
-        </div>
-        <div id="labelCause_ny"></div>
-      </div>
-      <div class="chartBox chartInjuries">
-        <canvas id="chartInjuries_ny"></canvas>
-      </div>
-      <div class="chartBox chartDamage">
-        <canvas id="chartDamage_ny"></canvas>
-      </div>
       <div class="vworldmainContainer">
         <div class="vworldContainer">
-            <div id="vworldMap_ny"></div>
-            <div id="mapData">
-                <div class="dataBox"></div>
-                <div class="dataBox"></div>
+          <div id="vworldMap_ny"></div>
+          <div id="mapData">
+            <div class="dataBox fireToday">
+              <div class="fireInfo"></div>
             </div>
+            <div class="dataBox fireWeek">
+              <div class="fireCasualty"></div>
+              <div class="fireDamage"></div>
+            </div>
+          </div>
         </div>
         <!-- <div class="vwButton">
             <tr>
@@ -62,11 +54,32 @@
                 <td><button type="button" class="geoJsonButton">Button</button></td>
             </tr>
         </div> -->
-    </div>
-    <div id="features"></div>
+      </div>
+      <div class="chartBox chartFires">
+        <p>연도별 전기적요인, 화재발생건수</p>
+        <canvas id="chartFires_ny"></canvas>
+      </div>
+      <div class="chartBox chartCause">
+        <p>연도별 전기적요인에 의한 인명피해</p>
+        <div class="chartCanvas">
+          <div class="chartCanvasSubContainer">
+            <canvas id="chartCause_ny"></canvas>
+          </div>
+          <div id="labelCause_ny"></div>
+        </div>
+      </div>
+      <div class="chartBox chartInjuries">
+        <p>연도별 전기적요인에 의한 재산피해</p>
+        <canvas id="chartInjuries_ny"></canvas>
+      </div>
+      <div class="chartBox chartDamage">
+        <p>연도별 2023년의 화재요인 분석</p>
+        <canvas id="chartDamage_ny"></canvas>
+      </div>
+      <div id="features"></div>
     </div>
     <div class="scroll_page" id="second_page">
-      <h1>전기적 요인에 의한 화재 및 감전재해 현황</h1>
+      <h2>연도별 전기적요인(화재&감전)에 의한 재해건수와 피해금액</h2>
 
       <!-- Select Dropdown -->
       <div id="controls">
@@ -92,7 +105,20 @@
         <div id="chart_ny4" class="chart"></div>
       </div>
     </div>
+
     <div class="scroll_page" id="third_page">
+      <h2>지역별 전기적 세부요인별 위험감소 랜던포레스트AI & SHAP분석 예측비율</h2>
+
+      <label for="regionSelect">지역 선택:</label>
+      <select id="regionSelect">
+        <option value="">전체</option>
+      </select>
+      <div class="riskChart_container">
+        <canvas id="riskChart"></canvas>
+      </div>
+    </div>
+
+    <div class="scroll_page" id="fourth_page">
       <div id="index_container">
         <!-- 헤더 -->
         <!-- <div th:replace="indexHeader.html :: index_header"></div> Header 삽입 -->

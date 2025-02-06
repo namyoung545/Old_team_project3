@@ -7,7 +7,7 @@
 <head>
     <title>난방기사 A/S 스케쥴 관리 서비스</title>
 
-    <head th:replace="common_headscript.html :: common_headscript"></head>
+    <head th:replace="~{common_headscript.html :: common_headscript}"></head>
 
     <!-- fullCalendar -->
     <link rel="stylesheet" href="/css/fullCalendar.css">
@@ -19,17 +19,17 @@
 
 <body>
     <div id="fullCalendar_container">
-        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
+        <div th:replace="~{header.html :: header}"></div> <!-- Header 삽입 -->
+        <div th:insert="~{sidebar.html :: sidebar}"></div>
 
         <div id="fullCalendar_sub_border_container">
             <div id="fullCalendar_sub_Container">
-                <div th:insert="sidebar.html :: sidebar"></div>
                 <h1>AS 스케줄</h1>
                 <div id="fullCalendar"></div>
             </div>
         </div>
 
-        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+        <div th:replace="~{footer.html :: footer}"></div> <!-- Footer 삽입 -->
     </div>
 </body>
 
