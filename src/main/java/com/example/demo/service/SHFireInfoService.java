@@ -64,7 +64,7 @@ public class SHFireInfoService {
 
     // Get data from DB
     public List<FireInfoSidoEntity> getFireInfoSido() {
-        System.out.println("FireInfoService - getFireInfo");
+        // System.out.println("FireInfoService - getFireInfo");
         LocalDate today = LocalDate.now();
         List<FireInfoSidoEntity> response = fireInfoSidoRepository.findByOcrnYmd(today);
 
@@ -74,7 +74,7 @@ public class SHFireInfoService {
     // Update data every hour
     @Scheduled(fixedRate = 1000 * 60 * 60)
     public void updateFireInfoSidoData() {
-        System.out.println("FireInfoService - updateFireInfoSidoData // Update Scheduled!");
+        // System.out.println("FireInfoService - updateFireInfoSidoData // Update Scheduled!");
         String response = fetchFireInfoSidoData();
         // System.out.println("FireInfoService - updateFireInfoSidoData - response : " +
         // response);
@@ -164,12 +164,12 @@ public class SHFireInfoService {
             entitiesToSave.add(fireInfoSidoEntity);
         }
         fireInfoSidoRepository.saveAll(entitiesToSave);
-        System.out.println("FireInfoService - saveFireInfoSidoData - Data saved!");
+        // System.out.println("FireInfoService - saveFireInfoSidoData - Data saved!");
     }
 
     // Get Sido Damage data from DB
     public List<FireInfoSidoCasualtyEntity> getFireInfoSidoCasualty() {
-        System.out.println("FireInfoService - getFireInfoSidoCasualty");
+        // System.out.println("FireInfoService - getFireInfoSidoCasualty");
         LocalDate targetDate = LocalDate.now().minusDays(7);
         List<FireInfoSidoCasualtyEntity> response = fireInfoSidoCasualtyRepository.findByOcrnYmdAfter(targetDate);
 
@@ -178,14 +178,14 @@ public class SHFireInfoService {
 
     @Scheduled(fixedRate = 1000 * 60 * 60)
     public void updateFireInfoSidoCasualtyData() {
-        System.out.println("FireInfoService - updateFireInfoSidoCasualtyData // Update Scheduled!");
+        // System.out.println("FireInfoService - updateFireInfoSidoCasualtyData // Update Scheduled!");
         LocalDate today = LocalDate.now();
 
         for (int i = 0; i < 15; i++) {
             LocalDate targetDate = today.minusDays(i);
-            System.out.println("targetDate" + targetDate);
+            // System.out.println("targetDate" + targetDate);
             String response = fetchFireInfoSidoCasualtyData(targetDate);
-            System.out.println("FireInfoService - updateFireInfoSidoCasualtyData - response : " + response);
+            // System.out.println("FireInfoService - updateFireInfoSidoCasualtyData - response : " + response);
             try {
                 List<FireInfoSidoCasualtyEntity> fireInfoList = new ArrayList<>();
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -263,12 +263,12 @@ public class SHFireInfoService {
             entitiesToSave.add(fireInfoSidoCasualtyEntity);
         }
         fireInfoSidoCasualtyRepository.saveAll(entitiesToSave);
-        System.out.println("FireInfoService - saveFireInfoSidoCasualtyData - Data saved!");
+        // System.out.println("FireInfoService - saveFireInfoSidoCasualtyData - Data saved!");
     }
 
     // Get Sido Casualty data from DB
     public List<FireInfoSidoDamageEntity> getFireInfoSidoDamage() {
-        System.out.println("FireInfoService - getFireInfoSidoDamage");
+        // System.out.println("FireInfoService - getFireInfoSidoDamage");
         LocalDate targetDate = LocalDate.now().minusDays(7);
         List<FireInfoSidoDamageEntity> response = fireInfoSidoDamageRepository.findByOcrnYmdAfter(targetDate);
 
@@ -278,7 +278,7 @@ public class SHFireInfoService {
     // Update Damage Data every hour
     @Scheduled(fixedRate = 1000 * 60 * 60)
     public void updateFireInfoSidoDamageData() {
-        System.out.println("FireInfoService - updateFireInfoSidoDamageData // Update Scheduled!");
+        // System.out.println("FireInfoService - updateFireInfoSidoDamageData // Update Scheduled!");
         LocalDate today = LocalDate.now();
 
         for (int i = 0; i < 15; i++ ) {
@@ -360,7 +360,7 @@ public class SHFireInfoService {
         }
 
         fireInfoSidoDamageRepository.saveAll(entitiesToSave);
-        System.out.println("FireInfoService - saveFireInfoSidoDamageData - Data saved!");
+        // System.out.println("FireInfoService - saveFireInfoSidoDamageData - Data saved!");
     }
 
 }
