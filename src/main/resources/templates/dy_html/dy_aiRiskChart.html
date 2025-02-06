@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전기적 세부요인별 AI 위험점수 예측</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
@@ -12,7 +12,7 @@
         }
         #chart-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 800px;
             height: 500px;  
             overflow: hidden;  
             min-width: 700px; /* ✅ 차트가 너무 작아지는 것 방지 */
@@ -24,7 +24,9 @@
     </style>
 </head>
 <body>
-    <h3>지역별 전기적 세부요인별 위험점수 AI예측에 따른 요인별 감소기여도</h3>
+
+    
+    <h3>전기재해 AI 위험점수 예측에 따른 전기적 세부 요인별 감소 기여도 분석</h3>
     <label for="regionSelect">지역 선택:</label>
     <select id="regionSelect">
         <option value="">전체</option>
@@ -93,25 +95,30 @@
 
             // ✅ **막대 위 숫자 플러그인 (위험 감소율 %)**
             Chart.register({
-                id: 'dataLabelsPlugin',
-                afterDatasetsDraw(chart) {
-                    const ctx = chart.ctx;
-                    ctx.save();
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
-                            const value = dataset.data[index];
-                            if (value !== undefined) {
-                                ctx.fillStyle = '#000';
-                                ctx.font = '10px Arial';
-                                ctx.textAlign = 'center';
-                                ctx.fillText(`${value}%`, bar.x, bar.y - 10);
-                            }
-                        });
+            id: 'dataLabelsPlugin',
+            afterDatasetsDraw(chart) {
+                if (!chart || !chart.ctx) return; // ✅ chart 객체가 정상적인지 확인
+                const ctx = chart.ctx;
+                ctx.save();
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    meta.data.forEach((bar, index) => {
+                        const value = dataset.data[index];
+                        if (value !== undefined) {
+                            ctx.fillStyle = '#000';
+                            ctx.font = '10px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(`${value}%`, bar.x, bar.y - 10);
+                        }
                     });
-                    ctx.restore();
-                }
-            });
+                });
+                ctx.restore();
+            },
+            afterEvent(chart, args) {
+                if (!args || !args.event) return; // ✅ args가 undefined일 때 오류 방지
+            }
+        });
+   
 
             // ✅ **차트 업데이트 함수**
             function updateChart(riskData, region, excludeCauses) {
@@ -141,7 +148,7 @@
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 2,
                             barPercentage: 0.7,  // ✅ 막대 너비 조정 (기본값 0.9 → 0.6)
-                            categoryPercentage: 0.8  // ✅ 전체 카테고리 너비 조정 (기본값 0.8 → 0.6)
+                            categoryPercentage: 1  // ✅ 전체 카테고리 너비 조정 (기본값 0.8 → 0.6)
                         }]
                     },
                     options: {
@@ -158,13 +165,17 @@
                             y: { beginAtZero: true, max: 100 }
                         },
                         onClick: function(event, elements) {
-                            if (elements.length > 0) {
-                                let index = elements[0].index;
-                                let clickedLabel = labels[index];
+                        if (!elements || elements.length === 0) {
+                            console.warn("클릭한 위치에 데이터가 없습니다.");
+                            return;
+                        }
 
-                                excludedCauses.push(clickedLabel);
-                                updateChart(riskData, region, excludedCauses);
-                            }
+                        let index = elements[0].index;  // ✅ undefined 방지
+                        let clickedLabel = chart.data.labels[index]; // ✅ 안전한 참조
+
+                        excludedCauses.push(clickedLabel);
+                        updateChart(fullData, region, excludedCauses);
+                        
                         }
                     },
                     plugins: ['dataLabelsPlugin']
