@@ -62,7 +62,7 @@ public class SHDisasterService {
     }
 
     public List<SHDisasterMessageEntity> getDisasterMessage() {
-        System.out.println("DisasterService - getDisastermessage");
+        // System.out.println("DisasterService - getDisastermessage");
         LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
         List<SHDisasterMessageEntity> response = shDisasterMessageRepository.findCrtDtAfter(startOfToday);
         

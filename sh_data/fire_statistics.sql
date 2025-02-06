@@ -152,6 +152,11 @@ SELECT * FROM authority;
 
 SELECT * FROM as_reception;
 SELECT * FROM as_reception WHERE preferredDateTime < NOW();
+SELECT * FROM as_reception WHERE receptionDate > NOW();
+UPDATE as_reception 
+SET receptionDate = DATE_SUB(receptionDate, INTERVAL 7 DAY) 
+WHERE receptionDate > NOW();
+
 -- 상태 업데이트
 UPDATE as_reception
 SET receptionStatus = '처리 완료'

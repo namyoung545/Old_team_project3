@@ -90,7 +90,7 @@ public class SHFireStatisticsService {
     // ------------------------------
     // 통합 통계 기능
     private void analyzeYearlyFires() {
-        System.out.println("analyzeYearlyFires");
+        // System.out.println("analyzeYearlyFires");
         List<Map<String, Object>> results = firesDataRepository.analyzeYearlyFires();
 
         for (Map<String, Object> row : results) {
@@ -102,9 +102,9 @@ public class SHFireStatisticsService {
             String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
             String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-            System.out.println("Year: " + year + ", Count: " + count + ", Total Property Damage: " + sumProperty
-                    + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                    + sumCasualties);
+            // System.out.println("Year: " + year + ", Count: " + count + ", Total Property Damage: " + sumProperty
+            //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+            //         + sumCasualties);
 
             saveFireStatisticsDB(year, "화재발생건수", count);
             saveFireStatisticsDB(year, "재산피해합계", sumProperty);
@@ -116,7 +116,7 @@ public class SHFireStatisticsService {
 
     // 연간 화재 원인별 통합 통계
     private void analyzeYearlyFiresByCauseIds() {
-        System.out.println("analyzeYearlyFiresByCauseIds");
+        // System.out.println("analyzeYearlyFiresByCauseIds");
         List<String> fireCauses = getFireCauseCategories();
 
         for (String cause : fireCauses) {
@@ -134,10 +134,10 @@ public class SHFireStatisticsService {
                 String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
                 String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                System.out.println("Cause: " + cause + ", Year: " + year + ", Count: " + count
-                        + ", Total Property Damage: " + sumProperty
-                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                        + sumCasualties);
+                // System.out.println("Cause: " + cause + ", Year: " + year + ", Count: " + count
+                //         + ", Total Property Damage: " + sumProperty
+                //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                //         + sumCasualties);
 
                 saveFireStatisticsDB(year, "화재발생건수(원인) " + cause, count);
                 saveFireStatisticsDB(year, "재산피해합계(원인) " + cause, sumProperty);
@@ -150,7 +150,7 @@ public class SHFireStatisticsService {
 
     // 연간 열원별 통합 통계
     private void analyzeYearlyFiresByIgnitionIds() {
-        System.out.println("analyzeYearlyFiresByIgnitionIds");
+        // System.out.println("analyzeYearlyFiresByIgnitionIds");
         List<String> fireIgnitions = getFireIgnitionCategories();
 
         for (String ignition : fireIgnitions) {
@@ -168,10 +168,10 @@ public class SHFireStatisticsService {
                 String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
                 String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                System.out.println("Ignition: " + ignition + ", Year: " + year + ", Count: " + count
-                        + ", Total Property Damage: " + sumProperty
-                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                        + sumCasualties);
+                // System.out.println("Ignition: " + ignition + ", Year: " + year + ", Count: " + count
+                //         + ", Total Property Damage: " + sumProperty
+                //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                //         + sumCasualties);
 
                 saveFireStatisticsDB(year, "화재발생건수(열원) " + ignition, count);
                 saveFireStatisticsDB(year, "재산피해합계(열원) " + ignition, sumProperty);
@@ -184,7 +184,7 @@ public class SHFireStatisticsService {
 
     // 연간 착화물별 통합 통계
     private void analyzeYearlyFiresByItemIds() {
-        System.out.println("analyzeYearlyFiresByItemIds");
+        // System.out.println("analyzeYearlyFiresByItemIds");
         List<String> fireItems = getFireItemCategories();
 
         for (String item : fireItems) {
@@ -202,10 +202,10 @@ public class SHFireStatisticsService {
                 String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
                 String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                System.out.println("Item: " + item + ", Year: " + year + ", Count: " + count
-                        + ", Total Property Damage: " + sumProperty
-                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                        + sumCasualties);
+                // System.out.println("Item: " + item + ", Year: " + year + ", Count: " + count
+                //         + ", Total Property Damage: " + sumProperty
+                //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                //         + sumCasualties);
 
                 saveFireStatisticsDB(year, "화재발생건수(착화물) " + item, count);
                 saveFireStatisticsDB(year, "재산피해합계(착화물) " + item, sumProperty);
@@ -218,7 +218,7 @@ public class SHFireStatisticsService {
 
     // 연간 발화 장소별 통합 통계
     private void analyzeYearlyFiresByLocationIds() {
-        System.out.println("analyzeYearlyFiresByLocationIds");
+        // System.out.println("analyzeYearlyFiresByLocationIds");
         List<String> fireLocations = getFireLocationMainCategories();
 
         for (String location : fireLocations) {
@@ -236,10 +236,10 @@ public class SHFireStatisticsService {
                 String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
                 String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                System.out.println("Location: " + location + ", Year: " + year + ", Count: " + count
-                        + ", Total Property Damage: " + sumProperty
-                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                        + sumCasualties);
+                // System.out.println("Location: " + location + ", Year: " + year + ", Count: " + count
+                //         + ", Total Property Damage: " + sumProperty
+                //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                //         + sumCasualties);
 
                 saveFireStatisticsDB(year, "화재발생건수(장소) " + location, count);
                 saveFireStatisticsDB(year, "재산피해합계(장소) " + location, sumProperty);
@@ -252,7 +252,7 @@ public class SHFireStatisticsService {
 
     // 연간 지역별 통합 통계
     private void analyzeYearlyFiresByRegionIds() {
-        System.out.println("analyzeYearlyFiresByRegionIds");
+        // System.out.println("analyzeYearlyFiresByRegionIds");
         List<String> fireRegions = getFireRegionProvinces();
 
         for (String region : fireRegions) {
@@ -270,10 +270,10 @@ public class SHFireStatisticsService {
                 String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
                 String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                System.out.println("Region: " + region + ", Year: " + year + ", Count: " + count
-                        + ", Total Property Damage: " + sumProperty
-                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                        + sumCasualties);
+                // System.out.println("Region: " + region + ", Year: " + year + ", Count: " + count
+                //         + ", Total Property Damage: " + sumProperty
+                //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                //         + sumCasualties);
 
                 saveFireStatisticsDB(year, "화재발생건수(지역) " + region, count);
                 saveFireStatisticsDB(year, "재산피해합계(지역) " + region, sumProperty);
@@ -286,7 +286,7 @@ public class SHFireStatisticsService {
 
     // 연간 화재 유형별 통합 통계
     private void analyzeYearlyFiresByTypeIds() {
-        System.out.println("analyzeYearlyFiresByTypeIds");
+        // System.out.println("analyzeYearlyFiresByTypeIds");
         List<String> fireTypes = getFireTypes();
 
         for (String type : fireTypes) {
@@ -304,10 +304,10 @@ public class SHFireStatisticsService {
                 String sumInjuries = row.get("sumInjuries") != null ? row.get("sumInjuries").toString() : "0";
                 String sumCasualties = row.get("sumCasualties") != null ? row.get("sumCasualties").toString() : "0";
 
-                System.out.println("Type: " + type + ", Year: " + year + ", Count: " + count
-                        + ", Total Property Damage: " + sumProperty
-                        + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
-                        + sumCasualties);
+                // System.out.println("Type: " + type + ", Year: " + year + ", Count: " + count
+                //         + ", Total Property Damage: " + sumProperty
+                //         + ", Total Deaths: " + sumDeaths + ", Total Injuries: " + sumInjuries + ", Total Casualties: "
+                //         + sumCasualties);
 
                 saveFireStatisticsDB(year, "화재발생건수(유형) " + type, count);
                 saveFireStatisticsDB(year, "재산피해합계(유형) " + type, sumProperty);
@@ -323,77 +323,77 @@ public class SHFireStatisticsService {
 
     // 화재 원인 카테고리 목록
     private List<String> getFireCauseCategories() {
-        System.out.println("getFireCauseCetegories");
+        // System.out.println("getFireCauseCetegories");
         List<String> fireCauses = fireCauseDataRepository.findDistinctCauseCategory();
-        System.out.println("fireCausesCategories : " + fireCauses);
+        // System.out.println("fireCausesCategories : " + fireCauses);
         return fireCauses;
     }
 
     // 화재 원인 서브 카테고리 목록
     private List<String> getFireCauseSubcategories() {
-        System.out.println("getFireCauseSubcategories");
+        // System.out.println("getFireCauseSubcategories");
         List<String> fireCauses = fireCauseDataRepository.findDistinctCauseSubcategory();
-        System.out.println("fireCauseSubcategories : " + fireCauses);
+        // System.out.println("fireCauseSubcategories : " + fireCauses);
         return fireCauses;
     }
 
     // 화재 열원 카테고리 목록
     private List<String> getFireIgnitionCategories() {
-        System.out.println("getFireIgnitionCategories");
+        // System.out.println("getFireIgnitionCategories");
         return fireIgnitionDataRepository.findDistinctIgnitionCategory();
     }
 
     // 화재 열원 서브 카테고리 목록
     private List<String> getFireIgnitionSubcategories() {
-        System.out.println("getFireIgnitionSubcategories");
+        // System.out.println("getFireIgnitionSubcategories");
         return fireIgnitionDataRepository.findDistinctIgnitionSubcategory();
     }
 
     // 화재 착화물 카테고리 목록
     private List<String> getFireItemCategories() {
-        System.out.println("getFireItemCategories");
+        // System.out.println("getFireItemCategories");
         return fireItemDataRepository.findDistinctItemCategory();
     }
 
     // 화재 착화물 상세 목록
     private List<String> getFireItemDetails() {
-        System.out.println("getFireItemDetails");
+        // System.out.println("getFireItemDetails");
         return fireItemDataRepository.findDistinctItemDetail();
     }
 
     // 화재 발화 장소 주요 카테고리 목록
     private List<String> getFireLocationMainCategories() {
-        System.out.println("getFireLocationMainCategories");
+        // System.out.println("getFireLocationMainCategories");
         return fireLocationDataRepository.findDistinctLocationMainCategory();
     }
 
     // 화재 발화 장소 서브 카테고리 목록
     private List<String> getFireLocationSubCategories() {
-        System.out.println("GetFireLocationSubCategories");
+        // System.out.println("GetFireLocationSubCategories");
         return fireLocationDataRepository.findDistinctLocationSubCategory();
     }
 
     // 화재 발화 장소 세보 목록
     private List<String> getFireLocationDetails() {
-        System.out.println("getFireLocationDetails");
+        // System.out.println("getFireLocationDetails");
         return fireLocationDataRepository.findDistinctLocationDetail();
     }
 
     // 화재 시도 목록
     private List<String> getFireRegionProvinces() {
-        System.out.println("getFireRegionProvince");
+        // System.out.println("getFireRegionProvince");
         return fireRegionDataRepository.findDistinctRegionProvince();
     }
 
     // 화재 시군구 목록
     private List<String> getFireRegionCities() {
-        System.out.println("getFireRegionCities");
+        // System.out.println("getFireRegionCities");
         return fireRegionDataRepository.findDistinctRegionCity();
     }
 
     // 화재 유형 목록
     private List<String> getFireTypes() {
-        System.out.println("getFireTypes");
+        // System.out.println("getFireTypes");
         return fireTypeDataRepository.findDistinctFireType();
     }
 
@@ -609,189 +609,189 @@ public class SHFireStatisticsService {
 
     // 화재 원인 카테고리 ID 정보
     private List<Integer> getFireCauseCategoryIds(String keyword) {
-        System.out.println("getFireCauseCategoryIds");
+        // System.out.println("getFireCauseCategoryIds");
         List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findLikeCauseCategory(keyword);
 
         // 검색된 결과 출력
         if (!fireCauseDataList.isEmpty()) {
             List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 화재 원인 카테고리 ID 리스트 : " + fireCauseIds);
+            // System.out.println("검색된 화재 원인 카테고리 ID 리스트 : " + fireCauseIds);
             return fireCauseIds;
         } else {
-            System.out.println("검색된 화재 원인 카테고리 ID가 없습니다.");
+            // System.out.println("검색된 화재 원인 카테고리 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     private List<Integer> getFireCauseSubcategoryIds(String keyword) {
-        System.out.println("getFireCauseSubcategoryIds");
+        // System.out.println("getFireCauseSubcategoryIds");
         List<FireCauseData> fireCauseDataList = fireCauseDataRepository.findLikeCauseSubcategory(keyword);
 
         if (!fireCauseDataList.isEmpty()) {
             List<Integer> fireCauseIds = fireCauseDataList.stream().map(FireCauseData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 화재 원인 서브 카테고리 ID 리스트 : " + fireCauseIds);
+            // System.out.println("검색된 화재 원인 서브 카테고리 ID 리스트 : " + fireCauseIds);
             return fireCauseIds;
         } else {
-            System.out.println("검색된 하재 원인 서브 카테고리 ID가 없습니다.");
+            // System.out.println("검색된 하재 원인 서브 카테고리 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 열원 카테고리 ID 정보
     private List<Integer> getFireIgnitionCategoryIds(String keyword) {
-        System.out.println("getFireIgnitionCategoryIds");
+        // System.out.println("getFireIgnitionCategoryIds");
         List<FireIgnitionData> fireIgnitionDataList = fireIgnitionDataRepository.findLikeIgnitionCategory(keyword);
 
         if (!fireIgnitionDataList.isEmpty()) {
             List<Integer> fireIgnitionIds = fireIgnitionDataList.stream().map(FireIgnitionData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 화재 열원 카테고리 ID 리스트 : " + fireIgnitionIds);
+            // System.out.println("검색된 화재 열원 카테고리 ID 리스트 : " + fireIgnitionIds);
             return fireIgnitionIds;
         } else {
-            System.out.println("검색된 화재 열원 카테고리 ID가 없습니다.");
+            // System.out.println("검색된 화재 열원 카테고리 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 열원 서브 카테고리 ID 정보
     private List<Integer> getFireIgnitionSubcategoryIds(String keyword) {
-        System.out.println("getFireIgnitionSubcategoryIds");
+        // System.out.println("getFireIgnitionSubcategoryIds");
         List<FireIgnitionData> fireIgnitionDataList = fireIgnitionDataRepository.findLikeIgnitionSubcategory(keyword);
 
         if (!fireIgnitionDataList.isEmpty()) {
             List<Integer> fireIgnitionIds = fireIgnitionDataList.stream().map(FireIgnitionData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 화재 열원 서브 카테고리 ID 리스트 : " + fireIgnitionIds);
+            // System.out.println("검색된 화재 열원 서브 카테고리 ID 리스트 : " + fireIgnitionIds);
             return fireIgnitionIds;
         } else {
-            System.out.println("검색된 화재 열원 서브 카테고리 ID가 없습니다.");
+            // System.out.println("검색된 화재 열원 서브 카테고리 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화 착화물 카테고리 ID 정보
     private List<Integer> getFireItemCategoryIds(String keyword) {
-        System.out.println("getFireItemCategoryIds");
+        // System.out.println("getFireItemCategoryIds");
         List<FireItemData> fireItemDataList = fireItemDataRepository.findLikeItemCategory(keyword);
 
         if (!fireItemDataList.isEmpty()) {
             List<Integer> fireItemIds = fireItemDataList.stream().map(FireItemData::getId).collect(Collectors.toList());
-            System.out.println("검색된 화재 착화물 카테고리 ID 리스트 : " + fireItemIds);
+            // System.out.println("검색된 화재 착화물 카테고리 ID 리스트 : " + fireItemIds);
             return fireItemIds;
         } else {
-            System.out.println("검색된 화재 착화물 카테고리 ID가 없습니다.");
+            // System.out.println("검색된 화재 착화물 카테고리 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화 착화물 디테일 ID 정보
     private List<Integer> getFireItemDetailIds(String keyword) {
-        System.out.println("getFireItemDetailIds");
+        // System.out.println("getFireItemDetailIds");
         List<FireItemData> fireItemDataList = fireItemDataRepository.findLikeItemDetail(keyword);
 
         if (!fireItemDataList.isEmpty()) {
             List<Integer> fireItemIds = fireItemDataList.stream().map(FireItemData::getId).collect(Collectors.toList());
-            System.out.println("검색된 화재 착화물 디테일 ID 리스트 : " + fireItemIds);
+            // System.out.println("검색된 화재 착화물 디테일 ID 리스트 : " + fireItemIds);
             return fireItemIds;
         } else {
-            System.out.println("검색된 화재 착화물 디테일 ID가 없습니다.");
+            // System.out.println("검색된 화재 착화물 디테일 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화장소 대분류 ID 정보
     private List<Integer> getFireLocationMainCategoryIds(String keyword) {
-        System.out.println("getFireLocationMainCategoryIds");
+        // System.out.println("getFireLocationMainCategoryIds");
         List<FireLocationData> fireLocationDataList = fireLocationDataRepository.findLikeLocationMainCategory(keyword);
 
         if (!fireLocationDataList.isEmpty()) {
             List<Integer> fireLocationIds = fireLocationDataList.stream().map(FireLocationData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 발화장소 대분류 ID 리스트 : " + fireLocationIds);
+            // System.out.println("검색된 발화장소 대분류 ID 리스트 : " + fireLocationIds);
             return fireLocationIds;
         } else {
-            System.out.println("검색된 발화장소 대분류 ID가 없습니다.");
+            // System.out.println("검색된 발화장소 대분류 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화장소 분류 ID 정보
     private List<Integer> getFireLocationSubcategoryIds(String keyword) {
-        System.out.println("getFireLocationSubcategoryIds");
+        // System.out.println("getFireLocationSubcategoryIds");
         List<FireLocationData> fireLocationDataList = fireLocationDataRepository.findLikeLocationSubcategory(keyword);
 
         if (!fireLocationDataList.isEmpty()) {
             List<Integer> fireLocationIds = fireLocationDataList.stream().map(FireLocationData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 발화장소 분류 ID 리스트 : " + fireLocationIds);
+            // System.out.println("검색된 발화장소 분류 ID 리스트 : " + fireLocationIds);
             return fireLocationIds;
         } else {
-            System.out.println("검색된 발화장소 분류 ID가 없습니다.");
+            // System.out.println("검색된 발화장소 분류 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화장소 세부분류 ID 정보
     private List<Integer> getFireLocationDetailIds(String keyword) {
-        System.out.println("getFireLocationDetailIds");
+        // System.out.println("getFireLocationDetailIds");
         List<FireLocationData> fireLocationDataList = fireLocationDataRepository.findLikeLocationDetail(keyword);
 
         if (!fireLocationDataList.isEmpty()) {
             List<Integer> fireLocationIds = fireLocationDataList.stream().map(FireLocationData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 발화장소 세부분류 ID 리스트 : " + fireLocationIds);
+            // System.out.println("검색된 발화장소 세부분류 ID 리스트 : " + fireLocationIds);
             return fireLocationIds;
         } else {
-            System.out.println("검색된 발화장소 세부분류 ID가 없습니다.");
+            // System.out.println("검색된 발화장소 세부분류 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화 지역 시도 ID 정보
     private List<Integer> getFireRegionProvinceIds(String keyword) {
-        System.out.println("getFireRegionProvinceIds");
+        // System.out.println("getFireRegionProvinceIds");
         List<FireRegionData> fireRegionDataList = fireRegionDataRepository.findLikeRegionProvince(keyword);
 
         if (!fireRegionDataList.isEmpty()) {
             List<Integer> fireRegionIds = fireRegionDataList.stream().map(FireRegionData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 발화 지역 시도 ID 리스트 : " + fireRegionIds);
+            // System.out.println("검색된 발화 지역 시도 ID 리스트 : " + fireRegionIds);
             return fireRegionIds;
         } else {
-            System.out.println("검색된 발화 지역 시도 ID가 없습니다.");
+            // System.out.println("검색된 발화 지역 시도 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화 지역 시군구 ID 정보
     private List<Integer> getFireRegionCityIds(String keyword) {
-        System.out.println("getFireRegionCityIds");
+        // System.out.println("getFireRegionCityIds");
         List<FireRegionData> fireRegionDataList = fireRegionDataRepository.findLikeRegionCity(keyword);
 
         if (!fireRegionDataList.isEmpty()) {
             List<Integer> fireRegionIds = fireRegionDataList.stream().map(FireRegionData::getId)
                     .collect(Collectors.toList());
-            System.out.println("검색된 발화 지역 시군구 ID 리스트 : " + fireRegionIds);
+            // System.out.println("검색된 발화 지역 시군구 ID 리스트 : " + fireRegionIds);
             return fireRegionIds;
         } else {
-            System.out.println("검색된 발화 지역 시군구 ID가 없습니다.");
+            // System.out.println("검색된 발화 지역 시군구 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
 
     // 화재 발화 유형 ID 정보
     private List<Integer> getFireTypeIds(String keyword) {
-        System.out.println("getFireTypeIds");
+        // System.out.println("getFireTypeIds");
         List<FireTypeData> fireTypeDataList = fireTypeDataRepository.findLikeType(keyword);
 
         if (!fireTypeDataList.isEmpty()) {
             List<Integer> fireTypeIds = fireTypeDataList.stream().map(FireTypeData::getId).collect(Collectors.toList());
-            System.out.println("검색된 화재 유형 ID 리스트 : " + fireTypeIds);
+            // System.out.println("검색된 화재 유형 ID 리스트 : " + fireTypeIds);
             return fireTypeIds;
         } else {
-            System.out.println("검색된 화재 유형 ID가 없습니다.");
+            // System.out.println("검색된 화재 유형 ID가 없습니다.");
             return Collections.emptyList();
         }
     }
