@@ -45,4 +45,9 @@ public class SHController {
         return "sh_html/sh_fullcalendar";
     }
     
+    @GetMapping("/sh_chatllm")
+    public String getSHChatLLM() {
+        return "sh_html/sh_chatllm";
+    }
+    
 }
