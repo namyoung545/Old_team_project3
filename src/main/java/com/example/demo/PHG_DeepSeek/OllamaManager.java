@@ -17,7 +17,7 @@ public class OllamaManager {
     // Ollama 종료 시 최대 대기 시간(초)
     private static final int SHUTDOWN_TIMEOUT_SECONDS = 5;
     // 사용할 Ollama AI 모델의 이름
-    private static final String OLLAMA_MODEL = "deepseek-r1:14b";
+    private static final String OLLAMA_MODEL = "deepseek-r1:8b";
     // Ollama 프로세스를 저장할 변수
     private Process ollamaProcess;
     // Ollama 실행을 위한 명령어 설정

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.springframework.stereotype.Service;
 
@@ -24,14 +25,14 @@ public class OllamaService {
     // JSON 데이터를 처리하기 위한 Jackson 라이브러리의 객체 매퍼
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    // AI 모델에서 응답을 생성하는 주요 메서드
-    public String generateResponse(String message, String model, String sessionId) {
+    // 스트리밍 응답을 처리하는 메서드
+    public void generateResponseStream(String message, String model, String sessionId, Consumer<String> onResponse) {
         try {
-            // AI 요청을 위한 파라미터들을 담은 맵 생성
+            // AI 요청을 위한 파라미터 설정
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", model); // 사용할 AI 모델
-            requestBody.put("prompt", message); // 사용자 입력 메시지
-            requestBody.put("stream", false); // 스트리밍 비활성화
+            requestBody.put("model", model);
+            requestBody.put("prompt", message);
+            requestBody.put("stream", true); // 스트리밍 활성화
 
             // 요청 데이터를 JSON 문자열로 변환
             String jsonRequest = objectMapper.writeValueAsString(requestBody);
@@ -49,27 +50,38 @@ public class OllamaService {
                 os.write(input, 0, input.length);
             }
 
-            // AI 응답 읽기
-            StringBuilder response = new StringBuilder();
+            // 스트리밍 응답 처리
             try (BufferedReader br = new BufferedReader(
                     new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 String responseLine;
                 while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine);
+                    if (!responseLine.isEmpty()) {
+                        JsonNode jsonResponse = objectMapper.readTree(responseLine);
+                        if (jsonResponse.has("response")) {
+                            String response = jsonResponse.get("response").asText()
+                                    .replace("\\n", "\n")
+                                    .replace("\\\"", "\"")
+                                    .replace("\\t", "\t")
+                                    .replace("\\\\", "\\");
+                            onResponse.accept(response);
+                        }
+
+                        // 스트리밍 종료 체크
+                        if (jsonResponse.has("done") && jsonResponse.get("done").asBoolean()) {
+                            break;
+                        }
+                    }
                 }
             }
-
-            // JSON 응답에서 텍스트 추출 및 특수 문자 처리
-            JsonNode jsonResponse = objectMapper.readTree(response.toString());
-            return jsonResponse.get("response").asText()
-                    .replace("\\n", "\n") // 개행 문자 복원
-                    .replace("\\\"", "\"") // 따옴표 복원
-                    .replace("\\t", "\t") // 탭 문자 복원
-                    .replace("\\\\", "\\"); // 백슬래시 복원
-
         } catch (IOException e) {
-            // 오류 발생 시 예외 처리
-            throw new RuntimeException("Failed to generate response: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to generate streaming response: " + e.getMessage(), e);
         }
+    }
+
+    // 비스트리밍 응답을 위한 메서드 (기존 코드를 StringBuilder로 수정)
+    public String generateResponse(String message, String model, String sessionId) {
+        StringBuilder fullResponse = new StringBuilder();
+        generateResponseStream(message, model, sessionId, response -> fullResponse.append(response));
+        return fullResponse.toString();
     }
 }

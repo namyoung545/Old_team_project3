@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import jakarta.annotation.PostConstruct;
 
 @Service
 public class AgentService {
+
     private static final String SYSTEM_PROMPT = """
             [시스템 지시사항]
             1. 사용자의 요구사항을 논리적으로 생각 후 이행
@@ -76,102 +78,56 @@ public class AgentService {
         databaseContext = loadDatabaseSchema();
     }
 
-    public String processUserInput(String userInput, String sessionId, String model) {
-        // 대화 기록 가져오기
+    // 사용자 입력을 스트리밍 방식으로 처리하는 메서드
+    public void processUserInputStream(String userInput, String sessionId, String model, Consumer<String> onResponse) {
         List<ChatMessage> history = conversations.computeIfAbsent(sessionId, k -> new ArrayList<>());
 
-        // 사용자의 입력이 “현재 (테이블 이름)테이블에 저장된 (어떤)값 출력해 주세요.”와 같이
-        // 실제 테이블의 데이터를 출력하라는 요청인 경우, SQL 쿼리를 직접 실행해서 결과를 반환하도록 한다.
-        if (userInput.contains("테이블") && userInput.contains("저장된") && userInput.contains("출력해")) {
-            String output = executeDisplayQuery(userInput);
-            // 대화 기록 업데이트
-            history.add(new ChatMessage("user", userInput));
-            history.add(new ChatMessage("assistant", output));
-            // 최근 대화 기록만 유지
-            if (history.size() > MAX_HISTORY) {
-                history = new ArrayList<>(history.subList(history.size() - MAX_HISTORY, history.size()));
-                conversations.put(sessionId, history);
-            }
-            return output;
-        }
-
-        // --- 이하 기존 로직 (대화형 AI 처리) ---
+        StringBuilder analysis = new StringBuilder();
+        StringBuilder context = new StringBuilder();
+        StringBuilder plan = new StringBuilder();
 
         // 1단계: 사용자 입력 분석
-        String inputAnalysis = ollamaService.generateResponse(
-                "분석할 사용자 입력: " + userInput + "\n이 입력의 의도와 필요한 정보를 분석하세요.",
-                model,
-                sessionId);
+        String analysisPrompt = "분석할 사용자 입력: " + userInput + "\n이 입력의 의도와 필요한 정보를 분석하세요.";
+        ollamaService.generateResponseStream(analysisPrompt, model, sessionId, analysis::append);
 
-        // 2단계: 관련성 있는 이전 대화 찾기
+        // 2단계: 관련된 이전 대화 찾기 및 컨텍스트 분석
         String relevantHistory = findRelevantHistory(userInput, history, model);
+        String contextPrompt = "사용자 입력: " + userInput + "\n" +
+                (relevantHistory.isEmpty() ? "" : "관련된 이전 대화: " + relevantHistory + "\n") +
+                "현재 질문과 관련된 컨텍스트 정보를 분석하세요.";
+        ollamaService.generateResponseStream(contextPrompt, model, sessionId, context::append);
 
-        // 2단계: 컨텍스트 고려사항 (관련된 이전 대화만 포함)
-        String contextConsideration = ollamaService.generateResponse(
-                "사용자 입력: " + userInput + "\n" +
-                        (relevantHistory.isEmpty() ? "" : "관련된 이전 대화: " + relevantHistory + "\n") +
-                        "현재 질문과 관련된 컨텍스트 정보를 분석하세요.",
-                model,
-                sessionId);
+        // 3단계: 실행 계획 수립
+        String planPrompt = "계획 수립을 위한 정보:\n" +
+                "- 사용자 입력: " + userInput + "\n" +
+                "- 분석 결과: " + analysis.toString() + "\n" +
+                "- 컨텍스트 고려사항: " + context.toString() + "\n" +
+                "어떻게 응답할지 계획을 세우세요.";
+        ollamaService.generateResponseStream(planPrompt, model, sessionId, plan::append);
 
-        // 3단계: 실행 계획
-        String executionPlan = ollamaService.generateResponse(
-                "계획 수립을 위한 정보:\n" +
-                        "- 사용자 입력: " + userInput + "\n" +
-                        "- 분석 결과: " + inputAnalysis + "\n" +
-                        "- 컨텍스트 고려사항: " + contextConsideration + "\n" +
-                        "어떻게 응답할지 계획을 세우세요.",
-                model,
-                sessionId);
-
-        // 최종 응답 생성
-        String prompt = String.format(SYSTEM_PROMPT, projectContext, databaseContext) +
-                String.format(REASONING_PROMPT, inputAnalysis, contextConsideration, executionPlan);
-
-        String finalResponse = ollamaService.generateResponse(prompt, model, sessionId);
+        // 최종 프롬프트 생성 후 응답 스트리밍
+        String finalPrompt = String.format(SYSTEM_PROMPT, projectContext, databaseContext)
+                + String.format(REASONING_PROMPT,
+                        analysis.toString(),
+                        context.toString(),
+                        plan.toString());
+        StringBuilder finalResponse = new StringBuilder();
+        ollamaService.generateResponseStream(finalPrompt, model, sessionId, response -> {
+            onResponse.accept(response);
+            finalResponse.append(response);
+        });
 
         // 대화 기록 업데이트
+        String finalRespStr = finalResponse.toString();
         history.add(new ChatMessage("user", userInput));
-        history.add(new ChatMessage("assistant", finalResponse));
-
-        // 최근 대화 기록만 유지
-        if (history.size() > MAX_HISTORY) {
-            history = new ArrayList<>(history.subList(history.size() - MAX_HISTORY, history.size()));
-            conversations.put(sessionId, history);
-        }
-
-        return finalResponse;
+        history.add(new ChatMessage("assistant", finalRespStr));
+        updateHistory(history, sessionId);
     }
 
-    private String executeDisplayQuery(String userInput) {
-        // 예시: "현재 회원정보테이블에 저장된 모든 값 출력해 주세요."
-        // "현재"와 "테이블" 사이의 내용을 테이블 이름으로 가정
-        int startIdx = userInput.indexOf("현재");
-        int endIdx = userInput.indexOf("테이블");
-        if (startIdx == -1 || endIdx == -1 || endIdx <= startIdx) {
-            return "요청 형식이 올바르지 않습니다.";
-        }
-        String tableName = userInput.substring(startIdx + "현재".length(), endIdx).trim();
-        if (tableName.isEmpty()) {
-            return "테이블 이름을 확인할 수 없습니다.";
-        }
-
-        String query = "SELECT * FROM " + tableName;
-        try {
-            List<Map<String, Object>> results = jdbcTemplate.queryForList(query);
-            if (results.isEmpty()) {
-                return tableName + " 테이블에 저장된 데이터가 없습니다.";
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(tableName).append(" 테이블의 데이터:\n");
-                for (Map<String, Object> row : results) {
-                    sb.append(row.toString()).append("\n");
-                }
-                return sb.toString();
-            }
-        } catch (Exception e) {
-            return "SQL 실행 오류: " + e.getMessage();
-        }
+    public String processUserInput(String userInput, String sessionId, String model) {
+        StringBuilder response = new StringBuilder();
+        processUserInputStream(userInput, sessionId, model, response::append);
+        return response.toString();
     }
 
     private String findRelevantHistory(String userInput, List<ChatMessage> history, String model) {
@@ -180,32 +136,25 @@ public class AgentService {
         }
 
         StringBuilder relevantHistory = new StringBuilder();
-
-        // 최근 5개의 대화만 검토
         int start = Math.max(0, history.size() - 5);
         List<ChatMessage> recentHistory = history.subList(start, history.size());
+
         for (int i = 0; i < recentHistory.size() - 1; i += 2) {
             ChatMessage question = recentHistory.get(i);
             ChatMessage answer = recentHistory.get(i + 1);
+            String prompt = String.format("""
+                    현재 질문: %s
+                    이전 질문: %s
+                    이전 답변: %s
 
-            String relevanceCheck = ollamaService.generateResponse(
-                    String.format("""
-                            현재 질문: %s
-                            이전 질문: %s
-                            이전 답변: %s
-
-                            위 대화가 현재 질문과 관련이 있는지 "예" 또는 "아니오"로만 답하세요.
-                            """,
-                            userInput, question.content(), answer.content()),
-                    model,
-                    "relevance-check");
-
+                    위 대화가 현재 질문과 관련이 있는지 "예" 또는 "아니오"로만 답하세요.
+                    """, userInput, question.content(), answer.content());
+            String relevanceCheck = ollamaService.generateResponse(prompt, model, "relevance-check");
             if (relevanceCheck.toLowerCase().contains("예")) {
                 relevantHistory.append("Q: ").append(question.content()).append("\n");
                 relevantHistory.append("A: ").append(answer.content()).append("\n");
             }
         }
-
         return relevantHistory.toString();
     }
 
@@ -251,9 +200,7 @@ public class AgentService {
 
     private String loadDatabaseSchema() {
         String dbName = extractDatabaseName(dbUrl);
-        StringBuilder schema = new StringBuilder("데이터베이스 스키마 (")
-                .append(dbName)
-                .append("):\n");
+        StringBuilder schema = new StringBuilder("데이터베이스 스키마 (").append(dbName).append("):\n");
 
         try {
             var dataSource = Optional.ofNullable(jdbcTemplate.getDataSource())
@@ -298,6 +245,14 @@ public class AgentService {
         String[] parts = url.split("/");
         String dbWithParams = parts[parts.length - 1];
         return dbWithParams.split("\\?")[0];
+    }
+
+    private void updateHistory(List<ChatMessage> history, String sessionId) {
+        if (history.size() > MAX_HISTORY) {
+            List<ChatMessage> trimmedHistory = new ArrayList<>(
+                    history.subList(history.size() - MAX_HISTORY, history.size()));
+            conversations.put(sessionId, trimmedHistory);
+        }
     }
 
     public void clearConversation(String sessionId) {
