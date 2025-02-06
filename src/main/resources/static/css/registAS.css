@@ -107,7 +107,7 @@ hr {
     border: 0;
     height: 2px;
     background: linear-gradient(to right, var(--border-gray), var(--primary-navy), var(--border-gray));
-    margin: 2rem 0;
+    margin: 1rem 0;
 }
 
 /* 테이블 스타일링 */
@@ -217,6 +217,22 @@ textarea:hover {
     border-color: var(--light-navy);
 }
 
+/* #info-caption{
+    min-width: 300px;
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem 0;
+} */
+
+#info-caption {
+    caption-side: top; /* caption을 테이블 위쪽에 고정 */
+    display: table-caption; /* 기본 테이블 캡션 속성 유지 */
+    width: fit-content; /* 내용에 맞게 크기 조정 */
+    min-width: 300px; /* 최소 너비 설정 */
+    text-align: left; /* 좌측 정렬 */
+}
+
 /* 전화번호 입력 그룹 */
 .phone-group {
     display: flex;
@@ -226,6 +242,7 @@ textarea:hover {
 
 .phone {
     width: 30%;
+    text-align: center;
 }
 
 .phone-separator {
@@ -351,9 +368,10 @@ textarea {
 
 .agreement-content {
     background-color: var(--white);
-    padding: 1rem;
+    padding: 1rem 9rem;
     border-radius: 6px;
-    margin-bottom: 1rem;
+    margin: 1rem auto;
+    text-align: left;
 }
 
 .agreement-content p {
