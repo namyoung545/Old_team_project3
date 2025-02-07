@@ -31,7 +31,8 @@ $(document).ready(() => {
                 map.getLayerElement('poi_bound').hide();
                 map.getLayerElement('hybrid_bound').hide();
                 map.getLayerElement('facility_build').hide();
-                loadGeoJsonLayer('lt_c_adsido_info', map);
+                loadFireInfoSido("전국");
+                loadGeoJsonLayer('lt_c_adsido_info');
 
             }
         } catch (error) {
@@ -42,7 +43,7 @@ $(document).ready(() => {
 
     }
 
-    function loadGeoJsonLayer(dataType, map) {
+    function loadGeoJsonLayer(dataType) {
         let url = `http://localhost:8080/sh_api/vworldWFS?TYPENAME=${dataType}`;
 
         // GMLParser 생성
@@ -132,10 +133,10 @@ $(document).ready(() => {
                 console.log("Clicked Feature:", feature.id);
                 // let featureOptions = feature.getOptions();
                 // console.log(featureOptions);
-                
+
                 let objectCollection = featureInfos.objCollection.collectionProp;
                 console.log(objectCollection);
-                objectCollection.forEach((item) =>{ 
+                objectCollection.forEach((item) => {
                     if (item.id != feature.id) {
                         // console.log(item.id);
                         // featureInfos.getById(item.id).setOptions(options);
@@ -144,7 +145,7 @@ $(document).ready(() => {
                     }
                 });
 
-                
+
                 // 사용자 지정 코드 실행
                 // 피처 숨기기 (필요 시)
                 // feature.hide();
@@ -186,62 +187,111 @@ $(document).ready(() => {
             .then(([infoData, casualtyData, damageData]) => {
 
                 if (infoData && Array.isArray(infoData) && infoData.length > 0) {
-                    infoData.forEach((data) => {
-                        if (data.sido_nm == targetName) {
-                            const dataElement = `
-                            <div class="sidoData">
-                                <div class="sidoTitle">화재 현황 (${data.ocrn_ymd || "정보 없음"})</div>
-                                <div class="sidoName">${data.sido_nm || "정보 없음"}</div>
-                                <div>화재접수 : ${data.fire_rcpt_mnb || "0"} 건</div>
-                                <div>상황종료 : ${data.stn_end_mnb || "0"} 건</div>
-                                <div>자체진화 : ${data.slf_extsh_mnb || "0"} 건</div>
-                                <div>오보처리 : ${data.flsrp_prcs_mnb || "0"} 건</div>
-                                <div>허위신고 : ${data.fals_dclr_mnb || "0"} 건</div>
-                            </div>
-                            `;
-                            $fireInfo.append(dataElement);
-                        }
-                    });
+                    if (targetName == "전국") {
+                        const totalFireCount = infoData.reduce((acc, item) => acc + (item.fire_rcpt_mnb || 0), 0);
+                        const totalFireEnd = infoData.reduce((acc, item) => acc + (item.stn_end_mnb || 0), 0);
+                        const totalFireSelf = infoData.reduce((acc, item) => acc + (item.slf_extsh_mnb || 0), 0);
+                        const totalFireFalse = infoData.reduce((acc, item) => acc + (item.flsrp_prcs_mnb || 0), 0);
+                        const totalFireFals = infoData.reduce((acc, item) => acc + (item.fals_dclr_mnb || 0), 0);
+                        const dataElement = `
+                        <div class="sidoData">
+                            <div class="sidoTitle">전국 화재 현황</div>
+                            <div class="sidoName">전국</div>
+                            <div>화재접수 : ${totalFireCount || "0"} 건</div>
+                            <div>상황종료 : ${totalFireEnd || "0"} 건</div>
+                            <div>자체진화 : ${totalFireSelf || "0"} 건</div>
+                            <div>오보처리 : ${totalFireFalse || "0"} 건</div>
+                            <div>허위신고 : ${totalFireFals || "0"} 건</div>
+                        </div>
+                        `;
+                        $fireInfo.append(dataElement);
+                    } else {
+                        infoData.forEach((data) => {
+                            if (data.sido_nm == targetName) {
+                                const dataElement = `
+                                <div class="sidoData">
+                                    <div class="sidoTitle">화재 현황 (${data.ocrn_ymd || "정보 없음"})</div>
+                                    <div class="sidoName">${data.sido_nm || "정보 없음"}</div>
+                                    <div>화재접수 : ${data.fire_rcpt_mnb || "0"} 건</div>
+                                    <div>상황종료 : ${data.stn_end_mnb || "0"} 건</div>
+                                    <div>자체진화 : ${data.slf_extsh_mnb || "0"} 건</div>
+                                    <div>오보처리 : ${data.flsrp_prcs_mnb || "0"} 건</div>
+                                    <div>허위신고 : ${data.fals_dclr_mnb || "0"} 건</div>
+                                </div>
+                                `;
+                                $fireInfo.append(dataElement);
+                            }
+                        });
+                    }
                 }
 
                 if (casualtyData && Array.isArray(casualtyData) && casualtyData.length > 0) {
-                    const groupedCasualty = groupBySido(casualtyData, ["vctmPercnt", "injrdprPercnt", "lifeDmgPercnt", "ocrnMnb"]);
+                    if (targetName == "전국") {
+                        const totalVctm = casualtyData.reduce((acc, item) => acc + (item.vctmPercnt || 0), 0);
+                        const totalInjrdpr = casualtyData.reduce((acc, item) => acc + (item.injrdprPercnt || 0), 0);
+                        const totalLifeDmg = casualtyData.reduce((acc, item) => acc + (item.lifeDmgPercnt || 0), 0);
 
-                    let today = new Date();
-                    let weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7).toLocaleDateString();
-                    let weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1).toLocaleDateString();
-                    for (const sido in groupedCasualty) {
-                        if (sido == targetName) {
-                            const data = groupedCasualty[sido];
-                            const dataElement = `
-                            <div class="sidoData">
-                                <div class="sidoTitle">주간 피해 현황 (${weekStart} ~ ${weekEnd})</div>
-                                <div class="sidoName">${sido || "정보 없음"}</div>
-                                <div>화재건수 : ${data.ocrnMnb || "0"} 건</div>
-                                <div>사망자 : ${data.vctmPercnt || "0"} 명</div>
-                                <div>부상자 : ${data.injrdprPercnt || "0"} 명</div>
-                                <div>인명피해 : ${data.lifeDmgPercnt || "0"} 명</div>
-                            </div>
-                            `;
-                            $fireCasualty.append(dataElement);
+                        const dataElement = `
+                        <div class="sidoData">
+                            <div class="sidoTitle">전국 피해 현황</div>
+                            <div class="sidoName">전국</div>
+                            <div>사망자 : ${totalVctm || "0"} 명</div>
+                            <div>부상자 : ${totalInjrdpr || "0"} 명</div>
+                            <div>인명피해 : ${totalLifeDmg || "0"} 명</div>
+                        </div>
+                        `;
+                        $fireCasualty.append(dataElement);
+                    } else {
+                        const groupedCasualty = groupBySido(casualtyData, ["vctmPercnt", "injrdprPercnt", "lifeDmgPercnt", "ocrnMnb"]);
+
+                        let today = new Date();
+                        let weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7).toLocaleDateString();
+                        let weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1).toLocaleDateString();
+                        for (const sido in groupedCasualty) {
+                            if (sido == targetName) {
+                                const data = groupedCasualty[sido];
+                                const dataElement = `
+                                <div class="sidoData">
+                                    <div class="sidoTitle">주간 피해 현황 (${weekStart} ~ ${weekEnd})</div>
+                                    <div class="sidoName">${sido || "정보 없음"}</div>
+                                    <div>화재건수 : ${data.ocrnMnb || "0"} 건</div>
+                                    <div>사망자 : ${data.vctmPercnt || "0"} 명</div>
+                                    <div>부상자 : ${data.injrdprPercnt || "0"} 명</div>
+                                    <div>인명피해 : ${data.lifeDmgPercnt || "0"} 명</div>
+                                </div>
+                                `;
+                                $fireCasualty.append(dataElement);
+                            }
                         }
                     }
+
                 }
 
                 if (damageData && Array.isArray(damageData) && damageData.length > 0) {
-                    const groupedDamage = groupBySido(damageData, ["prptDmgSbttAmt", "ocrnMnb"]);
-                    for (const sido in groupedDamage) {
-                        if (sido == targetName) {
-                            const data = groupedDamage[sido];
-                            const propertyDamage = parseInt(data.prptDmgSbttAmt + "000").toLocaleString() || "0";
-                            const dataElement = `
-                            <div class="sidoData">
-                                <div>재산피해 : ${propertyDamage} 원</div>
-                            </div>
-                            `;
-                            $fireDamage.append(dataElement);
+                    if (targetName == "전국") {
+                        const totalPropertyDamage = damageData.reduce((acc, item) => acc + (item.prptDmgSbttAmt || 0), 0);
+                        const dataElement = `
+                        <div class="sidoData">
+                            <div>재산피해 : ${parseInt(totalPropertyDamage + "000").toLocaleString() || "0"} 원</div>
+                        </div>
+                        `;
+                        $fireDamage.append(dataElement);
+                    } else {
+                        const groupedDamage = groupBySido(damageData, ["prptDmgSbttAmt", "ocrnMnb"]);
+                        for (const sido in groupedDamage) {
+                            if (sido == targetName) {
+                                const data = groupedDamage[sido];
+                                const propertyDamage = parseInt(data.prptDmgSbttAmt + "000").toLocaleString() || "0";
+                                const dataElement = `
+                                <div class="sidoData">
+                                    <div>재산피해 : ${propertyDamage} 원</div>
+                                </div>
+                                `;
+                                $fireDamage.append(dataElement);
+                            }
                         }
                     }
+
                 }
 
             }).catch((error) => {
@@ -280,6 +330,7 @@ $(document).ready(() => {
             });
 
     }
+
     // 데이터를 sidoNm 기준으로 그룹화하고 필드값을 합산하는 함수
     function groupBySido(data, fields) {
         return data.reduce((acc, item) => {
