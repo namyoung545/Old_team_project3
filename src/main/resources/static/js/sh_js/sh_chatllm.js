@@ -237,6 +237,7 @@ class ChatUIManager {
 
         const aiBubble = this.createMessageBubble(true);
         aiBubble.querySelector('.original-content').innerHTML = '<div class="typing-indicator">답변 생성 중...</div>';
+        aiBubble.querySelector('.translated-content').innerHTML = '<div class="typing-indicator">답변 생성 중...</div>';
         this.appendToHistory(aiBubble);
 
         try {
