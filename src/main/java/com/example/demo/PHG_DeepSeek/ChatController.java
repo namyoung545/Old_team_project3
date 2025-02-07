@@ -20,9 +20,4 @@ public class ChatController {
                 request.getSessionId(),
                 request.getModel());
     }
-
-    @PostMapping("/clear")
-    public void clearConversation(@RequestBody ChatRequestDTO request) {
-        agentService.clearConversation(request.getSessionId());
-    }
 }

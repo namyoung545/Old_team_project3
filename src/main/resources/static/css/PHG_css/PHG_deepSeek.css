@@ -218,3 +218,75 @@
         padding: 1rem;
     }
 }
+
+
+/* 컨트롤 컨테이너 스타일 */
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.model-selection {
+    flex: 1;
+    margin-right: 20px;
+}
+
+/* 번역 토글 스타일 */
+.translation-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.translation-checkbox {
+    margin-right: 8px;
+}
+
+.translation-label {
+    color: var(--text-color-dark);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* 메시지 버블 내부의 원본/번역 컨텐츠 스타일 */
+.message-content {
+    width: 100%;
+}
+
+.original-content,
+.translated-content {
+    transition: opacity 0.3s ease;
+}
+
+.translated-content {
+    display: none;
+}
+
+/* 번역 모드 활성화 시 스타일 */
+.translation-mode .original-content {
+    display: none;
+}
+
+.translation-mode .translated-content {
+    display: block;
+}
+
+/* 메시지 전환 애니메이션 */
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}

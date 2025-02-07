@@ -12,6 +12,6 @@ public interface memberDAO {
     memberDTO getUserById(String user_id) throws Exception;
 
     int memberUpdate(memberDTO dto) throws Exception;
-    
+
     int delete(String userId) throws Exception;
 }
