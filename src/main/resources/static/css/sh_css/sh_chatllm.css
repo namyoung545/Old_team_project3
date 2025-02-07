@@ -35,15 +35,12 @@
 .chatllm_content {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 .chatllm_content .chat_log {
     width: 100%;
     height: 80%;
-}
-
-.chat-history {
-    display: none;
 }
 
 .chatllm_content .chat_input {
@@ -59,12 +56,76 @@
 .chat_input .chat-wrapper {
     /* display: flex; */
     width: 100%;
-    height: calc(100%);
+    height: 100%;
     box-sizing: border-box;
+}
+
+.chat-history {
+    flex-grow: 1;
+    width: 100%;
+    height: calc(100%);
+    padding: 15px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* 스크롤바 (웹킷 브라우저용) */
+.chat-history::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 메시지 버블 */
+.chat-bubble {
+    margin-bottom: 15px;
+    padding: 1rem;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    position: relative;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.chat-bubble pre {
+    margin: 0;
+}
+
+.chat-bubble-user {
+    align-self: flex-end;
+    background-color: #efefef99;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+}
+
+
+.chat-bubble-ai {
+    background-color: var(--code-bg);
+    color: var(--text-color-dark);
+    border: 1px solid var(--border-color);
+    align-self: flex-start;
+}
+
+.chat-option {
+    display: flex;
 }
 
 .chat_input .model-selection {
     height: 2rem;
+    margin-right: 1rem;
 }
 
 .chat_input .chat-input-wrapper {
@@ -72,7 +133,18 @@
     width: 100%;
     height: calc(100% - 2rem);
     box-sizing: border-box;
-    margin-top: 0.5rem;
+}
+
+.translated-content {
+    display: none;
+}
+
+.translation-mode .original-content {
+    display: none;
+}
+
+.translation-mode .translated-content {
+    display: block;
 }
 
 .chat_input .chat-input {
