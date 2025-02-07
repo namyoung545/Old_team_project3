@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.dto.PHG_MemberDTO;
 import com.example.demo.dto.memberDTO;
+import com.example.demo.service.dy_aiRiskService;
 import com.example.demo.service.memberService;
 
 import jakarta.servlet.http.Cookie;
@@ -29,6 +27,9 @@ public class IndexController {
 
     @Autowired
     memberService memberService;
+
+    @Autowired
+    dy_aiRiskService riskService;
 
     // localhost:8080 요청을 처리하는 메서드
     @GetMapping("/")
@@ -103,10 +104,15 @@ public class IndexController {
             return "/alertPrint";
         }
 
+        // 로그인 성공 시 사용자 정보를 새로 조회
+        memberDTO userInfo = memberService.getUserById(memberDTO.getUserId());
+
         // 세션 생성 및 사용자 ID 저장
         HttpSession session = request.getSession();
-        session.setAttribute("userId", memberDTO.getUserId());
-        System.out.println("세션 생성 완료 - 사용자 ID: " + memberDTO.getUserId());
+        session.setAttribute("userId", userInfo.getUserId());
+        session.setAttribute("authorityId", userInfo.getAuthorityId());
+        System.out.println("세션 생성 완료 - 사용자 ID: " + userInfo.getUserId());
+        System.out.println("세션 생성 완료 - 사용자 권한: " + userInfo.getAuthorityId());
 
         // 아이디 저장 쿠키 처리
         if (rememberId) {
@@ -230,6 +236,11 @@ public class IndexController {
 
             // 기본 연도 설정
             model.addAttribute("defaultYear", 2023);
+
+            // Thymeleaf 템플릿을 렌더링하는 메서드
+
+            List<Map<String, Object>> riskData = riskService.getRiskData();
+            model.addAttribute("riskData", riskData);
 
         } catch (Exception e) {
             e.printStackTrace();

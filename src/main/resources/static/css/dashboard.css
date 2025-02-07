@@ -54,10 +54,10 @@ canvas {
     width: 100%;
     height: 100vh;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     /* grid-template-columns: repeat(8, 1fr); */
     /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     /* grid-template-rows: repeat(6, 1fr); */
     /* grid-template-rows: auto; */
     grid-gap: 20px;
@@ -79,25 +79,25 @@ canvas {
 }
 
 .chartFires {
-    grid-column: 1;
+    grid-column: 3;
 }
 
 .chartCause {
-    grid-column: 5;
+    grid-column: 4;
 }
 
 .chartInjuries {
-    grid-column: 1;
+    grid-column: 3;
     grid-row: 2;
 }
 
 .chartDamage {
-    grid-column: 5;
+    grid-column: 4;
     grid-row: 2;
 }
 
 .vworldmainContainer{
-    grid-column: 2 / span 3;
+    grid-column: 1 / span 2;
     grid-row: 1 / span 2;
     background-color: #fefefe;
     border-radius: 15px;
@@ -116,9 +116,8 @@ canvas {
     margin: 0 auto;
 }
 
-#second_page h1{
+#second_page h2, #third_page h2{
     text-align: center;
-    color: #ffffff;
     margin: 0px;
 }
 
@@ -132,24 +131,32 @@ canvas {
     /* 화면 전환 효과 */
 }
 
-
 /* 화면 휠스크롤 이동 기능 */
 #first_page {
     transform: translateY(0);
     /* 첫 번째 페이지는 초기 상태 */
-    background-color: #212121;
-    color: #f1f1f1;
+    background-color: #fdfdfe;
+    color: #000000;
 }
 
 #second_page {
     transform: translateY(0);
     /* 두 번째 페이지는 아래로 이동 */
-    background-color: #212121;
-    color: #ffffff;
+    background-color: #fdfdfe;
+    color: #000000;
     height: 100vh;
 }
 
 #third_page {
+    transform: translateY(0);
+    /* 두 번째 페이지는 아래로 이동 */
+    background-color: #fdfdfe;
+    color: #000000;
+    height: 100vh;
+    padding: 1rem;
+}
+
+#fourth_page {
     transform: translateY(0);
     /* 두 번째 페이지는 아래로 이동 */
     background-color: #f1f1f1;

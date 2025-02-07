@@ -1,0 +1,16 @@
+:root {
+    --base-background-color: #fdfdfe;
+    --header-background-color: #f5f6f7;
+    --footer-background-color: #f5f6f7;
+    --text-color: #333;
+    --button-color: #343a40;
+    --button-hover-color: #DAB800;
+    --button-active-color: #FFD700;
+}
+
+/* 기본 리셋 및 전역 스타일 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

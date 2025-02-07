@@ -31,13 +31,23 @@ public class SHController {
     }
 
     @GetMapping("/sh_disaster")
-    public String getMethodName(Model model) {
+    public String getSHDisaster(Model model) {
         return "/sh_html/sh_disaster";
     }
     
     @GetMapping("/sh_fireInfo")
     public String getSHFireInfo() {
         return "sh_html/sh_fireInfo";
+    }
+    
+    @GetMapping("/sh_fullcalendar")
+    public String getSHFullCalendar() {
+        return "sh_html/sh_fullcalendar";
+    }
+    
+    @GetMapping("/sh_chatllm")
+    public String getSHChatLLM() {
+        return "sh_html/sh_chatllm";
     }
     
 }

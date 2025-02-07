@@ -1,51 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.dao.asReceptionDAO">
 
 	<!-- 시설 A/S 접수 -->
-	<insert id="AS_Reception" parameterType="com.example.demo.dto.asReceptionDTO">
-		INSERT INTO as_reception (
-			userId,
-			authorityId,
-			name, 
-			phoneNumber, 
-			email, 
-			postcode, 
-			address, 
-			detailAddress, 
-			facilityType, 
-			issueTitle, 
-			issueDetails, 
-			preferredDate, 
-			preferredTime
-		)
-		SELECT 
-			m.userId,
-			m.authorityId,
-			#{name}, 
-			#{phoneNumber}, 
-			#{email}, 
-			#{postcode}, 
-			#{address}, 
-			#{detailAddress}, 
-			#{facilityType}, 
-			#{issueTitle}, 
-			#{issueDetails}, 
-			#{preferredDate}, 
-			#{preferredTime}
-		FROM member m
-		WHERE m.userId = #{userId}
-	</insert>
-	
-	<select id="AS_Status" parameterType="com.example.demo.dto.asReceptionDTO" resultType="com.example.demo.dto.asReceptionDTO">
-		SELECT requestId, userId, authorityId, receptionDate, name, preferredDate, preferredTime, receptionStatus
-		FROM as_reception
-		<if test="authorityId != 1">
-			WHERE userId = #{userId}
-		</if>
+	<insert id="AS_Reception" parameterType="com.example.demo.dto.asReceptionDTO"> INSERT INTO
+		as_reception ( userId, authorityId, name, phoneNumber, email, postcode, address,
+		detailAddress, facilityType, issueTitle, issueDetails, preferredDateTime ) SELECT m.userId,
+		m.authorityId, #{name}, #{phoneNumber}, #{email}, #{postcode}, #{address}, #{detailAddress},
+		#{facilityType}, #{issueTitle}, #{issueDetails}, #{preferredDateTime} FROM member m WHERE
+		m.userId = #{userId} </insert>
+
+	<select id="AS_Status" parameterType="com.example.demo.dto.asReceptionDTO"
+		resultType="com.example.demo.dto.asReceptionDTO"> SELECT requestId, userId, authorityId,
+		receptionDate, name, phoneNumber, email, postcode, address, detailAddress, facilityType,
+		issueTitle, issueDetails, preferredDateTime, receptionStatus, receptionDelivery FROM
+		as_reception <if test="authorityId != 1"> WHERE userId = #{userId} </if>
 	</select>
+
+	<!-- 페이징 처리를 위한 A/S 상태 조회 -->
+	<select id="getASStatusWithPaging" parameterType="map"
+		resultType="com.example.demo.dto.asReceptionDTO"> SELECT requestId, userId, authorityId,
+		receptionDate, name, phoneNumber, email, postcode, address, detailAddress, facilityType,
+		issueTitle, issueDetails, preferredDateTime, receptionStatus, receptionDelivery FROM
+		as_reception <if test="params.authorityId != null and params.authorityId != 1"> WHERE userId
+		= #{params.userId} </if> ORDER BY receptionDate DESC LIMIT #{params.limit} OFFSET
+		#{params.offset} </select>
+
+	<select id="getTotalCount" parameterType="map" resultType="int"> SELECT COUNT(*) FROM
+		as_reception <if test="authorityId != null and authorityId != 1"> WHERE userId
+		= #{userId} </if>
+	</select>
+
+	<select id="deliveryArrangement" parameterType="com.example.demo.dto.asReceptionDTO"> UPDATE
+		as_reception SET receptionDelivery = #{receptionDelivery}, receptionStatus =
+		#{receptionStatus} WHERE requestId = #{requestId}; </select>
+
+	<select id="DeliveryAssignment" parameterType="com.example.demo.dto.asReceptionDTO"
+		resultType="int"> SELECT COALESCE( (SELECT COUNT(*) FROM member WHERE authorityId = 2) -
+		(SELECT COUNT(*) FROM as_reception WHERE preferredDateTime = #{preferredDateTime}), 0 ) AS
+		assignedTechniciansCount; </select>
+
+
 </mapper>

@@ -20,11 +20,12 @@
 
 	<!-- 사용자 정보 조회 -->
     <select id="getUserById" resultType="com.example.demo.dto.memberDTO">
-		SELECT userId, userPw, email, name, phoneNumber, address
+		SELECT userId, userPw, email, name, phoneNumber, address, authorityId
 		FROM member
 		WHERE userId = #{userId}
 	</select>
 
+	<!-- 사용자 정보 수정 -->
 	<update id="memberUpdate" parameterType="com.example.demo.dto.memberDTO">
 		UPDATE member 
 		SET userPw = #{userPw},
@@ -40,5 +41,11 @@
 		DELETE FROM member
 		WHERE userId = #{userId}
 	</delete>
+
+	<select id="deliverySelect" parameterType="int">
+		SELECT name 
+		FROM member
+		WHERE authorityId = 2; 
+	</select>
 
 </mapper>
