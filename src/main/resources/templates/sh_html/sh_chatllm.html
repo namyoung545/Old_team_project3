@@ -8,11 +8,12 @@
 
     <head th:replace="~{common_headscript.html :: common_headscript}"></head>
 
-    
+
     <!-- 스크립트 비동기 로드 (렌더링 성능 개선) -->
     <link rel="stylesheet" href="css/PHG_css/download/github.min.css">
     <script src="js/PHG/download/marked.min.js" defer></script>
     <script src="js/PHG/download/highlight.min.js" defer></script>
+    <script src="js/PHG/download/purify.min.js" defer></script>
     <script th:src="@{/js/sh_js/sh_chatllm.js}" defer></script>
     <link rel="stylesheet" th:href="@{/css/sh_css/sh_chatllm.css}">
 </head>
@@ -28,10 +29,8 @@
             <hr>
             <div class="chatllm_content">
                 <div class="chat_log">
-                    <div class="chat-history" id="chat-history" aria-live="polite"></div>
-                    <section class="translation-panel">
-                        <div class="translation-history" id="translation-history" aria-live="polite"></div>
-                    </section>
+                    <div class="chat-history translation-mode" id="chat-history" aria-live="polite"></div>
+
                 </div>
                 <div class="chat_input">
                     <!-- 채팅 래퍼: 채팅 히스토리와 입력 영역 포함 -->
@@ -40,20 +39,28 @@
                         <input type="hidden" id="chat-session" value="">
 
                         <!-- AI 모델 선택 드롭다운 -->
-                        <div class="model-selection">
-                            <label for="ai-model" class="sr-only">AI 모델 선택</label>
-                            <select id="ai-model" class="model-select">
-                                <option value="deepseek-r1:8b">DeepSeek R1 8B</option>
-                                <option value="deepseek-r1:14b">DeepSeek R1 14B</option>
-                                <option value="deepseek-r1:32b">DeepSeek R1 32B</option>
-                            </select>
+                        <div class="chat-option">
+
+                            <div class="model-selection">
+                                <label for="ai-model" class="sr-only">AI 모델 선택</label>
+                                <select id="ai-model" class="model-select">
+                                    <option value="deepseek-r1:1.5b">DeepSeek R1 1.5B</option>
+                                    <option value="deepseek-r1:8b">DeepSeek R1 8B</option>
+                                    <option value="deepseek-r1:14b">DeepSeek R1 14B</option>
+                                    <option value="deepseek-r1:32b">DeepSeek R1 32B</option>
+                                </select>
+                                <!-- 번역 토글 체크박스 -->
+                            </div>
+                            <div class="translation-toggle">
+                                <input type="checkbox" id="translation-switch" class="translation-checkbox" checked>
+                                <label for="translation-switch" class="translation-label">번역 보기</label>
+                            </div>
                         </div>
                         <!-- 메시지 입력 영역 -->
                         <div class="chat-input-wrapper">
                             <textarea id="chat-input" class="chat-input" placeholder="메시지를 입력하세요..." rows="3"
                                 aria-describedby="send-message-btn"></textarea>
-                            <button id="send-message-btn" class="send-btn" onclick="sendMessage()"
-                                aria-label="메시지 보내기">전송</button>
+                            <button id="send-message-btn" class="send-btn" aria-label="메시지 보내기">전송</button>
                         </div>
                     </div>
                 </div>
