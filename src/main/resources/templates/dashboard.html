@@ -110,10 +110,12 @@
       <div class="scroll_page" id="third_page">
         <h2>지역별 전기적 세부요인별 위험감소 랜던포레스트AI & SHAP분석 예측비율</h2>
 
-        <label for="regionSelect">지역 선택:</label>
-        <select id="regionSelect">
-          <option value="">전체</option>
-        </select>
+        <div id="regionSelect_container">
+          <label for="regionSelect">지역 선택:</label>
+          <select id="regionSelect">
+            <option value="">전체</option>
+          </select>
+        </div>
         <div class="riskChart_container">
           <canvas id="riskChart"></canvas>
         </div>
@@ -121,8 +123,10 @@
     </div>
 
     <!-- 화살표 네비게이션 -->
-    <button class="chevron_btn_contrainer" id="prevBtn"><i class="chevron_btn bi bi-chevron-compact-up"></i></button>
-    <button class="chevron_btn_contrainer" id="nextBtn"><i class="chevron_btn bi bi-chevron-compact-down"></i></button>
+    <button class="chevron_btn_contrainer" id="prevBtn"><i
+        class="chevron_btn chevron_btn_top bi bi-chevron-compact-up"></i></button>
+    <button class="chevron_btn_contrainer" id="nextBtn"><i
+        class="chevron_btn chevron_btn_bottom bi bi-chevron-compact-down"></i></button>
 
 
     <div th:replace="~{dashboardFooter.html :: dashboardFooter}"></div> <!-- Footer 삽입 -->

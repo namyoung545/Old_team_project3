@@ -165,8 +165,9 @@ document.addEventListener("DOMContentLoaded", function () {
      // 기존 차트2: 점선그래프
      function createLineChartOption(title, categories, data) {
         const colors = [
-            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
-            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+            '#FFCE56', '#FF6384', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40',
+            '#C9DE00', '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360',
+            '#00A2E8', '#76A1E5', '#FAA43A', '#60BD68', '#F17CB0'
         ];
     
         return {
@@ -195,38 +196,46 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
     // 기존 차트3: 3D 위험레벨
-    function createRiskLevelChartOption(title, categories, data) {
-        const colors = [
-            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
-            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
-        ];
-    
-        return {
-            title: { text: title, textStyle: { color: '#000000' } },
-            backgroundColor: '#fefefe',
-            tooltip: {},
-            grid: { top: '15%', bottom: '3%', containLabel: true },
-            xAxis: { type: 'category', data: categories, axisLabel: { color: '#000000' } },
-            yAxis: { type: 'value', min: 0, max: 3, interval: 1, axisLabel: { color: '#000000', fontSize: 15 } },
-            series: [
-                {
-                    name: title,
-                    type: 'bar',
-                    data: data,
-                    itemStyle: {
-                        color: (params) => colors[params.dataIndex % colors.length] // 막대마다 다른 색 적용
+function createRiskLevelChartOption(title, categories, data) {
+    const colors = [
+        '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
+        '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+    ];
+
+    return {
+        title: { text: title, textStyle: { color: '#000000' } },
+        backgroundColor: '#fefefe',
+        tooltip: {},
+        grid: { top: '15%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'category', data: categories, axisLabel: { color: '#000000' } },
+        yAxis: { type: 'value', min: 0, max: 3, interval: 1, axisLabel: { color: '#000000', fontSize: 15 } },
+        series: [
+            {
+                name: title,
+                type: 'bar',
+                data: data,
+                itemStyle: {
+                    color: (params) => {
+                        return `rgba(${parseInt(colors[params.dataIndex % colors.length].slice(1, 3), 16)}, 
+                                      ${parseInt(colors[params.dataIndex % colors.length].slice(3, 5), 16)}, 
+                                      ${parseInt(colors[params.dataIndex % colors.length].slice(5, 7), 16)}, 0.8)`; // 80% 불투명도
                     },
+                    opacity: 0.8, // 전체적인 투명도 적용
+                    borderColor: "#000000", // 검은색 테두리
+                    borderWidth: 1, // 테두리 두께
+                    borderType: "solid", // 실선 테두리
                 },
-            ],
-        };
-    }
-    
+            },
+        ],
+    };
+}
 
     // 기존 차트4: 도넛형 차트
     function createDonutChartOption(title, data) {
         const colors = [
-            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
-            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+            '#FFCE56', '#FF6384', '#36A2EB', '#4BC0C0', '#9966FF', '#FF9F40',
+            '#C9DE00', '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360',
+            '#00A2E8', '#76A1E5', '#FAA43A', '#60BD68', '#F17CB0'
         ];
     
         return {
@@ -244,10 +253,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     labelLine: { show: true, length: 10, length2: 10 },
                     data: data,
                     itemStyle: {
-                        color: (params) => colors[params.dataIndex % colors.length] // 각 조각마다 다른 색 적용
+                        color: (params) => colors[params.dataIndex % colors.length], // 색상 순환 적용
+                        borderWidth: 2,   // ✅ 테두리 두께 (조각 사이 간격)
+                        borderColor: '#ffffff' // ✅ 테두리 색상 (배경과 같은 색)
                     },
                 },
             ],
         };
     }
+    
+    
+    
+    updateCharts('2023');
+    oscillateView(chart1)
+    console.log("ECharts Version:", echarts.version);
 });

@@ -152,6 +152,11 @@ hr {
 	color: blue;
 }
 
+/* 이벤트 글자 색상 */
+.fc-direction-ltr .fc-daygrid-event.fc-event-end{
+	color: black;
+}
+
 /* 기본 버튼 색상 */
 .fc-header-toolbar .btn-primary {
 	background-color: #f68e3e;

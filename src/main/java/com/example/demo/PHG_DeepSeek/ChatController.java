@@ -11,13 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     @Autowired
-    private OllamaService ollamaService;
+    private AgentService agentService;
 
     @PostMapping("/send")
     public String sendMessage(@RequestBody ChatRequestDTO request) {
-        return ollamaService.generateResponse(
+        return agentService.processUserInput(
                 request.getMessage(),
-                request.getModel(),
-                request.getSessionId());
+                request.getSessionId(),
+                request.getModel());
+    }
+
+    @PostMapping("/clear")
+    public void clearConversation(@RequestBody ChatRequestDTO request) {
+        agentService.clearConversation(request.getSessionId());
     }
 }

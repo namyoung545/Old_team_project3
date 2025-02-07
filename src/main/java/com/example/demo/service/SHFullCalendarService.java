@@ -25,7 +25,7 @@ public class SHFullCalendarService {
 
         receptionList.stream()
             .forEach(reception -> {
-                System.out.println("reception : " + reception);
+                // System.out.println("reception : " + reception);
                 Map<String, Object> event = new HashMap<>();
 
                 event.put("name", getOrDefault(reception.getName(), "이름 없음"));

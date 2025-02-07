@@ -1,6 +1,8 @@
         /* 푸터 스타일 */
         #footer {
             background-color: #f5f6f7;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             /* 남색 */
             height: 3.5em;
             color: #000000;
@@ -9,4 +11,8 @@
             font-size: 0.9em;
             box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
             /* margin-left: 60px; */
+        }
+
+        .managementPage_row{
+            grid-column: 3;
         }
