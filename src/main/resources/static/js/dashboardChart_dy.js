@@ -91,56 +91,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //3D 막대차트
     function create3DBarOption(title, categories, data) {
-        // 1위와 2위 데이터 값 계산
-        const maxIndex = data.reduce((maxIdx, item, idx, arr) => 
-            item[2] > arr[maxIdx][2] ? idx : maxIdx, 0); // 최대값 인덱스
-        const secondMaxIndex = data.reduce((maxIdx, item, idx, arr) => 
-            idx !== maxIndex && item[2] > arr[maxIdx][2] ? idx : maxIdx, 0); // 두 번째 최대값 인덱스
-    
-        const firstValue = data[maxIndex][2]; // 1위 값
-        const secondValue = data[secondMaxIndex][2]; // 2위 값
-    
-        console.log('원본 데이터:', data);
-        console.log('1위 값:', firstValue, '2위 값:', secondValue);
+        const colors = [
+            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1', 
+            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+        ]; // 17개의 색상 지정
     
         return {
-            title: { text: title, textStyle: { color: '#ffffff' } },
-            backgroundColor: '#1e1e1e',
+            title: { text: title, textStyle: { color: '#000000' } },
+            backgroundColor: '#fefefe',
             tooltip: {},
             xAxis3D: {
                 type: 'category',
-                data: categories, // 원래 카테고리 적용
-                axisLabel: {
-                    show: false, // X축 레이블 숨기기
-                },
+                data: categories,
+                axisLabel: { show: false },
             },
             yAxis3D: {
                 type: 'category',
-                data: [''], // Y축 데이터 (고정된 단일 값)
-                axisLabel: { color: '#ffffff' },
+                data: [''],
+                axisLabel: { color: '#000000' },
             },
             zAxis3D: {
                 type: 'value',
-                axisLabel: { color: '#ffffff' },
+                axisLabel: { color: '#000000' },
             },
             grid3D: {
-                axisLine: {
-                    lineStyle: {
-                        color: 'transparent', // X축 선 색상을 투명하게 설정
-                    },
-                },
-                axisPointer: {
-                    show: false, // 카메라 축 포인터 숨기기
-                },
+                axisLine: { lineStyle: { color: 'transparent' } },
+                axisPointer: { show: false },
                 viewControl: {
                     projection: 'perspective',
-                    autoRotate: false, // 자동 회전 비활성화
-                    rotateSensitivity: 3, // 회전 비활성화
-                    zoomSensitivity: 1, // 줌 비활성화
-                    panSensitivity: 1, // 팬 비활성화
-                    beta: currentAngle, // 초기 각도
-                    alpha: 0, // 초기 각도
-                    beta: 0,  // 초기 각도
+                    autoRotate: false,
+                    rotateSensitivity: 3,
+                    zoomSensitivity: 1,
+                    panSensitivity: 1,
+                    beta: 0,
+                    alpha: 0,
                     minAlpha: 0,
                     maxAlpha: 0,
                     minBeta: 0,
@@ -150,238 +134,120 @@ document.addEventListener("DOMContentLoaded", function () {
                 boxHeight: 120,
                 boxDepth: 10,
                 light: {
-                    main: { intensity: 1 }, // 메인 라이트
-                    ambient: { intensity: 0.3 }, // 환경 라이트
+                    main: { intensity: 1 },
+                    ambient: { intensity: 0.3 },
                 },
             },
             series: [
                 {
                     type: 'bar3D',
-                    data: data, // 원래 데이터 배열 적용
+                    data: data,
                     shading: 'realistic',
                     label: {
-                        show: true, // 레이블 표시
-                        position: 'top', // 막대 상단에 레이블 위치
-                        formatter: (params) => {
-                            return categories[params.value[0]]; // 원래 카테고리 표시
-                        },
+                        show: true,
+                        position: 'top',
+                        formatter: (params) => categories[params.value[0]],
                         textStyle: {
-                            color: '#ffffff', // 텍스트 색상
+                            color: '#000000',
                             fontSize: 10,
                             fontWeight: 'bold',
                         },
                     },
                     itemStyle: {
-                        color: (params) => {
-                            const value = params.value[2];
-                            if (params.dataIndex === maxIndex) return '#FFD700'; // 1위 진노랑
-                            if (params.dataIndex === secondMaxIndex) return '#FFEC8B'; // 2위 중간 노랑
-                            return '#FFFACD'; // 나머지 옅은 노랑
-                        },
+                        color: (params) => colors[params.dataIndex % colors.length], // 각 인덱스별 색상 적용
                     },
                 },
             ],
         };
     }
+    
 
      // 기존 차트2: 점선그래프
      function createLineChartOption(title, categories, data) {
-        // 데이터와 카테고리를 원래 순서대로 사용
-        const newCategories = [...categories]; // 기존 카테고리 그대로 사용
-        const newData = data.map(value => Math.round(value)); // 데이터 소수점 제거
-    
-        const firstValue = Math.max(...newData); // 1위 값
-        const firstIndex = newData.indexOf(firstValue); // 1위 값의 인덱스
-    
-        const secondValue = [...newData]
-            .filter(value => value !== firstValue) // 1위 값 제외
-            .reduce((max, value) => Math.max(max, value), -Infinity); // 2위 값
-        const secondIndex = newData.indexOf(secondValue); // 2위 값의 인덱스
+        const colors = [
+            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
+            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+        ];
     
         return {
-            title: { text: title, textStyle: { color: '#ffffff' } },
-            backgroundColor: '#1e1e1e',
-            tooltip: { 
+            title: { text: title, textStyle: { color: '#000000' } },
+            backgroundColor: '#fefefe',
+            tooltip: {
                 trigger: 'axis',
-                formatter: (params) => {
-                    return `${params[0].name}: ${params[0].value}`; // 소수점 제거된 값 표시
-                }
+                formatter: (params) => `${params[0].name}: ${params[0].value}`
             },
-            grid: {
-                top: '15%',    // 위쪽 여백
-                bottom: '5%', // 아래쪽 여백 (적절히 조정)
-                containLabel: true, // 레이블이 잘리지 않도록 설정
-            },
-            xAxis: {
-                type: 'category',
-                data: newCategories, // 기존 카테고리 그대로 사용
-                axisLabel: {
-                    color: '#ffffff',
-                    fontSize: 10,
-                },
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: { 
-                    color: '#ffffff',
-                    formatter: (value) => Math.round(value), // y축 레이블 소수점 제거
-                },
-            },
+            grid: { top: '15%', bottom: '5%', containLabel: true },
+            xAxis: { type: 'category', data: categories, axisLabel: { color: '#000000', fontSize: 10 } },
+            yAxis: { type: 'value', axisLabel: { color: '#000000', formatter: (value) => Math.round(value) } },
             series: [
                 {
                     name: title,
                     type: 'line',
-                    data: newData, // 기존 데이터 그대로 사용
-                    lineStyle: {
-                        type: 'dashed',
-                    },
+                    data: data,
+                    lineStyle: { type: 'dashed' },
                     itemStyle: {
-                        color: '#FFD700',
-                    },
-                    markPoint: {
-                        data: [
-                            {
-                                name: '1위',
-                                xAxis: firstIndex, // 1위 값의 인덱스
-                                yAxis: firstValue, // 1위 값
-                                itemStyle: {
-                                    color: '#FFD700', // 진한 노랑
-                                },
-                                symbolSize: 30,
-                            },
-                            {
-                                name: '2위',
-                                xAxis: secondIndex, // 2위 값의 인덱스
-                                yAxis: secondValue, // 2위 값
-                                itemStyle: {
-                                    color: '#FFEC8B', // 중간 노랑
-                                },
-                                symbolSize: 20,
-                            },
-                        ],
-                        symbol: 'circle',
-                        label: {
-                            show: false,
-                        },
+                        color: (params) => colors[params.dataIndex % colors.length] // 각 점마다 다른 색 적용
                     },
                 },
             ],
         };
     }
+    
 
     // 기존 차트3: 3D 위험레벨
     function createRiskLevelChartOption(title, categories, data) {
-        // 데이터를 정렬하지 않고 그대로 사용
-        const newCategories = [...categories]; // 기존 카테고리 그대로 사용
-        const newData = [...data]; // 기존 데이터 그대로 사용
+        const colors = [
+            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
+            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+        ];
     
         return {
-            title: { 
-                text: title, 
-                textStyle: { color: '#ffffff' } 
-            },
-            backgroundColor: '#1e1e1e',
+            title: { text: title, textStyle: { color: '#000000' } },
+            backgroundColor: '#fefefe',
             tooltip: {},
-            grid: {
-                top: '15%',    // 위쪽 여백
-                bottom: '3%', // 아래쪽 여백
-                containLabel: true, // 레이블이 잘리지 않도록 설정
-            },
-            xAxis: {
-                type: 'category',
-                data: newCategories, // 기존 카테고리 그대로 사용
-                axisLabel: { color: '#ffffff' },
-            },
-            yAxis: {
-                type: 'value',
-                min: 0, // y축 최소값 0 설정
-                max: 3, // y축 최대값 3 설정
-                interval: 1, // 0, 1, 2, 3 단위로 표시
-                axisLabel: {
-                    color: '#ffffff',
-                    fontSize: 15,
-                },
-            },
+            grid: { top: '15%', bottom: '3%', containLabel: true },
+            xAxis: { type: 'category', data: categories, axisLabel: { color: '#000000' } },
+            yAxis: { type: 'value', min: 0, max: 3, interval: 1, axisLabel: { color: '#000000', fontSize: 15 } },
             series: [
                 {
                     name: title,
                     type: 'bar',
-                    data: newData, // 기존 데이터 그대로 사용
+                    data: data,
                     itemStyle: {
-                        color: (params) => {
-                            const value = params.value; // 데이터 값 (레벨)
-                            if (value === 3) return '#FFD700'; // 레벨 3: 진한 빨간색
-                            if (value === 2) return '#FFEC8B'; // 레벨 2: 덜 진한 빨간색
-                            return '#FFFACD'; // 나머지 레벨: 연한 빨간색
-                        },
+                        color: (params) => colors[params.dataIndex % colors.length] // 막대마다 다른 색 적용
                     },
                 },
             ],
         };
     }
+    
 
     // 기존 차트4: 도넛형 차트
     function createDonutChartOption(title, data) {
-        // 데이터를 정렬하지 않고 그대로 사용
-        const originalData = [...data]; // 기존 데이터를 그대로 사용
-    
-        // 1위와 2위 데이터 값 확인
-        const maxIndex = originalData.reduce((maxIdx, item, idx, arr) => 
-            item.value > arr[maxIdx].value ? idx : maxIdx, 0); // 최대값 인덱스
-        const secondMaxIndex = originalData.reduce((maxIdx, item, idx, arr) => 
-            idx !== maxIndex && item.value > arr[maxIdx].value ? idx : maxIdx, 0); // 두 번째 최대값 인덱스
+        const colors = [
+            '#FF0000', '#FF4500', '#FF8C00', '#FFD700', '#ADFF2F', '#32CD32', '#00FA9A', '#00CED1',
+            '#1E90FF', '#4169E1', '#8A2BE2', '#9400D3', '#C71585', '#FF1493', '#DC143C', '#B22222', '#8B0000'
+        ];
     
         return {
-            title: { 
-                text: title,
-                textStyle: { color: '#ffffff'},
-            },
-            backgroundColor: '#1e1e1e',
-            tooltip: { 
-                trigger: 'item',
-                formatter: '{b}: {d}%' // {d}는 비율 표시, 소숫점 제외
-            },
+            title: { text: title, textStyle: { color: '#000000' } },
+            backgroundColor: '#fefefe',
+            tooltip: { trigger: 'item', formatter: '{b}: {d}%' },
             series: [
                 {
                     name: title,
                     type: 'pie',
                     radius: ['40%', '70%'],
                     avoidLabelOverlap: false,
-                    label: {
-                        show: true, // 각 데이터 비율 표시
-                        formatter: '{b}\n{d}%', // 지역 이름과 퍼센트 표시
-                        color: '#ffffff',
-                        fontSize: 12,
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '16',
-                            fontWeight: 'bold',
-                            formatter: '{b}\n{d}%' // 강조 시 비율만 표시
-                        },
-                    },
-                    labelLine: {
-                        show: true,
-                        length: 10,
-                        length2: 10,
-                    },
-                    data: originalData, // 기존 데이터 그대로 사용
+                    label: { show: true, formatter: '{b}\n{d}%', color: '#000000', fontSize: 12 },
+                    emphasis: { label: { show: true, fontSize: '16', fontWeight: 'bold', formatter: '{b}\n{d}%' } },
+                    labelLine: { show: true, length: 10, length2: 10 },
+                    data: data,
                     itemStyle: {
-                        color: (params) => {
-                            const index = params.dataIndex;
-                            if (index === maxIndex) return '#FFD700'; // 1위: 진한 빨간색
-                            if (index === secondMaxIndex) return '#FFEC8B'; // 2위: 덜 진한 빨간색
-                            return '#FFFACD'; // 나머지: 연한 빨간색
-                        },
+                        color: (params) => colors[params.dataIndex % colors.length] // 각 조각마다 다른 색 적용
                     },
                 },
             ],
         };
     }
-    
-    
-    updateCharts('2023');
-    oscillateView(chart1)
-    console.log("ECharts Version:", echarts.version);
 });

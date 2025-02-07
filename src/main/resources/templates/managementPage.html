@@ -11,7 +11,7 @@
 
 <body>
     <div id="management_container">
-        <div th:replace="header.html :: header"></div> <!-- Header 삽입 -->
+        <div th:replace="~{header.html :: header}"></div> <!-- Header 삽입 -->
         
         <div th:insert="sidebar.html :: sidebar"></div>
         <main id="mp_index_container">
@@ -38,7 +38,7 @@
             <!-- </div> -->
         </main>
 
-        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
+        <div th:replace="~{footer.html :: footer}"></div> <!-- Footer 삽입 -->
     </div>
 </body>
 

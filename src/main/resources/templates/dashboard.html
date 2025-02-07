@@ -20,23 +20,24 @@
 
 <body>
   <div class="dashboard_container">
+    <div th:replace="~{dashboardHeader.html :: dashboardHeader}"></div> <!-- Header 삽입 -->
 
-    <!-- <div class="dashboard_sub_container"> -->
-    <div class="scroll_page" id="first_page">
-      <div class="vworldmainContainer">
-        <div class="vworldContainer">
-          <div id="vworldMap_ny"></div>
-          <div id="mapData">
-            <div class="dataBox fireToday">
-              <div class="fireInfo"></div>
-            </div>
-            <div class="dataBox fireWeek">
-              <div class="fireCasualty"></div>
-              <div class="fireDamage"></div>
+    <div class="dashboard_sub_container">
+      <div class="scroll_page active" id="first_page">
+        <div class="vworldmainContainer">
+          <div class="vworldContainer">
+            <div id="vworldMap_ny"></div>
+            <div id="mapData">
+              <div class="dataBox fireToday">
+                <div class="fireInfo"></div>
+              </div>
+              <div class="dataBox fireWeek">
+                <div class="fireCasualty"></div>
+                <div class="fireDamage"></div>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- <div class="vwButton">
+          <!-- <div class="vwButton">
             <tr>
                 <th>건물 레이어 On/Off</th>
                 <td><input type="checkbox" class="facilityButton" checked="checked"></td>
@@ -54,92 +55,77 @@
                 <td><button type="button" class="geoJsonButton">Button</button></td>
             </tr>
         </div> -->
-      </div>
-      <div class="chartBox chartFires">
-        <p>연도별 전기적요인, 화재발생건수</p>
-        <canvas id="chartFires_ny"></canvas>
-      </div>
-      <div class="chartBox chartCause">
-        <p>연도별 전기적요인에 의한 인명피해</p>
-        <div class="chartCanvas">
-          <div class="chartCanvasSubContainer">
-            <canvas id="chartCause_ny"></canvas>
+        </div>
+        <div class="chartBox chartFires">
+          <p>연도별 전기적요인, 화재발생건수</p>
+          <canvas class="first_page_chart" id="chartFires_ny"></canvas>
+        </div>
+        <div class="chartBox chartCause">
+          <p>연도별 전기적요인에 의한 인명피해</p>
+          <div class="chartCanvas first_page_chart">
+            <div class="chartCanvasSubContainer">
+              <canvas id="chartCause_ny"></canvas>
+            </div>
+            <div id="labelCause_ny"></div>
           </div>
-          <div id="labelCause_ny"></div>
+        </div>
+        <div class="chartBox chartInjuries">
+          <p>연도별 전기적요인에 의한 재산피해</p>
+          <canvas class="first_page_chart" id="chartInjuries_ny"></canvas>
+        </div>
+        <div class="chartBox chartDamage">
+          <p>연도별 2023년의 화재요인 분석</p>
+          <canvas class="first_page_chart" id="chartDamage_ny"></canvas>
+        </div>
+        <div id="features"></div>
+      </div>
+      <div class="scroll_page" id="second_page">
+        <h2>연도별 전기적요인(화재&감전)에 의한 재해건수와 피해금액</h2>
+
+        <!-- Select Dropdown -->
+        <div id="controls">
+          <label for="year-select">연도:</label>
+          <select id="year-select_ny">
+            <option value="2023" th:selected="${defaultYear == 2023}">2023</option>
+            <option value="2022" th:selected="${defaultYear == 2022}">2022</option>
+            <option value="2021" th:selected="${defaultYear == 2021}">2021</option>
+            <option value="2020" th:selected="${defaultYear == 2020}">2020</option>
+            <option value="2019" th:selected="${defaultYear == 2019}">2019</option>
+            <option value="2018" th:selected="${defaultYear == 2018}">2018</option>
+          </select>
+        </div>
+
+        <!-- Hidden JSON Data -->
+        <div id="jsonData_ny" th:text="${jsonData}" style="display: none;"></div>
+
+        <!-- Charts Container -->
+        <div id="charts-container">
+          <div id="chart_ny1" class="chart"></div>
+          <div id="chart_ny2" class="chart"></div>
+          <div id="chart_ny3" class="chart"></div>
+          <div id="chart_ny4" class="chart"></div>
         </div>
       </div>
-      <div class="chartBox chartInjuries">
-        <p>연도별 전기적요인에 의한 재산피해</p>
-        <canvas id="chartInjuries_ny"></canvas>
-      </div>
-      <div class="chartBox chartDamage">
-        <p>연도별 2023년의 화재요인 분석</p>
-        <canvas id="chartDamage_ny"></canvas>
-      </div>
-      <div id="features"></div>
-    </div>
-    <div class="scroll_page" id="second_page">
-      <h2>연도별 전기적요인(화재&감전)에 의한 재해건수와 피해금액</h2>
 
-      <!-- Select Dropdown -->
-      <div id="controls">
-        <label for="year-select">연도:</label>
-        <select id="year-select_ny">
-          <option value="2023" th:selected="${defaultYear == 2023}">2023</option>
-          <option value="2022" th:selected="${defaultYear == 2022}">2022</option>
-          <option value="2021" th:selected="${defaultYear == 2021}">2021</option>
-          <option value="2020" th:selected="${defaultYear == 2020}">2020</option>
-          <option value="2019" th:selected="${defaultYear == 2019}">2019</option>
-          <option value="2018" th:selected="${defaultYear == 2018}">2018</option>
+      <div class="scroll_page" id="third_page">
+        <h2>지역별 전기적 세부요인별 위험감소 랜던포레스트AI & SHAP분석 예측비율</h2>
+
+        <label for="regionSelect">지역 선택:</label>
+        <select id="regionSelect">
+          <option value="">전체</option>
         </select>
-      </div>
-
-      <!-- Hidden JSON Data -->
-      <div id="jsonData_ny" th:text="${jsonData}" style="display: none;"></div>
-
-      <!-- Charts Container -->
-      <div id="charts-container">
-        <div id="chart_ny1" class="chart"></div>
-        <div id="chart_ny2" class="chart"></div>
-        <div id="chart_ny3" class="chart"></div>
-        <div id="chart_ny4" class="chart"></div>
-      </div>
-    </div>
-
-    <div class="scroll_page" id="third_page">
-      <h2>지역별 전기적 세부요인별 위험감소 랜던포레스트AI & SHAP분석 예측비율</h2>
-
-      <label for="regionSelect">지역 선택:</label>
-      <select id="regionSelect">
-        <option value="">전체</option>
-      </select>
-      <div class="riskChart_container">
-        <canvas id="riskChart"></canvas>
-      </div>
-    </div>
-
-    <div class="scroll_page" id="fourth_page">
-      <div id="index_container">
-        <!-- 헤더 -->
-        <!-- <div th:replace="indexHeader.html :: index_header"></div> Header 삽입 -->
-
-        <!-- 메인 컨텐츠 -->
-        <div class="main">
-          <div class="content">
-            <a href="/dashboard" class="box">
-              <h2>전기 재해 모니터링</h2>
-            </a>
-            <a href="/managementPage" id="menuManagementPageLink" class="box">
-              <h2>노후 시설 AS 신고 관리 시스템</h2>
-            </a>
-          </div>
+        <div class="riskChart_container">
+          <canvas id="riskChart"></canvas>
         </div>
-
-        <!-- 푸터 -->
-        <div th:replace="footer.html :: footer"></div> <!-- Footer 삽입 -->
       </div>
     </div>
-    <!-- </div> -->
+
+    <!-- 화살표 네비게이션 -->
+    <button class="chevron_btn_contrainer" id="prevBtn"><i class="chevron_btn bi bi-chevron-compact-up"></i></button>
+    <button class="chevron_btn_contrainer" id="nextBtn"><i class="chevron_btn bi bi-chevron-compact-down"></i></button>
+
+
+    <div th:replace="~{dashboardFooter.html :: dashboardFooter}"></div> <!-- Footer 삽입 -->
   </div>
 </body>
 

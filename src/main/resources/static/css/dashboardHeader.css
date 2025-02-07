@@ -1,0 +1,44 @@
+/* 헤더 스타일 */
+#dashboardHeader {
+    background: linear-gradient(to bottom, #FFD700, #FFA500); /* 노란색 → 주황색 */
+    /* 남색 */
+    color: #000000;
+    height: 4rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    /* padding: 20px; */
+    /* text-align: left; */
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.dashboardHeaderText {
+    font-size: 1.8em;
+}
+
+#defaultdashboardHeader{
+    display: flex;
+    justify-content: center;
+    margin-left: 60px;
+}
+
+.dashboardHeaderText_container{
+    font-size: 0.7em;
+}
+.dashboardHeaderText_container a{
+    color: #000000;
+    text-decoration: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    #dashboardHeader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
