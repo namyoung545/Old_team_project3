@@ -10,7 +10,7 @@
     	INSERT INTO member(userId, userPw, email, name, phoneNumber, address)
     	VALUES(#{userId}, #{userPw}, #{email}, #{name}, #{phoneNumber}, #{address})
 	</insert>
-  
+
   	<!-- 아이디 중복 체크 -->
 	<select id="idOverlap" resultType="int">
 		SELECT COUNT(*)
