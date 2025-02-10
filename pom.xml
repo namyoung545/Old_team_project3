@@ -110,6 +110,28 @@
 		    <version>1.0.0-M5</version>
 		</dependency>
 
+		<!-- DL4J/ND4J 관련 의존성 개선 -->
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>deeplearning4j-core</artifactId>
+			<version>1.0.0-M2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>deeplearning4j-nn</artifactId>
+			<version>1.0.0-M2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nd4j</groupId>
+			<artifactId>nd4j-native-platform</artifactId>
+			<version>1.0.0-M2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.nd4j</groupId>
+			<artifactId>nd4j-api</artifactId>
+			<version>1.0.0-M2.1</version>
+		</dependency>
+
 		<!-- Jackson JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
