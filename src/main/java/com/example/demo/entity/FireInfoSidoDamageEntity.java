@@ -23,11 +23,11 @@ public class FireInfoSidoDamageEntity {
 
     // 재산피해
     @Column(nullable = false)
-    private Integer prptDmgSbttAmt;
+    private Integer prptDmgSbttAmt = 0;
 
     // 화재발생건수
     @Column(nullable =false)
-    private Integer ocrnMnb;
+    private Integer ocrnMnb = 0;
 
     // 발생일자
     @Column (nullable = false)
