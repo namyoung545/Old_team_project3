@@ -1,36 +1,38 @@
-// OllamaManager.java
-// 이 파일은 Ollama라는 AI 모델을 관리하는 클래스를 정의합니다.
-// Ollama를 시작하고, 모니터링하며, 종료하는 기능을 제공합니다.
 package com.example.demo.PHG_DeepSeek;
 
-import org.springframework.stereotype.Service;
-import jakarta.annotation.PreDestroy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
-@Service
+import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PreDestroy;
+
+// [1] Ollama 서비스 생명주기 관리 컴포넌트 - 모델 실행/종료 관리 및 프로세스 모니터링 [참조번호 : 2,5,7]
+@Component
 public class OllamaManager {
-    // Ollama가 사용할 포트 번호
+    // [2] 서비스 구성 상수
+    // - API 통신 포트 번호
+    // - 안전 종료 대기 시간
+    // - 기본 사용 모델 이름
     private static final int OLLAMA_PORT = 11434;
-    // Ollama 종료 시 최대 대기 시간(초)
     private static final int SHUTDOWN_TIMEOUT_SECONDS = 5;
-    // 사용할 Ollama AI 모델의 이름
     private static final String OLLAMA_MODEL = "deepseek-r1:8b";
-    // Ollama 프로세스를 저장할 변수
+
+    // [3] 프로세스 제어 필드
+    // - 실행 중인 Ollama 프로세스 인스턴스
+    // - 프로세스 빌더 인스턴스
     private Process ollamaProcess;
-    // Ollama 실행을 위한 명령어 설정
     private final ProcessBuilder processBuilder;
 
-    // 생성자: Ollama 실행 명령어를 설정합니다.
+    // [4] 생성자: 프로세스 실행 명령어 초기화 [참조번호 : 5]
     public OllamaManager() {
         this.processBuilder = new ProcessBuilder("ollama", "run", OLLAMA_MODEL);
-        // 에러 출력을 표준 출력으로 리다이렉트
-        this.processBuilder.redirectErrorStream(true);
+        this.processBuilder.redirectErrorStream(true); // 표준/에러 스트림 통합
     }
 
-    // Ollama가 실행 중이 아니면 시작하는 메소드
+    // [5] 서비스 실행 관리 메인 메서드 - 중복 실행 방지 로직 포함 [참조번호 : 6]
     public synchronized void startOllamaIfNotRunning() {
         if (isOllamaRunning()) {
             System.out.println("Ollama가 이미 실행 중입니다.");
@@ -39,16 +41,16 @@ public class OllamaManager {
         startOllamaProcess();
     }
 
-    // Ollama가 실행 중인지 확인하는 메소드
+    // [6] 포트 연결 테스트를 통한 서비스 실행 상태 확인 [참조번호 : 7]
     private boolean isOllamaRunning() {
         try (java.net.Socket socket = new java.net.Socket("localhost", OLLAMA_PORT)) {
-            return true; // 연결 성공 시 실행 중
+            return true;
         } catch (IOException e) {
-            return false; // 연결 실패 시 실행 중이 아님
+            return false;
         }
     }
 
-    // Ollama 프로세스를 시작하는 메소드
+    // [7] Ollama 프로세스 실행 로직 - 예외 처리 및 모니터링 시작 [참조번호 : 8,9]
     private void startOllamaProcess() {
         try {
             ollamaProcess = processBuilder.start();
@@ -59,42 +61,41 @@ public class OllamaManager {
         }
     }
 
-    // Ollama 프로세스 모니터링을 시작하는 메소드
+    // [8] 백그라운드 모니터링 스레드 초기화 [참조번호 : 9]
     private void startProcessMonitor() {
         Thread monitorThread = new Thread(this::monitorOllamaProcess);
-        monitorThread.setDaemon(true);
+        monitorThread.setDaemon(true); // 데몬 스레드 설정
         monitorThread.start();
     }
 
-    // Ollama 프로세스의 출력을 모니터링하는 메소드
+    // [9] 프로세스 출력 스트림 실시간 모니터링 [참조번호 : 7]
     private void monitorOllamaProcess() {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(ollamaProcess.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println("[Ollama] " + line);
+                System.out.println("[Ollama] " + line); // 로그 포매팅 적용
             }
         } catch (IOException e) {
-            System.err.println("Error monitoring Ollama process: " + e.getMessage());
+            System.err.println("Ollama 프로세스 모니터링 오류: " + e.getMessage());
         }
     }
 
+    // [10] 어플리케이션 종료 시 안전한 프로세스 정리 [참조번호 : 2,5]
     @PreDestroy
-    // 애플리케이션 종료 시 Ollama를 안전하게 종료하는 메소드
     public void shutdownOllama() {
         if (ollamaProcess != null && ollamaProcess.isAlive()) {
-            System.out.println("Shutting down Ollama...");
-            ollamaProcess.destroy();
+            System.out.println("Ollama 서비스 종료 중...");
+            ollamaProcess.destroy(); // 강제 종료 신호 전송
 
             try {
-                // 지정된 시간 동안 프로세스 종료 대기
                 boolean terminated = ollamaProcess.waitFor(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
                 if (!terminated) {
-                    System.err.println("Ollama did not terminate within timeout period.");
+                    System.err.println("타임아웃 내 Ollama 종료 실패");
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                System.err.println("Interrupted while shutting down Ollama: " + e.getMessage());
+                System.err.println("Ollama 종료 과정 중단: " + e.getMessage());
             }
         }
     }
