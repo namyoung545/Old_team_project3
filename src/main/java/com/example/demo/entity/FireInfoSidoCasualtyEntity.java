@@ -23,19 +23,19 @@ public class FireInfoSidoCasualtyEntity {
 
     // 사고자수
     @Column(nullable = false)
-    private Integer vctmPercnt;
+    private Integer vctmPercnt = 0;
 
     // 부상자수
     @Column(nullable = false)
-    private Integer injrdprPercnt;
+    private Integer injrdprPercnt = 0;
 
     // 인명피해수
     @Column(nullable = false)
-    private Integer lifeDmgPercnt;
+    private Integer lifeDmgPercnt = 0;
 
     // 화재발생건수
     @Column(nullable =false)
-    private Integer ocrnMnb;
+    private Integer ocrnMnb = 0;
 
     // 발생일자
     @Column(nullable = false)

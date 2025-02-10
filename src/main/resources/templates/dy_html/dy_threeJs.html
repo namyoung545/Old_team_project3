@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전기안전 점검 3D 모델</title>
+
+    <!-- ✅ Three.js 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dat.gui/build/dat.gui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/MTLLoader.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script>
+        let scene, camera, renderer, controls, gui;
+        let industrials = []; // ✅ 공장 객체 배열
+        let worker, floor;
+        let directionalLight, ambientLight, pointLight;
+
+        let settings = {
+            speed: 0.1,
+            height: 10,
+            radius: 42,
+            enableAuto: false,
+            zoom: 10, // ✅ 카메라 줌 기본값 (FOV)
+            factoryCount: 5, // ✅ 공장 개수
+            factorySpacing: 10 // ✅ 공장 간격 (수리원과 공장 거리 정도)
+        };
+        function init() {
+            // ✅ Three.js 기본 설정
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xa0a0a0); // 배경색 (회색)
+
+            // ✅ 카메라 설정 (초기 위치)
+            camera = new THREE.PerspectiveCamera(settings.zoom, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(-20, 7, 45);
+
+            // ✅ 렌더러 생성
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // ✅ OrbitControls 추가 (마우스로 조작 가능)
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;  
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.maxPolarAngle = Math.PI / 2; 
+
+            
+            addLights(); // ✅ 조명 추가
+            addFog(); // 안개 추가
+            addFactoryFloor();// ✅ 공장 바닥 추가 (텍스처 적용)
+            loadFuseBox(); // ✅ 퓨즈 배전반(Fuse Box) 로드
+
+            loadModels(); // ✅ 3D 모델 로드 (공장 및 사람)
+
+            createSkyDome(); // ✅ 스카이돔 추가
+
+            createGround();  // ✅ 바닥 추가
+
+            // ✅ 애니메이션 실행
+            animate();
+        }
+        function addLights() {
+            ambientLight = new THREE.AmbientLight(0xffffff, 0); // 환경광 강도
+            scene.add(ambientLight);
+
+            directionalLight = new THREE.DirectionalLight(0xffffff, 0); // 조명 강도
+            directionalLight.position.set(-50, 0, -50); // 조명 위치
+            scene.add(directionalLight); // 조명 추가
+
+            pointLight = new THREE.PointLight(0xffffff, 2, 100);
+            pointLight.position.set(0, 10, 10);
+            scene.add(pointLight);
+        }
+
+        function loadFuseBox() {
+            const mtlLoader = new THREE.MTLLoader();
+            const objLoader = new THREE.OBJLoader();
+
+            // ✅ MTL 및 OBJ 경로 설정
+            mtlLoader.setPath("/models/industrial/");
+            objLoader.setPath("/models/industrial/");
+
+            // ✅ MTL 파일 로드
+            mtlLoader.load("fus.mtl", function(materials) {
+                materials.preload();  // ✅ 재질 사전 로드
+                objLoader.setMaterials(materials);
+
+                // ✅ OBJ 파일 로드
+                objLoader.load("fus.obj", function(object) {
+                    object.scale.set(0.1, 0.1, 0.1);  // 크기 축소
+                    object.position.set(0, -0.2, 1.8);  // 공장 벽에 밀착 배치
+                    scene.add(object);
+                    fuseBox = object;
+                    console.log("✅ 퓨즈 배전반 로드 완료:", fuseBox);
+                }, 
+                function(xhr) {  // ✅ 로딩 진행률 표시
+                    console.log((xhr.loaded / xhr.total * 100) + "% 로드 완료");
+                }, 
+                function(error) {  // ✅ 로딩 실패시 오류 출력
+                    console.error("❌ 퓨즈 배전반 로드 실패:", error);
+                });
+            }, 
+            function(xhr) {  // ✅ 로딩 진행률 표시
+                console.log((xhr.loaded / xhr.total * 100) + "% MTL 로드 완료");
+            }, 
+            function(error) {  // ✅ 로딩 실패시 오류 출력
+                console.error("❌ MTL 로드 실패:", error);
+            });
+        }
+
+        function addFactoryFloor() {
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(settings.floorTexture, function(texture) {
+                texture.wrapS = THREE.RepeatWrapping; // 가로 반복
+                texture.wrapT = THREE.RepeatWrapping; // 세로 반복
+                texture.repeat.set(10, 10); // 바닥 반복 개수 설정
+
+                const floorMaterial = new THREE.MeshStandardMaterial({ 
+                    map: texture,
+                    roughness: 0.8, 
+                    metalness: 0.1 
+                });
+
+                const floorGeometry = new THREE.PlaneGeometry(200, 200);
+                floor = new THREE.Mesh(floorGeometry, floorMaterial);
+                
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -1.5; 
+
+                scene.add(floor);
+            });
+        }
+
+        function loadModels() {
+            const objLoader = new THREE.OBJLoader();
+            const textureLoader = new THREE.TextureLoader();
+
+            // 📌 공장 모델 5개 로드 (반복문 사용)
+            objLoader.load("/models/industrial/Industrial.obj", function (object) {
+                const texture = textureLoader.load("/models/industrial/textures/IndSet_0001.jpg");
+                const normalMap = textureLoader.load("/models/industrial/textures/IndSet_0001_Normal.jpg");
+
+                for (let i = 0; i < settings.factoryCount; i++) {
+                    let factory = object.clone();
+                    factory.traverse(function (child) {
+                        if (child.isMesh) {
+                            child.material = new THREE.MeshStandardMaterial({
+                                map: texture,
+                                normalMap: normalMap,
+                                roughness: 0.8,
+                                metalness: 0.2
+                            });
+                        }
+                    });
+
+                    factory.scale.set(0.4, 0.4, 0.4);
+                    factory.position.set(i * settings.factorySpacing, -1.5, 0); // ✅ 공장 간격 설정
+                    industrials.push(factory);
+                    scene.add(factory);
+                }
+            });
+
+            // 📌 사람(Worker) 모델 로드
+            objLoader.load("/models/worker/worker.obj", function (object) {
+                console.log("✅ Worker 모델 로드됨:", object);
+                worker = object;
+                scene.add(worker);
+                object.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshStandardMaterial({ color: 0xffcc00 });
+                    }
+                });
+
+                object.scale.set(1.5, 1.5, 1.5);
+                object.position.set(-5, -1.5, 10); // 수리원 위치
+                object.rotation.y = Math.PI / 1.0; // ✅ 공장 쪽으로 방향 회전
+                worker = object;
+                scene.add(object);
+
+                // ✅ 애니메이션 시작 (수리공 이동 → 팔 다리 움직임)
+                console.log("Worker 모델 로드 완료! 애니메이션 시작...");
+                animateWorker();
+            });
+
+            // 📌 수리공 애니메이션 함수 (이동)
+            function animateWorker() {
+            if (!worker) {
+                console.error("Worker 모델이 아직 로드되지 않았습니다.");
+                return;
+            }
+            let targetX = 0;  // 공장 위치 (X 좌표)
+            let targetZ = 3;  // 공장 앞으로 이동
+
+            // ✅ GSAP을 사용하여 자연스럽게 이동
+            gsap.to(worker.position, {
+                x: targetX,
+                z: targetZ,
+                duration: 2.5, // 이동 속도 (초)
+                ease: "power1.inOut",
+                onComplete: () => {
+                    console.log("수리공이 공장에 도착!");
+                    animateWorkerArms(); // 팔 움직이기 시작
+                    }
+                });
+            }
+            // 📌 팔 움직이는 애니메이션
+            function animateWorkerArms() {
+                if (!worker) {
+                    console.error("Worker 모델이 아직 로드되지 않았습니다.");
+                    return;
+                }
+                worker.traverse(function (child) {
+                    console.log(`🎯 타입: ${child.type}, 이름: ${child.name ? child.name : "이름 없음"}`);
+                    if (child.isMesh && child.name.includes("Arm")) {  // 팔 조인트 찾기 (모델에 따라 수정 필요)
+                        gsap.to(child.rotation, {
+                            x: Math.PI / 8, // 팔을 살짝 들어 올리기
+                            repeat: -1, // 무한 반복
+                            yoyo: true, // 앞뒤로 움직임 반복
+                            duration: 0.5 // 속도
+                        });
+                    }
+                });
+            }
+            }
+
+            function addFog() {
+            scene.fog = new THREE.Fog(0x555555, 200, 300); // 흐린 공기, 먼지 느낌
+        }   
+
+        function createSkyDome() {
+            const skyGeometry = new THREE.SphereGeometry(600, 32, 32); // ✅ 스카이돔 크기 & 세그먼트
+            const textureLoader = new THREE.TextureLoader();
+            
+            // ✅ 업로드한 sky.jpg 파일을 사용
+            const skyTexture = textureLoader.load("/models/industrial/textures/sky.jpg", function(texture) {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(1, 1); // ✅ 텍스처 반복 조정
+            });
+
+            // ✅ 스카이돔 머티리얼 생성
+            const skyMaterial = new THREE.MeshBasicMaterial({
+                map: skyTexture,
+                side: THREE.BackSide // ✅ 내부에서 보이도록 설정
+            });
+
+            // ✅ 스카이돔 메쉬 생성
+            const skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
+            scene.add(skyDome);
+
+            // ✅ 구름 움직임 애니메이션 추가
+            function animateSky() {
+                requestAnimationFrame(animateSky);
+                if (skyTexture) {
+                    skyTexture.offset.x += 0.0001; // 수평 이동
+                    skyTexture.offset.y += 0.00005; // 수직 이동
+                }
+            }
+            animateSky(); // 애니메이션 시작
+        }
+
+        function createGround() {
+            const textureLoader = new THREE.TextureLoader();
+            
+            // ✅ 업로드한 바닥 텍스처 사용
+            const groundTexture = textureLoader.load("/models/industrial/textures/concrete.jpg", function(texture) {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(10, 10); // ✅ 텍스처 반복 적용 (타일링)
+            });
+
+            // ✅ 바닥 머티리얼 설정
+            const groundMaterial = new THREE.MeshStandardMaterial({
+                map: groundTexture, // ✅ 텍스처 적용
+                roughness: 0.8, // 거칠기
+                metalness: 0.1, // 금속성
+            });
+
+            // ✅ 바닥 평면 생성
+            const groundGeometry = new THREE.PlaneGeometry(200, 200);
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2; // ✅ 수평 바닥으로 회전
+            ground.position.y = -1.5; // ✅ 살짝 아래로 배치
+            scene.add(ground);
+        }
+
+        function updateZoom() {
+            camera.fov = settings.zoom;
+            camera.updateProjectionMatrix();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (settings.enableAuto) {
+                const time = Date.now() * 0.001;
+                camera.position.x = Math.sin(time * settings.speed) * settings.radius;
+                camera.position.z = Math.cos(time * settings.speed) * settings.radius;
+                camera.position.y = settings.height;
+                camera.lookAt(0, 10, 0);
+            }
+// 1
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        function animateCameraMove() {
+            let startX = camera.position.x; // 초기 X 위치
+            let moveRight1 = 45; // 첫 번째 오른쪽 이동 거리
+            let moveLeft = 30;   // 왼쪽 이동 거리
+            let moveRight2 = 20; // 두 번째 오른쪽 이동 거리
+            let zoomIn = 5;     // 줌 인 값 (FOV 축소)
+            let zoomOut = 10;    // 줌 아웃 값 (FOV 확대)
+            let duration = 5;    // 각 이동 시간 (초)
+
+            let timeline = gsap.timeline({ repeat: -1, yoyo: false }); // 계속 반복
+
+            timeline
+                .to(camera.position, { 
+                    x: startX + moveRight1, 
+                  
+                    duration: duration, 
+                    ease: "power1.inOut",
+                    onUpdate: () => camera.lookAt(worker.position) // 수리원을 계속 바라보게 설정
+                })
+                .to(camera, { 
+                    fov: zoomIn, 
+                    duration: duration / 0.5, // 줌 변경 속도
+                    ease: "power1.inOut",
+                    onUpdate: () => camera.updateProjectionMatrix() 
+                })
+                .to(camera.position, { 
+                    x: startX + moveRight1 - moveLeft, 
+                    duration: duration, 
+                    ease: "power1.inOut",
+                    onUpdate: () => camera.lookAt(worker.position) 
+                })
+                .to(camera, { 
+                    fov: zoomOut, 
+                    duration: duration / 1, 
+                    ease: "power1.inOut",
+                    onUpdate: () => camera.updateProjectionMatrix() 
+                })
+                .to(camera.position, { 
+                    x: startX + moveRight1 - moveLeft + moveRight2, 
+                    duration: duration, 
+                    ease: "power1.inOut",
+                    onUpdate: () => camera.lookAt(worker.position) 
+                });
+        }
+
+        // ✅ 카메라 이동 실행
+        window.onload = function() {
+            init();
+            setTimeout(animateCameraMove, 2000); // 2초 후 실행
+        };
+    </script>
+</body>
+</html>
