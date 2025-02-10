@@ -1,9 +1,9 @@
 package com.example.demo.PHG_DeepSeek;
 
 import java.util.function.Consumer;
+
 import org.springframework.stereotype.Component;
 
-import com.example.demo.PHG_DeepSeek.AgentParts.DRLAIntegrator;
 import com.example.demo.PHG_DeepSeek.AgentParts.DatabaseManager;
 import com.example.demo.PHG_DeepSeek.AgentParts.HistoryManager;
 import com.example.demo.PHG_DeepSeek.AgentParts.ProjectLoader;
@@ -18,7 +18,6 @@ public class AgentService {
     private final ProjectLoader projectLoader;
     private final DatabaseManager databaseManager;
     private final HistoryManager historyManager;
-    private final DRLAIntegrator drlIntegrator;
     private final UserInputProcessor userInputProcessor;
 
     private String projectContext;
@@ -26,13 +25,12 @@ public class AgentService {
 
     // [3] 생성자: 의존성 주입 및 초기화 [참조번호: 1]
     public AgentService(OllamaService ollamaService, ProjectLoader projectLoader,
-            DatabaseManager databaseManager, HistoryManager historyManager,
-            DRLAIntegrator drlIntegrator) {
+            DatabaseManager databaseManager, HistoryManager historyManager) {
         this.ollamaService = ollamaService;
         this.projectLoader = projectLoader;
         this.databaseManager = databaseManager;
         this.historyManager = historyManager;
-        this.drlIntegrator = drlIntegrator;
+
         this.userInputProcessor = new UserInputProcessor();
     }
 
@@ -60,7 +58,7 @@ public class AgentService {
         historyManager.clearHistory(sessionId);
     }
 
-    // [8] 사용자 입력 처리기 내부 클래스 - 상세 처리 로직 구현 [참조번호: 5,6]
+    // [8] 사용자 입력 처리기 내부 클래스 - 상세 처리 로직 구현 [참조번호: 9,10,11]
     private class UserInputProcessor {
         // [9] 시스템 프롬프트 및 추론 프롬프트 상수 정의
         private static final String SYSTEM_PROMPT = """
@@ -76,21 +74,7 @@ public class AgentService {
                 데이터베이스 스키마: %s
                 """;
 
-        private static final String REASONING_PROMPT = """
-                [사고 과정]
-                1단계: 사용자 입력 분석
-                %s
-
-                2단계: 컨텍스트 고려사항
-                %s
-
-                3단계: 실행 계획
-                %s
-
-                최종 응답:
-                """;
-
-        // [10] 사용자 입력 처리 메인 메서드 - 단계별 처리 및 응답 생성 [참조번호: 11,12,13,14]
+        // [10] 사용자 입력 처리 메인 메서드 - 단계별 처리 및 응답 생성 [참조번호: 11,12,13]
         public void process(String userInput, String sessionId, String model, Consumer<String> onResponse) {
             StringBuilder analysis = new StringBuilder();
             StringBuilder context = new StringBuilder();
@@ -107,7 +91,7 @@ public class AgentService {
                     "현재 질문과 관련된 컨텍스트 정보를 분석하세요.";
             ollamaService.generateResponseStream(contextPrompt, model, sessionId, context::append);
 
-            // [13] 3단계: 실행 계획 수립
+            // [13] 3단계: 실행 계획 수립 및 최종 응답 생성
             String planPrompt = "계획 수립을 위한 정보:\n" +
                     "- 사용자 입력: " + userInput + "\n" +
                     "- 분석 결과: " + analysis.toString() + "\n" +
@@ -115,24 +99,17 @@ public class AgentService {
                     "어떻게 응답할지 계획을 세우세요.";
             ollamaService.generateResponseStream(planPrompt, model, sessionId, plan::append);
 
-            // [14] 강화학습 기반 계획 정제 및 최종 응답 생성
-            String refinedPlan = drlIntegrator.refinePlan(plan.toString(), userInput, sessionId);
-
-            String finalPrompt = String.format(SYSTEM_PROMPT, projectContext, databaseContext)
-                    + String.format(REASONING_PROMPT, analysis.toString(), context.toString(), refinedPlan);
+            String finalPrompt = String.format(SYSTEM_PROMPT, projectContext, databaseContext);
             StringBuilder finalResponse = new StringBuilder();
             ollamaService.generateResponseStream(finalPrompt, model, sessionId, response -> {
                 onResponse.accept(response);
                 finalResponse.append(response);
             });
 
-            // [15] 대화 기록 저장 및 강화학습 업데이트
+            // [14] 대화 기록 저장
             String finalRespStr = finalResponse.toString();
             historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("user", userInput));
             historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("assistant", finalRespStr));
-
-            double reward = drlIntegrator.computeReward(userInput, finalRespStr);
-            drlIntegrator.updatePolicy(sessionId, reward);
         }
     }
 }
