@@ -231,7 +231,7 @@ class ChatUIManager {
         if (!message) return;
 
         this.messageQueue.push(message);
-        this.appendUserMessage(message);
+        this.appendUserMessage(message);    
         this.setUIState(false);
         this.chatInput.value = '';
 

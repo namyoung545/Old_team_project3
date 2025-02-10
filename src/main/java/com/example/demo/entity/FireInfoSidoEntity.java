@@ -23,23 +23,23 @@ public class FireInfoSidoEntity {
 
     // 화재접수건수
     @Column(nullable = false)
-    private Integer fire_rcpt_mnb;
+    private Integer fire_rcpt_mnb = 0;
 
     // 상황종료건수
     @Column(nullable = false)
-    private Integer stn_end_mnb;
+    private Integer stn_end_mnb = 0;
 
     // 자체진화건수
     @Column(nullable = false)
-    private Integer slf_extsh_mnb;
+    private Integer slf_extsh_mnb = 0;
 
     // 오보처리건수
     @Column(nullable = false)
-    private Integer flsrp_prcs_mnb;
+    private Integer flsrp_prcs_mnb = 0;
 
     // 허위신고건수
     @Column(nullable = false)
-    private Integer fals_dclr_mnb;
+    private Integer fals_dclr_mnb = 0;
 
     // 발생일자
     @Column(nullable = false)
