@@ -12,8 +12,19 @@
     <!-- fullCalendar -->
     <link rel="stylesheet" href="/css/fullCalendar.css">
     <script src="/js/fullCalendar.js" defer></script>
+
+    <!-- fullCalendar cdn -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/ko.global.js" defer></script>
+
+    <!-- Kakao Map API -->
+    <script type="text/javascript"
+    src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=e1ec5378979a9f3ffe97d798bdcd05e1&libraries=services"></script>
+    <script type="text/javascript" th:src="@{/js/sh_js/sh_kakaomap.js}"></script>
+
+    <!-- Modal -->
+    <link rel="stylesheet" th:href="@{/css/sh_css/sh_modal.css}">
+    <script th:src="@{/js/sh_js/sh_modal.js}"></script>
 
 </head>
 
@@ -24,8 +35,70 @@
 
         <div id="fullCalendar_sub_border_container">
             <div id="fullCalendar_sub_Container">
-                <h1>AS 스케줄</h1>
+                <h1>노후 시설 AS 스케줄</h1>
                 <div id="fullCalendar"></div>
+            </div>
+        </div>
+
+        <div id="eventModal" class="modal eventModal">
+            <div class="modal-content">
+                <h2 id="eventTitle" class="eventTitle">상세내용</h2>
+                <hr class="eventHr">
+                <div id="eventDetails">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>고객</th>
+                                <td><span id="eventName"></span></td>
+                            </tr>
+                            <tr>
+                                <th>연락처</th>
+                                <td><span id="eventPhone"></span></td>
+                            </tr>
+
+                            <tr>
+                                <th>이메일</th>
+                                <td><span id="eventEmail"></span></td>
+                            </tr>
+                            <tr>
+                                <th>시간</th>
+                                <td><span id="eventTime"></span></td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td><span id="eventLocation"></span></td>
+                            </tr>
+                            <tr>
+                                <th>세부주소</th>
+                                <td><span id="eventDetailLocation"></span></td>
+                            </tr>
+                            <tr>
+                                <th>시설 유형</th>
+                                <td><span id="eventFacilityType"></span></td>
+                            </tr>
+
+                            <tr>
+                                <th>고장 상태</th>
+                                <td><span id="eventIssue"></span></td>
+                            </tr>
+                            <tr>
+                                <th>고장 내용</th>
+                                <td><span id="eventIssueDetails"></span></td>
+                            </tr>
+                            <tr>
+                                <th>접수 상태</th>
+                                <td><span id="eventReceptionStatus"></span></td>
+                            </tr>
+                            <tr>
+                                <th>배정 기사</th>
+                                <td><span id="eventReceptionDelivery"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="map" style="width: 100%; height: 400px;"></div>
+                </div>
+                <hr class="eventHr">
+                <button class="eventButton">닫기</button>
             </div>
         </div>
 

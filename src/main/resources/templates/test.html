@@ -2,49 +2,179 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지도</title>
-    <!-- headScripts.html 파일 삽입 -->
-    <!-- <div th:replace="sh_html/fragments/headScripts :: headScripts"></div> -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript"
-        src="https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=2D9BDADB-D581-3DB0-991E-11E5985B77CC"></script>
-        <script type="module" th:src="@{/js/dashboardChart_vworldmap.js}"></script>
-        <link rel="stylesheet" th:href="@{/css/sh_css/sh_map.css}">
+  <title>전기재해 모니터링</title>
+
+  <head th:replace="common_headscript.html :: common_headscript"></head>
+  <script src="/js/dashboard.js" defer></script>
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <style>
+    /* 기본 레이아웃 */
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      /* 스크롤 제거 */
+    }
+
+    /* Header & Footer 고정 */
+    #dashboardHeader,
+    #dashboardFooter {
+      width: 100%;
+      position: fixed;
+      left: 0;
+      z-index: 1000;
+    }
+
+    #dashboardHeader {
+      top: 0;
+      height: 4rem;
+    }
+
+    #dashboardFooter {
+      bottom: 0;
+      height: 3.5rem;
+    }
+
+    /* 메인 컨테이너 */
+    .main-container {
+      width: 100%;
+      height: calc(100vh - 7.5rem);
+      /* 헤더 & 푸터 제외 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* 페이지 스타일 */
+    .page {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    /* 활성화된 페이지 */
+    .page.active {
+      opacity: 1;
+      transform: translateY(0);
+      z-index: 1;
+    }
+
+    /* 화살표 버튼 */
+    #prevBtn,
+    #nextBtn {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 193, 7, 0.8);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      /* 다른 요소보다 위에 위치하도록 설정 */
+    }
+
+    #prevBtn {
+      top: 4.5rem;
+    }
+
+    /* 헤더 아래 */
+    #nextBtn {
+      bottom: 4rem;
+    }
+
+    /* 푸터 위 */
+  </style>
 </head>
 
 <body>
-    <main>
-        <div class="mainContainer">
-            <div class="vworldContainer">
-                <div id="vworldMapny"></div>
-                <div id="mapData">
-                    <div class="dataBox"></div>
-                    <div class="dataBox"></div>
-                </div>
-            </div>
-            <div class="vwButton">
-                <tr>
-                    <th>건물 레이어 On/Off</th>
-                    <td><input type="checkbox" class="facilityButton" checked="checked"></td>
-                </tr>
-                <tr>
-                    <th>도시명 레이어 On/Off</th>
-                    <td><input type="checkbox" class="cityNameButton" checked="checked"></td>
-                </tr>
-                <tr>
-                    <th>행정구역 레이어 On/Off</th>
-                    <td><input type="checkbox" class="cityBoundButton" checked="checked"></td>
-                </tr>
-                <tr>
-                    <th>GEOJSON</th>
-                    <td><button type="button" class="geoJsonButton">Button</button></td>
-                </tr>
-            </div>
-        </div>
-        <div id="features"></div>
-    </main>
+  <!-- 헤더 (고정) -->
+  <div id="dashboardHeader" th:replace="~{dashboardHeader.html :: dashboardHeader}"></div>
+
+  <!-- 메인 컨테이너 (페이지 전환) -->
+  <div class="main-container">
+    <div class="page active" id="firstPage">
+      <h2>첫 번째 페이지</h2>
+      <div class="chartBox">
+        <p>연도별 전기적요인, 화재발생건수</p>
+        <canvas id="chartFires"></canvas>
+      </div>
+    </div>
+
+    <div class="page" id="secondPage">
+      <h2>두 번째 페이지</h2>
+      <p>연도별 전기적요인(화재&감전)에 의한 재해건수와 피해금액</p>
+      <select id="year-select">
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+      </select>
+      <div id="chart_ny1" class="chart"></div>
+    </div>
+
+    <div class="page" id="thirdPage">
+      <h2>세 번째 페이지</h2>
+      <p>지역별 전기적 세부요인별 위험감소 AI 예측비율</p>
+      <canvas id="riskChart"></canvas>
+    </div>
+  </div>
+
+  <!-- 화살표 네비게이션 -->
+  <button id="prevBtn">⬆️</button>
+  <button id="nextBtn">⬇️</button>
+
+  <!-- 푸터 (고정) -->
+  <div id="dashboardFooter" th:replace="~{footer.html :: footer}"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const pages = document.querySelectorAll(".page");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      let currentPage = 0;
+
+      function showPage(index) {
+        pages.forEach((page, i) => {
+          page.classList.toggle("active", i === index);
+        });
+
+        // 첫 번째 페이지에서는 이전 버튼 비활성화, 마지막 페이지에서는 다음 버튼 비활성화
+        prevBtn.style.display = index === 0 ? "none" : "block";
+        nextBtn.style.display = index === pages.length - 1 ? "none" : "block";
+      }
+
+      prevBtn.addEventListener("click", () => {
+        if (currentPage > 0) {
+          currentPage--;
+          showPage(currentPage);
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentPage < pages.length - 1) {
+          currentPage++;
+          showPage(currentPage);
+        }
+      });
+
+      // 초기 페이지 표시
+      showPage(currentPage);
+    });
+
+  </script>
 
 </body>
 
