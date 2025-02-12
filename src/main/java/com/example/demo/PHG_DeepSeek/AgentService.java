@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.example.demo.component.AgentParts.DatabaseManager;
-import com.example.demo.component.AgentParts.HistoryManager;
-import com.example.demo.component.AgentParts.ProjectLoader;
+import com.example.demo.PHG_DeepSeek.AgentParts.DatabaseManager;
+import com.example.demo.PHG_DeepSeek.AgentParts.HistoryManager;
+import com.example.demo.PHG_DeepSeek.AgentParts.ProjectLoader;
 
 import jakarta.annotation.PostConstruct;
 
