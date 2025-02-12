@@ -1,5 +1,7 @@
 package com.example.demo.PHG_DeepSeek;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -120,10 +122,60 @@ public class AgentService {
             if (tables.isEmpty())
                 return "\n\n[데이터베이스 조회 결과]\n관련 데이터 없음";
 
-            return tables.stream()
-                    .limit(2)
-                    .map(table -> getTableData(table, analysis.isComplex))
-                    .collect(Collectors.joining("\n"));
+            StringBuilder results = new StringBuilder("\n\n[데이터베이스 조회 결과]");
+            Map<String, List<Map<String, Object>>> allResults = new HashMap<>();
+
+            // 모든 테이블 검색 및 결과 저장
+            for (String table : tables) {
+                String tableData = getTableData(table, analysis.isComplex);
+                results.append("\n\n").append(tableData);
+
+                // 테이블별 검색 결과를 맵에 저장
+                DatabaseManager.QueryResult queryResult = performDetailedSearch(table, input);
+                if (queryResult.isSuccess() && queryResult.getData() != null) {
+                    allResults.put(table, queryResult.getData());
+                }
+            }
+
+            // 검색 결과 요약 추가
+            results.append("\n\n[검색 결과 요약]");
+            results.append(String.format("\n- 검색된 테이블 수: %d", tables.size()));
+            for (Map.Entry<String, List<Map<String, Object>>> entry : allResults.entrySet()) {
+                results.append(String.format("\n- %s 테이블 검색 결과: %d건",
+                        entry.getKey(), entry.getValue().size()));
+            }
+
+            return results.toString();
+        }
+
+        private DatabaseManager.QueryResult performDetailedSearch(String table, String input) {
+            Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
+            List<String> columns = tableColumns.get(table);
+
+            // 검색 조건 생성
+            List<String> searchConditions = new ArrayList<>();
+            for (String column : columns) {
+                // 텍스트 컬럼에 대해 LIKE 검색 수행
+                if (isTextColumn(column)) {
+                    searchConditions.add(String.format("%s LIKE '%%%s%%'", column, input));
+                }
+            }
+
+            // OR 조건으로 모든 컬럼 검색
+            String query = String.format(
+                    "SELECT * FROM %s WHERE %s ORDER BY %s DESC LIMIT 10",
+                    table,
+                    String.join(" OR ", searchConditions),
+                    columns.get(0));
+
+            return databaseManager.executeSelectQuery(query);
+        }
+
+        private boolean isTextColumn(String column) {
+            return column.toLowerCase().contains("name") ||
+                    column.toLowerCase().contains("description") ||
+                    column.toLowerCase().contains("title") ||
+                    column.toLowerCase().contains("content");
         }
 
         private String getTableData(String table, boolean isComplex) {
@@ -140,8 +192,10 @@ public class AgentService {
 
         private void addDetailedAnalysis(StringBuilder analysis, String table) {
             Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
-            String primaryColumn = tableColumns.get(table).get(0);
+            List<String> columns = tableColumns.get(table);
+            String primaryColumn = columns.get(0);
 
+            // 데이터 분포 분석
             DatabaseManager.QueryResult trendResult = databaseManager.executeSelectQuery(
                     String.format("SELECT %s, COUNT(*) as count FROM %s GROUP BY %s ORDER BY count DESC LIMIT 5",
                             primaryColumn, table, primaryColumn));
@@ -153,6 +207,33 @@ public class AgentService {
                             row.get(primaryColumn), row.get("count")));
                 });
             }
+
+            // 최근 데이터 트렌드 분석 (날짜 컬럼이 있는 경우)
+            String dateColumn = findDateColumn(columns);
+            if (dateColumn != null) {
+                DatabaseManager.QueryResult timeResult = databaseManager.executeSelectQuery(
+                        String.format("SELECT DATE(%s) as date, COUNT(*) as count FROM %s " +
+                                "GROUP BY DATE(%s) ORDER BY date DESC LIMIT 5",
+                                dateColumn, table, dateColumn));
+
+                if (timeResult.isSuccess() && timeResult.getData() != null) {
+                    analysis.append("\n최근 데이터 트렌드:\n");
+                    timeResult.getData().forEach(row -> {
+                        analysis.append(String.format("- %s: %s건\n",
+                                row.get("date"), row.get("count")));
+                    });
+                }
+            }
+        }
+
+        private String findDateColumn(List<String> columns) {
+            return columns.stream()
+                    .filter(col -> col.toLowerCase().contains("date") ||
+                            col.toLowerCase().contains("time") ||
+                            col.toLowerCase().contains("created") ||
+                            col.toLowerCase().contains("updated"))
+                    .findFirst()
+                    .orElse(null);
         }
 
         private void addBasicSample(StringBuilder sample, String table) {
