@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -23,6 +24,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 // [1] 데이터베이스 관리 컴포넌트 - 스키마 로딩 및 임베딩 검색 관리 [참조번호: 2,3,4]
@@ -267,5 +269,94 @@ public class DatabaseManager {
 
         results.sort((a, b) -> Double.compare(b.getValue(), a.getValue()));
         return results.stream().limit(10).toList();
+    }
+
+    // [19] 쿼리 실행 결과를 담을 데이터 클래스
+    public static class QueryResult {
+        private final List<Map<String, Object>> data;
+        private final String error;
+
+        public QueryResult(List<Map<String, Object>> data, String error) {
+            this.data = data;
+            this.error = error;
+        }
+
+        public List<Map<String, Object>> getData() {
+            return data;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public boolean isSuccess() {
+            return error == null;
+        }
+    }
+
+    // [20] 안전한 SELECT 쿼리 실행 메서드
+    public QueryResult executeSelectQuery(String query) {
+        if (!isSelectQuery(query)) {
+            return new QueryResult(null, "보안상 SELECT 쿼리만 허용됩니다.");
+        }
+
+        try {
+            List<Map<String, Object>> results = jdbcTemplate.query(
+                    query,
+                    (rs, rowNum) -> {
+                        Map<String, Object> row = new HashMap<>();
+                        var metaData = rs.getMetaData();
+                        int columnCount = metaData.getColumnCount();
+
+                        for (int i = 1; i <= columnCount; i++) {
+                            String columnName = metaData.getColumnName(i);
+                            Object value = rs.getObject(i);
+                            row.put(columnName, value);
+                        }
+                        return row;
+                    });
+            return new QueryResult(results, null);
+        } catch (Exception e) {
+            return new QueryResult(null, "쿼리 실행 중 오류 발생: " + e.getMessage());
+        }
+    }
+
+    // [21] 비동기 쿼리 실행 메서드
+    @Async
+    public CompletableFuture<QueryResult> executeSelectQueryAsync(String query) {
+        return CompletableFuture.completedFuture(executeSelectQuery(query));
+    }
+
+    // [22] SELECT 쿼리 검증 메서드
+    private boolean isSelectQuery(String query) {
+        String normalizedQuery = query.trim().toLowerCase();
+        return normalizedQuery.startsWith("select") &&
+                !normalizedQuery.contains("delete") &&
+                !normalizedQuery.contains("update") &&
+                !normalizedQuery.contains("insert") &&
+                !normalizedQuery.contains("drop") &&
+                !normalizedQuery.contains("truncate") &&
+                !normalizedQuery.contains("alter");
+    }
+
+    // [23] 특정 테이블의 레코드 수 조회 메서드
+    public long getTableCount(String tableName) {
+        try {
+            String query = String.format("SELECT COUNT(*) as count FROM %s", tableName);
+            return jdbcTemplate.queryForObject(query, Long.class);
+        } catch (Exception e) {
+            throw new RuntimeException("테이블 레코드 수 조회 실패: " + e.getMessage());
+        }
+    }
+
+    // [24] 조건부 레코드 수 조회 메서드
+    public long getTableCountWithCondition(String tableName, String condition) {
+        try {
+            String query = String.format("SELECT COUNT(*) as count FROM %s WHERE %s",
+                    tableName, condition);
+            return jdbcTemplate.queryForObject(query, Long.class);
+        } catch (Exception e) {
+            throw new RuntimeException("조건부 레코드 수 조회 실패: " + e.getMessage());
+        }
     }
 }
