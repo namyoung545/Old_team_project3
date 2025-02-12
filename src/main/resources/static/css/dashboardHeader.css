@@ -42,3 +42,9 @@
         align-items: center;
     }
 }
+
+.bi-lightning-charge{
+    top: 15px;
+    left: 34px;
+    position: absolute;
+}
