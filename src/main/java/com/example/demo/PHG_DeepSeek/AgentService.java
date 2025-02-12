@@ -1,6 +1,9 @@
 package com.example.demo.PHG_DeepSeek;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -10,106 +13,183 @@ import com.example.demo.PHG_DeepSeek.AgentParts.ProjectLoader;
 
 import jakarta.annotation.PostConstruct;
 
-// [1] 에이전트 서비스 컴포넌트 - 사용자 입력 처리 및 응답 생성 관리 [참조번호: 2,4,6]
 @Component
 public class AgentService {
-    // [2] 의존성 주입 필드 및 컨텍스트 저장 변수
     private final OllamaService ollamaService;
     private final ProjectLoader projectLoader;
     private final DatabaseManager databaseManager;
     private final HistoryManager historyManager;
     private final UserInputProcessor userInputProcessor;
 
-    private String projectContext;
-    private String databaseContext;
+    String projectContext;
+    String databaseContext;
 
-    // [3] 생성자: 의존성 주입 및 초기화 [참조번호: 1]
     public AgentService(OllamaService ollamaService, ProjectLoader projectLoader,
             DatabaseManager databaseManager, HistoryManager historyManager) {
         this.ollamaService = ollamaService;
         this.projectLoader = projectLoader;
         this.databaseManager = databaseManager;
         this.historyManager = historyManager;
-
         this.userInputProcessor = new UserInputProcessor();
     }
 
-    // [4] 초기화 메서드 - 프로젝트 및 데이터베이스 컨텍스트 로드 [참조번호: 3]
     @PostConstruct
     public void initialize() {
         projectContext = projectLoader.loadProjectStructure();
         databaseContext = databaseManager.loadDatabaseSchema();
     }
 
-    // [5] 사용자 입력 스트림 처리 메서드 [참조번호: 7]
     public void processUserInputStream(String userInput, String sessionId, String model, Consumer<String> onResponse) {
         userInputProcessor.process(userInput, sessionId, model, onResponse);
     }
 
-    // [6] 사용자 입력 처리 메서드 - 동기식 응답 반환 [참조번호: 5]
     public String processUserInput(String userInput, String sessionId, String model) {
         StringBuilder response = new StringBuilder();
         processUserInputStream(userInput, sessionId, model, response::append);
         return response.toString();
     }
 
-    // [7] 대화 기록 초기화 메서드
     public void clearConversation(String sessionId) {
         historyManager.clearHistory(sessionId);
     }
 
-    // [8] 사용자 입력 처리기 내부 클래스 - 상세 처리 로직 구현 [참조번호: 9,10,11]
     private class UserInputProcessor {
-        // [9] 시스템 프롬프트 및 추론 프롬프트 상수 정의
         private static final String SYSTEM_PROMPT = """
-                [시스템 지시사항]
-                1. 사용자의 요구사항을 논리적으로 생각 후 이행
-                2. 대화 맥락 유지 및 이전 대화 참조
-                3. 관련된 경우 데이터베이스 정보 활용
-                4. 명확하고 간단한 응답 제공
-                5. 중국어나 한자는 영어로 변환
+                [시스템 역할]
+                당신은 소프트웨어 개발 프로젝트의 지원 AI 에이전트입니다.
 
-                [현재 컨텍스트]
+                [컨텍스트 정보]
                 프로젝트 정보: %s
-                데이터베이스 스키마: %s
+                데이터베이스 정보: %s
+
+                [응답 규칙]
+                1. 응답 구조:
+                   - '질문 이해 💡': 질문 의도 파악
+                   - '생각 과정 🤔': 복잡한 질문에 대한 단계별 사고 과정
+                   - '자아성찰 🔍': 내 생각이 논리적이고 적절한지 검토
+                   - '답변 📝': 질문 유형에 맞는 적절한 답변 제공
+                   - '추가 설명 ℹ️': 필요한 경우에만 제공
+
+                2. 답변 원칙:
+                   - DB 관련 질문: 실제 데이터를 기반으로 정확한 답변 제공
+                   - 일반 질문: 컨텍스트와 관계없이 유연하게 답변
+                   - 복잡한 질문: 단계별 사고와 자아성찰을 거쳐 신중하게 답변
+                   - 모호한 질문: 구체적인 의도 파악을 위한 확인 질문
+
+                [이전 대화]
+                %s
+
+                [현재 질문]
+                %s
                 """;
 
-        // [10] 사용자 입력 처리 메인 메서드 - 단계별 처리 및 응답 생성 [참조번호: 11,12,13]
         public void process(String userInput, String sessionId, String model, Consumer<String> onResponse) {
-            StringBuilder analysis = new StringBuilder();
-            StringBuilder context = new StringBuilder();
-            StringBuilder plan = new StringBuilder();
+            try {
+                QuestionAnalysis analysis = analyzeInput(userInput);
+                String context = buildContext(userInput, analysis);
+                String prompt = String.format(SYSTEM_PROMPT, context,
+                        databaseContext + getQueryResults(userInput, analysis),
+                        historyManager.findRelevantHistory(userInput, sessionId, model),
+                        userInput);
 
-            // [11] 1단계: 사용자 입력 분석
-            String analysisPrompt = "분석할 사용자 입력: " + userInput + "\n이 입력의 의도와 필요한 정보를 분석하세요.";
-            ollamaService.generateResponseStream(analysisPrompt, model, sessionId, analysis::append);
+                generateResponse(prompt, model, sessionId, analysis.isComplex, onResponse);
+                updateHistory(sessionId, userInput);
+            } catch (Exception e) {
+                onResponse.accept("오류가 발생했습니다: " + e.getMessage());
+            }
+        }
 
-            // [12] 2단계: 컨텍스트 분석
-            String relevantHistory = historyManager.findRelevantHistory(userInput, sessionId, model);
-            String contextPrompt = "사용자 입력: " + userInput + "\n" +
-                    (relevantHistory.isEmpty() ? "" : "관련된 이전 대화: " + relevantHistory + "\n") +
-                    "현재 질문과 관련된 컨텍스트 정보를 분석하세요.";
-            ollamaService.generateResponseStream(contextPrompt, model, sessionId, context::append);
+        private QuestionAnalysis analyzeInput(String input) {
+            return new QuestionAnalysis(
+                    List.of("데이터", "조회", "검색", "기록", "통계", "현황", "조사").stream()
+                            .anyMatch(k -> input.toLowerCase().contains(k.toLowerCase())),
+                    input.split("\\s+").length > 15 || input.split("[?？]").length > 2 ||
+                            input.matches(".*(만약|경우|조건|다만).*"));
+        }
 
-            // [13] 3단계: 실행 계획 수립 및 최종 응답 생성
-            String planPrompt = "계획 수립을 위한 정보:\n" +
-                    "- 사용자 입력: " + userInput + "\n" +
-                    "- 분석 결과: " + analysis.toString() + "\n" +
-                    "- 컨텍스트 고려사항: " + context.toString() + "\n" +
-                    "어떻게 응답할지 계획을 세우세요.";
-            ollamaService.generateResponseStream(planPrompt, model, sessionId, plan::append);
+        private String buildContext(String input, QuestionAnalysis analysis) {
+            List<String> files = projectLoader.findSimilarFiles(input);
+            return files.stream()
+                    .limit(3)
+                    .map(f -> "파일: " + f + "\n" + projectLoader.getFileContent(f))
+                    .collect(Collectors.joining("\n\n"));
+        }
 
-            String finalPrompt = String.format(SYSTEM_PROMPT, projectContext, databaseContext);
-            StringBuilder finalResponse = new StringBuilder();
-            ollamaService.generateResponseStream(finalPrompt, model, sessionId, response -> {
-                onResponse.accept(response);
-                finalResponse.append(response);
-            });
+        private String getQueryResults(String input, QuestionAnalysis analysis) {
+            List<String> tables = databaseManager.findRelatedTables(input);
+            if (tables.isEmpty())
+                return "\n\n[데이터베이스 조회 결과]\n관련 데이터 없음";
 
-            // [14] 대화 기록 저장
-            String finalRespStr = finalResponse.toString();
+            return tables.stream()
+                    .limit(2)
+                    .map(table -> getTableData(table, analysis.isComplex))
+                    .collect(Collectors.joining("\n"));
+        }
+
+        private String getTableData(String table, boolean isComplex) {
+            long count = databaseManager.getTableCount(table);
+            StringBuilder result = new StringBuilder(String.format("테이블 '%s' 통계:\n- 총 레코드 수: %d\n", table, count));
+
+            if (isComplex) {
+                addDetailedAnalysis(result, table);
+            } else {
+                addBasicSample(result, table);
+            }
+            return result.toString();
+        }
+
+        private void addDetailedAnalysis(StringBuilder analysis, String table) {
+            Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
+            String primaryColumn = tableColumns.get(table).get(0);
+
+            DatabaseManager.QueryResult trendResult = databaseManager.executeSelectQuery(
+                    String.format("SELECT %s, COUNT(*) as count FROM %s GROUP BY %s ORDER BY count DESC LIMIT 5",
+                            primaryColumn, table, primaryColumn));
+
+            if (trendResult.isSuccess() && trendResult.getData() != null) {
+                analysis.append("주요 데이터 패턴:\n");
+                trendResult.getData().forEach(row -> {
+                    analysis.append(String.format("- %s: %s건\n",
+                            row.get(primaryColumn), row.get("count")));
+                });
+            }
+        }
+
+        private void addBasicSample(StringBuilder sample, String table) {
+            Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
+            String orderByColumn = tableColumns.get(table).get(0);
+
+            DatabaseManager.QueryResult queryResult = databaseManager.executeSelectQuery(
+                    String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT 3",
+                            table, orderByColumn));
+
+            if (queryResult.isSuccess() && queryResult.getData() != null) {
+                sample.append("최근 데이터 샘플:\n");
+                queryResult.getData().forEach(row -> {
+                    sample.append("- ");
+                    row.forEach((column, value) -> sample.append(String.format("%s=%s, ", column, value)));
+                    sample.append("\n");
+                });
+            }
+        }
+
+        private void generateResponse(String prompt, String model, String sessionId,
+                boolean isComplex, Consumer<String> onResponse) {
+            String finalPrompt = isComplex ? prompt + "\n\n[추가 지침]\n복잡한 질문 분석 필요" : prompt;
+            ollamaService.generateResponseStream(finalPrompt, model, sessionId,
+                    response -> {
+                        if (response != null && !response.trim().isEmpty()) {
+                            onResponse.accept(response);
+                        }
+                    });
+        }
+
+        private void updateHistory(String sessionId, String userInput) {
             historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("user", userInput));
-            historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("assistant", finalRespStr));
+            historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("assistant", "응답 완료"));
+        }
+
+        private record QuestionAnalysis(boolean requiresDbData, boolean isComplex) {
         }
     }
 }
