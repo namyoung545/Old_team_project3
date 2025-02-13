@@ -1,5 +1,5 @@
 /* 헤더 스타일 */
-header {
+#defaultHeader {
     background-color: #f5f6f7;
     /* 남색 */
     color: #000000;
@@ -12,18 +12,19 @@ header {
     position: relative;
     box-sizing: border-box;
     margin-left: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+}
+
+.col-md-12 {
+    flex: initial !important;
+    width: auto !important;
 }
 
 .headerText {
     font-size: 1.8em;
-}
-
-#defaultHeader{
-    display: grid;
-    height:auto;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    gap: 10px;
 }
 
 #indexHeader{

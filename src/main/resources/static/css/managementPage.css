@@ -29,11 +29,32 @@
     flex:1;
     align-content: center;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     grid-gap: 30px;
     height: 100%;
     padding: 20px 160px;
+}
+
+#model-container{
+    grid-column: 1 / span 4;
+    grid-row: 1 / span 2;
+}
+#menuBoardIndexLink{
+    grid-column: 1;
+    grid-row: 3;
+}
+#menuCalendarLink{
+    grid-column: 2;
+    grid-row: 3;
+}
+#menuAsRegistLink{
+    grid-column: 3;
+    grid-row: 3;
+}
+#menuASprocessStatusLink{
+    grid-column: 4;
+    grid-row: 3;
 }
 
 .mp_homeMenu{

@@ -1,46 +1,38 @@
 package com.example.demo.PHG_DeepSeek;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.example.demo.PHG_DeepSeek.AgentParts.DatabaseManager;
+import com.example.demo.PHG_DeepSeek.AgentParts.HistoryManager;
+import com.example.demo.PHG_DeepSeek.AgentParts.ProjectLoader;
+
 import jakarta.annotation.PostConstruct;
 
-@Service
+@Component
 public class AgentService {
-    // 내부 클래스 인스턴스
-    private final ProjectLoader projectLoader = new ProjectLoader();
-    private final DatabaseManager databaseManager = new DatabaseManager();
-    private final HistoryManager historyManager = new HistoryManager();
-    private final DRLAIntegrator drlIntegrator = new DRLAIntegrator();
-
-    // 의존성 주입 필드
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
     private final OllamaService ollamaService;
-    private String projectContext;
-    private String databaseContext;
-    private final Map<String, List<ChatMessage>> conversations = new HashMap<>();
+    private final ProjectLoader projectLoader;
+    private final DatabaseManager databaseManager;
+    private final HistoryManager historyManager;
+    private final UserInputProcessor userInputProcessor;
 
-    public AgentService(OllamaService ollamaService) {
+    String projectContext;
+    String databaseContext;
+
+    public AgentService(OllamaService ollamaService, ProjectLoader projectLoader,
+            DatabaseManager databaseManager, HistoryManager historyManager) {
         this.ollamaService = ollamaService;
+        this.projectLoader = projectLoader;
+        this.databaseManager = databaseManager;
+        this.historyManager = historyManager;
+        this.userInputProcessor = new UserInputProcessor();
     }
 
     @PostConstruct
@@ -49,80 +41,8 @@ public class AgentService {
         databaseContext = databaseManager.loadDatabaseSchema();
     }
 
-    // 시스템 프롬프트 상수
-    private static final String SYSTEM_PROMPT = """
-            [시스템 지시사항]
-            1. 사용자의 요구사항을 논리적으로 생각 후 이행
-            2. 대화 맥락 유지 및 이전 대화 참조
-            3. 관련된 경우 데이터베이스 정보 활용
-            4. 명확하고 간단한 응답 제공
-            5. 중국어 사용을 금지
-
-            [현재 컨텍스트]
-            프로젝트 정보: %s
-            데이터베이스 스키마: %s
-            """;
-
-    private static final String REASONING_PROMPT = """
-            [사고 과정]
-            1단계: 사용자 입력 분석
-            %s
-
-            2단계: 컨텍스트 고려사항
-            %s
-
-            3단계: 실행 계획
-            %s
-
-            최종 응답:
-            """;
-
     public void processUserInputStream(String userInput, String sessionId, String model, Consumer<String> onResponse) {
-        List<ChatMessage> history = conversations.computeIfAbsent(sessionId, k -> new ArrayList<>());
-        StringBuilder analysis = new StringBuilder();
-        StringBuilder context = new StringBuilder();
-        StringBuilder plan = new StringBuilder();
-
-        // 분석 단계
-        String analysisPrompt = "분석할 사용자 입력: " + userInput + "\n이 입력의 의도와 필요한 정보를 분석하세요.";
-        ollamaService.generateResponseStream(analysisPrompt, model, sessionId, analysis::append);
-
-        // 컨텍스트 분석
-        String relevantHistory = historyManager.findRelevantHistory(userInput, history, model);
-        String contextPrompt = "사용자 입력: " + userInput + "\n" +
-                (relevantHistory.isEmpty() ? "" : "관련된 이전 대화: " + relevantHistory + "\n") +
-                "현재 질문과 관련된 컨텍스트 정보를 분석하세요.";
-        ollamaService.generateResponseStream(contextPrompt, model, sessionId, context::append);
-
-        // 계획 수립
-        String planPrompt = "계획 수립을 위한 정보:\n" +
-                "- 사용자 입력: " + userInput + "\n" +
-                "- 분석 결과: " + analysis.toString() + "\n" +
-                "- 컨텍스트 고려사항: " + context.toString() + "\n" +
-                "어떻게 응답할지 계획을 세우세요.";
-        ollamaService.generateResponseStream(planPrompt, model, sessionId, plan::append);
-
-        // DRL 개선 적용
-        String refinedPlan = drlIntegrator.refinePlan(plan.toString(), userInput, sessionId);
-
-        // 최종 응답 생성
-        String finalPrompt = String.format(SYSTEM_PROMPT, projectContext, databaseContext)
-                + String.format(REASONING_PROMPT, analysis.toString(), context.toString(), refinedPlan);
-        StringBuilder finalResponse = new StringBuilder();
-        ollamaService.generateResponseStream(finalPrompt, model, sessionId, response -> {
-            onResponse.accept(response);
-            finalResponse.append(response);
-        });
-
-        // 대화 기록 업데이트
-        String finalRespStr = finalResponse.toString();
-        history.add(new ChatMessage("user", userInput));
-        history.add(new ChatMessage("assistant", finalRespStr));
-        historyManager.updateHistory(history, sessionId);
-
-        // DRL 정책 업데이트
-        double reward = drlIntegrator.computeReward(userInput, finalRespStr);
-        drlIntegrator.updatePolicy(sessionId, reward);
+        userInputProcessor.process(userInput, sessionId, model, onResponse);
     }
 
     public String processUserInput(String userInput, String sessionId, String model) {
@@ -132,170 +52,225 @@ public class AgentService {
     }
 
     public void clearConversation(String sessionId) {
-        conversations.remove(sessionId);
+        historyManager.clearHistory(sessionId);
     }
 
-    // 내부 클래스 1: 프로젝트 구조 분석
-    private class ProjectLoader {
-        private static final Set<String> RELEVANT_EXT = Set.of(
-                ".java", ".xml", ".properties", ".yml", ".yaml", ".json",
-                ".html", ".css", ".js", ".jsx", ".ts", ".tsx", ".sql");
+    private class UserInputProcessor {
+        private static final String SYSTEM_PROMPT = """
+                [시스템 역할]
+                당신은 소프트웨어 개발 프로젝트의 지원 AI 에이전트입니다.
 
-        public String loadProjectStructure() {
-            StringBuilder context = new StringBuilder("프로젝트 구조:\n");
-            Path projectRoot = Paths.get("").toAbsolutePath();
-            try (Stream<Path> paths = Files.walk(projectRoot)) {
-                paths.filter(Files::isRegularFile)
-                        .filter(this::isRelevantFile)
-                        .forEach(path -> appendFileInfo(path, context, projectRoot));
-            } catch (IOException e) {
-                return "프로젝트 구조 로딩 실패: " + e.getMessage();
-            }
-            return context.toString();
-        }
+                [컨텍스트 정보]
+                프로젝트 정보: %s
+                데이터베이스 정보: %s
 
-        private boolean isRelevantFile(Path path) {
-            return RELEVANT_EXT.stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext));
-        }
+                [응답 규칙]
+                1. 응답 구조:
+                   - '질문 이해 💡': 질문 의도 파악
+                   - '생각 과정 🤔': 복잡한 질문에 대한 단계별 사고 과정
+                   - '자아성찰 🔍': 내 생각이 논리적이고 적절한지 검토
+                   - '답변 📝': 질문 유형에 맞는 적절한 답변 제공
+                   - '추가 설명 ℹ️': 필요한 경우에만 제공
 
-        private void appendFileInfo(Path path, StringBuilder context, Path root) {
-            String relativePath = root.relativize(path).toString();
-            context.append("\n파일: ").append(relativePath);
-            if (shouldIncludeContent(path)) {
-                try {
-                    String content = Files.readString(path);
-                    context.append("\n내용:\n").append(content).append("\n");
-                } catch (IOException e) {
-                    context.append("\n파일 읽기 실패: ").append(e.getMessage());
-                }
-            }
-        }
+                2. 답변 원칙:
+                   - DB 관련 질문: 실제 데이터를 기반으로 정확한 답변 제공
+                   - 일반 질문: 컨텍스트와 관계없이 유연하게 답변
+                   - 복잡한 질문: 단계별 사고와 자아성찰을 거쳐 신중하게 답변
+                   - 모호한 질문: 구체적인 의도 파악을 위한 확인 질문
 
-        private boolean shouldIncludeContent(Path path) {
-            String filename = path.getFileName().toString().toLowerCase();
-            return filename.contains("application")
-                    || filename.endsWith(".properties")
-                    || filename.endsWith(".yml")
-                    || filename.endsWith(".yaml")
-                    || filename.endsWith(".env");
-        }
-    }
+                [이전 대화]
+                %s
 
-    // 내부 클래스 2: 데이터베이스 관리
-    private class DatabaseManager {
-        public String loadDatabaseSchema() {
-            String dbName = extractDatabaseName(dbUrl);
-            StringBuilder schema = new StringBuilder("DB 스키마 (" + dbName + "):\n");
+                [현재 질문]
+                %s
+                """;
+
+        public void process(String userInput, String sessionId, String model, Consumer<String> onResponse) {
             try {
-                var dataSource = Optional.ofNullable(jdbcTemplate.getDataSource())
-                        .orElseThrow(() -> new IllegalStateException("DataSource 오류"));
-                try (var connection = dataSource.getConnection()) {
-                    DatabaseMetaData metaData = connection.getMetaData();
-                    try (ResultSet tables = metaData.getTables(dbName, null, "%", new String[] { "TABLE" })) {
-                        while (tables.next())
-                            processTable(metaData, tables, schema);
-                    }
-                }
+                QuestionAnalysis analysis = analyzeInput(userInput);
+                String context = buildContext(userInput, analysis);
+                String prompt = String.format(SYSTEM_PROMPT, context,
+                        databaseContext + getQueryResults(userInput, analysis),
+                        historyManager.findRelevantHistory(userInput, sessionId, model),
+                        userInput);
+
+                generateResponse(prompt, model, sessionId, analysis.isComplex, onResponse);
+                updateHistory(sessionId, userInput);
             } catch (Exception e) {
-                return "DB 스키마 로딩 실패: " + e.getMessage();
+                onResponse.accept("오류가 발생했습니다: " + e.getMessage());
             }
-            return schema.toString();
         }
 
-        private void processTable(DatabaseMetaData metaData, ResultSet tables,
-                StringBuilder schema) throws SQLException {
-            String tableName = tables.getString("TABLE_NAME");
-            schema.append("\n테이블: ").append(tableName);
-            appendColumns(metaData, tableName, schema);
-            appendPrimaryKeys(metaData, tableName, schema);
+        private QuestionAnalysis analyzeInput(String input) {
+            return new QuestionAnalysis(
+                    List.of("데이터", "조회", "검색", "기록", "통계", "현황", "조사").stream()
+                            .anyMatch(k -> input.toLowerCase().contains(k.toLowerCase())),
+                    input.split("\\s+").length > 15 || input.split("[?？]").length > 2 ||
+                            input.matches(".*(만약|경우|조건|다만).*"));
         }
 
-        private void appendColumns(DatabaseMetaData metaData, String tableName,
-                StringBuilder schema) throws SQLException {
-            try (ResultSet columns = metaData.getColumns(null, null, tableName, null)) {
-                schema.append("\n  컬럼:");
-                while (columns.next()) {
-                    schema.append("\n    - ")
-                            .append(columns.getString("COLUMN_NAME"))
-                            .append(" (")
-                            .append(columns.getString("TYPE_NAME"))
-                            .append(")");
+        private String buildContext(String input, QuestionAnalysis analysis) {
+            List<String> files = projectLoader.findSimilarFiles(input);
+            return files.stream()
+                    .limit(3)
+                    .map(f -> "파일: " + f + "\n" + projectLoader.getFileContent(f))
+                    .collect(Collectors.joining("\n\n"));
+        }
+
+        private String getQueryResults(String input, QuestionAnalysis analysis) {
+            List<String> tables = databaseManager.findRelatedTables(input);
+            if (tables.isEmpty())
+                return "\n\n[데이터베이스 조회 결과]\n관련 데이터 없음";
+
+            StringBuilder results = new StringBuilder("\n\n[데이터베이스 조회 결과]");
+            Map<String, List<Map<String, Object>>> allResults = new HashMap<>();
+
+            // 모든 테이블 검색 및 결과 저장
+            for (String table : tables) {
+                String tableData = getTableData(table, analysis.isComplex);
+                results.append("\n\n").append(tableData);
+
+                // 테이블별 검색 결과를 맵에 저장
+                DatabaseManager.QueryResult queryResult = performDetailedSearch(table, input);
+                if (queryResult.isSuccess() && queryResult.getData() != null) {
+                    allResults.put(table, queryResult.getData());
+                }
+            }
+
+            // 검색 결과 요약 추가
+            results.append("\n\n[검색 결과 요약]");
+            results.append(String.format("\n- 검색된 테이블 수: %d", tables.size()));
+            for (Map.Entry<String, List<Map<String, Object>>> entry : allResults.entrySet()) {
+                results.append(String.format("\n- %s 테이블 검색 결과: %d건",
+                        entry.getKey(), entry.getValue().size()));
+            }
+
+            return results.toString();
+        }
+
+        private DatabaseManager.QueryResult performDetailedSearch(String table, String input) {
+            Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
+            List<String> columns = tableColumns.get(table);
+
+            // 검색 조건 생성
+            List<String> searchConditions = new ArrayList<>();
+            for (String column : columns) {
+                // 텍스트 컬럼에 대해 LIKE 검색 수행
+                if (isTextColumn(column)) {
+                    searchConditions.add(String.format("%s LIKE '%%%s%%'", column, input));
+                }
+            }
+
+            // OR 조건으로 모든 컬럼 검색
+            String query = String.format(
+                    "SELECT * FROM %s WHERE %s ORDER BY %s DESC LIMIT 10",
+                    table,
+                    String.join(" OR ", searchConditions),
+                    columns.get(0));
+
+            return databaseManager.executeSelectQuery(query);
+        }
+
+        private boolean isTextColumn(String column) {
+            return column.toLowerCase().contains("name") ||
+                    column.toLowerCase().contains("description") ||
+                    column.toLowerCase().contains("title") ||
+                    column.toLowerCase().contains("content");
+        }
+
+        private String getTableData(String table, boolean isComplex) {
+            long count = databaseManager.getTableCount(table);
+            StringBuilder result = new StringBuilder(String.format("테이블 '%s' 통계:\n- 총 레코드 수: %d\n", table, count));
+
+            if (isComplex) {
+                addDetailedAnalysis(result, table);
+            } else {
+                addBasicSample(result, table);
+            }
+            return result.toString();
+        }
+
+        private void addDetailedAnalysis(StringBuilder analysis, String table) {
+            Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
+            List<String> columns = tableColumns.get(table);
+            String primaryColumn = columns.get(0);
+
+            // 데이터 분포 분석
+            DatabaseManager.QueryResult trendResult = databaseManager.executeSelectQuery(
+                    String.format("SELECT %s, COUNT(*) as count FROM %s GROUP BY %s ORDER BY count DESC LIMIT 5",
+                            primaryColumn, table, primaryColumn));
+
+            if (trendResult.isSuccess() && trendResult.getData() != null) {
+                analysis.append("주요 데이터 패턴:\n");
+                trendResult.getData().forEach(row -> {
+                    analysis.append(String.format("- %s: %s건\n",
+                            row.get(primaryColumn), row.get("count")));
+                });
+            }
+
+            // 최근 데이터 트렌드 분석 (날짜 컬럼이 있는 경우)
+            String dateColumn = findDateColumn(columns);
+            if (dateColumn != null) {
+                DatabaseManager.QueryResult timeResult = databaseManager.executeSelectQuery(
+                        String.format("SELECT DATE(%s) as date, COUNT(*) as count FROM %s " +
+                                "GROUP BY DATE(%s) ORDER BY date DESC LIMIT 5",
+                                dateColumn, table, dateColumn));
+
+                if (timeResult.isSuccess() && timeResult.getData() != null) {
+                    analysis.append("\n최근 데이터 트렌드:\n");
+                    timeResult.getData().forEach(row -> {
+                        analysis.append(String.format("- %s: %s건\n",
+                                row.get("date"), row.get("count")));
+                    });
                 }
             }
         }
 
-        private void appendPrimaryKeys(DatabaseMetaData metaData, String tableName,
-                StringBuilder schema) throws SQLException {
-            try (ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName)) {
-                if (primaryKeys.next()) {
-                    schema.append("\n  기본키: ").append(primaryKeys.getString("COLUMN_NAME"));
-                }
+        private String findDateColumn(List<String> columns) {
+            return columns.stream()
+                    .filter(col -> col.toLowerCase().contains("date") ||
+                            col.toLowerCase().contains("time") ||
+                            col.toLowerCase().contains("created") ||
+                            col.toLowerCase().contains("updated"))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        private void addBasicSample(StringBuilder sample, String table) {
+            Map<String, List<String>> tableColumns = databaseManager.getTableColumns();
+            String orderByColumn = tableColumns.get(table).get(0);
+
+            DatabaseManager.QueryResult queryResult = databaseManager.executeSelectQuery(
+                    String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT 3",
+                            table, orderByColumn));
+
+            if (queryResult.isSuccess() && queryResult.getData() != null) {
+                sample.append("최근 데이터 샘플:\n");
+                queryResult.getData().forEach(row -> {
+                    sample.append("- ");
+                    row.forEach((column, value) -> sample.append(String.format("%s=%s, ", column, value)));
+                    sample.append("\n");
+                });
             }
         }
 
-        private String extractDatabaseName(String url) {
-            String[] parts = url.split("/");
-            String dbWithParams = parts[parts.length - 1];
-            return dbWithParams.split("\\?")[0];
-        }
-    }
-
-    // 내부 클래스 3: 대화 기록 관리
-    private class HistoryManager {
-        private static final int MAX_HISTORY = 10;
-
-        public String findRelevantHistory(String userInput, List<ChatMessage> history, String model) {
-            if (history.isEmpty())
-                return "";
-
-            StringBuilder relevantHistory = new StringBuilder();
-            int start = Math.max(0, history.size() - 5);
-            List<ChatMessage> recentHistory = history.subList(start, history.size());
-
-            for (int i = 0; i < recentHistory.size() - 1; i += 2) {
-                ChatMessage question = recentHistory.get(i);
-                ChatMessage answer = recentHistory.get(i + 1);
-                String prompt = String.format("""
-                        현재 질문: %s
-                        이전 질문: %s
-                        이전 답변: %s
-                        위 대화가 현재 질문과 관련이 있는지 "예" 또는 "아니오"로만 답하세요.
-                        """, userInput, question.content(), answer.content());
-
-                String relevanceCheck = ollamaService.generateResponse(prompt, model, "relevance-check");
-                if (relevanceCheck.toLowerCase().contains("예")) {
-                    relevantHistory.append("Q: ").append(question.content()).append("\n")
-                            .append("A: ").append(answer.content()).append("\n");
-                }
-            }
-            return relevantHistory.toString();
+        private void generateResponse(String prompt, String model, String sessionId,
+                boolean isComplex, Consumer<String> onResponse) {
+            String finalPrompt = isComplex ? prompt + "\n\n[추가 지침]\n복잡한 질문 분석 필요" : prompt;
+            ollamaService.generateResponseStream(finalPrompt, model, sessionId,
+                    response -> {
+                        if (response != null && !response.trim().isEmpty()) {
+                            onResponse.accept(response);
+                        }
+                    });
         }
 
-        public void updateHistory(List<ChatMessage> history, String sessionId) {
-            if (history.size() > MAX_HISTORY) {
-                List<ChatMessage> trimmed = new ArrayList<>(
-                        history.subList(history.size() - MAX_HISTORY, history.size()));
-                conversations.put(sessionId, trimmed);
-            }
-        }
-    }
-
-    // 내부 클래스 4: DRL 통합 관리
-    private static class DRLAIntegrator {
-        public String refinePlan(String plan, String userInput, String sessionId) {
-            return plan + "\n[DRL 최적화 적용]";
+        private void updateHistory(String sessionId, String userInput) {
+            historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("user", userInput));
+            historyManager.addMessage(sessionId, new HistoryManager.ChatMessage("assistant", "응답 완료"));
         }
 
-        public void updatePolicy(String sessionId, double reward) {
-            System.out.println("DRL 정책 업데이트 - 세션: " + sessionId + ", 보상: " + reward);
+        private record QuestionAnalysis(boolean requiresDbData, boolean isComplex) {
         }
-
-        public double computeReward(String input, String response) {
-            return response.length() / 100.0;
-        }
-    }
-
-    // 레코드 유지
-    private record ChatMessage(String role, String content) {
     }
 }

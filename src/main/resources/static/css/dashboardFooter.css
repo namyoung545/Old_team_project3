@@ -1,10 +1,9 @@
         /* 푸터 스타일 */
-        #footer {
-            background-color: #f5f6f7;
+        #dashboardFooter {
+            background: linear-gradient(to top, #FFD700, #FFA500); /* 노란색 → 주황색 */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            /* 남색 */
-            height: 3.5em;
+            height:3.5rem;
             color: #000000;
             text-align: center;
             padding: 15px;
@@ -13,6 +12,6 @@
             /* margin-left: 60px; */
         }
 
-        .managementPage_row{
+        .dashboard_Row{
             grid-column: 3;
         }

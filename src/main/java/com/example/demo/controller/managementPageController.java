@@ -372,4 +372,14 @@ public class managementPageController {
         return "/alertPrint";
     }
 
+    @GetMapping("/deepChatllm")
+    public String getChatllm() {
+        return "chatllm";
+    }
+
+    @GetMapping("/threejs")
+    public String getthreejs() {
+        return "threeJS";
+    }
+
 }

@@ -31,6 +31,7 @@
 .chartCause .chartCanvas {
     display: flex;
     width: 100%;
+    height:69%;
 }
 
 .chartCause .chartCanvasSubContainer {
@@ -57,7 +58,7 @@
     align-items: center;
     /* 수직 가운데 정렬 */
     text-align: center;
-    /* margin: 20px; */
+    margin-top: 20px;
 }
 
 #charts-container {
@@ -70,18 +71,26 @@
 .chart {
     width: 800px;
     /* 명시적인 너비 */
-    height: 320px;
+    height: 290px;
     /* 명시적인 높이 */
     border: 1px solid #ffffff;
     /* 디버깅을 위한 테두리 (선택 사항) */
-    margin: 10px auto;
-    /* 가운데 정렬 */
-    background-color: #1e1e1e;
+    background-color: #fefefe;
     /* 배경 색상 */
+    border-radius: 1rem;
+    box-shadow: 5px 5px 10px rgb(0 0 0 / 20%);
+    padding: 1rem;
+    margin: 1rem auto;
 }
 
 .riskChart_container {
     display: flex;
-    height: 88vh;
+    height: 70vh;
     justify-content: center;
+}
+
+#regionSelect_container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
 }
